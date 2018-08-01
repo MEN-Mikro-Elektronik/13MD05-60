@@ -19,4 +19,9 @@ git submodule update --init --recursive
 
 After cloning the repository run either install.bat (for a Windows host) or install.sh for linux hosts to copy the Files to the desired installation directory.
 
+Modifying the sources:
+----------------------
 
+The rules for the MDIS-Linux variant should be followed also for VxWorks, in order to establish and/or maintain good quality and structure:
+
+https://github.com/MEN-Mikro-Elektronik/13MD05-90/wiki/Configuration-Management-Plan-for-MDIS
