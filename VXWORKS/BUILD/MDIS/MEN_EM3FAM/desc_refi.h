@@ -1,0 +1,9 @@
+extern char c204_1[];
+extern char c204_2[];
+extern char c204_3[];
+extern char c204_4[];
+extern char fpga[];
+extern char m99_1[];
+extern char m99_2[];
+extern char m99_3[];
+extern char m99_4[];

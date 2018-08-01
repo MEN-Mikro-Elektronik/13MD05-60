@@ -1,0 +1,28 @@
+ld < host:C:/work/VXWORKS/LIB/MEN/objPENTIUMgnutest/mdis_MEN_D2.o
+
+#MDIS IRQ Parameter - BSP Specific
+OSS_SetIrqNum0( 0x20 )
+
+MK_SetIntConnectRtn(sysIntConnect)
+MK_SetIntEnableRtn(sysIntEnable)
+
+# CPU Board Specific
+OSS_PciAddrTranslationInit( 0x00000000, 0x00000000 )
+
+
+OS2M_DrvInstall
+OS2M_DevCreate(  "/m66/0", &M66_1, &D201_1)
+OS2M_Show
+
+fh = M_open("/m66/0")
+
+i
+DBG_Show
+
+val_channel_0 = 0x12345678
+
+M_read( fh, &val_channel_0 )
+
+val_channel_0 
+
+M_close( fh )

@@ -1,0 +1,13 @@
+OXFORD 16C954 UART EEPROM UTILITY
+=================================
+
+This is a utility for dumping, writing and verifying the
+original content of the serial EEPROM of the P10/P11.
+
+This utility scans the PCI bus and selects the P10/P11
+for manipulating their EEPROM data. This utility is 
+generally made for writing the P10/P11 EEPROM while 
+manufacturing.
+
+
+rl

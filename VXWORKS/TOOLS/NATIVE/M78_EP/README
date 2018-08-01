@@ -1,0 +1,21 @@
+
+README for M078 Production-Test
+----------------------------------
+
+The Test is built under vxWorks 6.2, Windows Host within 
+vxWorks Development Shell.
+
+Base Directory: <s:>/work_vxM78/VXWORKS/TOOLS/NATIVE/xxx   (on host ws_03)
+
+Test files are:
+
+work_vxM78/VXWORKS/TOOLS/NATIVE/A4270_IO/a4270_io.c
+work_vxM78/VXWORKS/TOOLS/NATIVE/A4270_TEST1/a4270_test1.c
+work_vxM78/VXWORKS/TOOLS/NATIVE/A4270_TEST1/a4270_trigab.c
+work_vxM78/VXWORKS/TOOLS/NATIVE/A4270_TEST1/a4270_mem.c
+
+build in devShell with:
+
+cd s:/work_vxM78/VXWORKS/TOOLS/NATIVE/
+mkall.bat
+

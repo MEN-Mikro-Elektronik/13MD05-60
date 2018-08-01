@@ -1,0 +1,610 @@
+30.1.2009
+
+Aufgrund der Besprechung vom 29.1.2009: 
+
+  TG ms, PM ds, GL cs  wird dieses Projekt bis auf weiteres gestoppt
+  Grund: Requirement und Markt Anpassung
+
+Stand MIPIOS VxWorks Host
+========================
+- m22_main läuft mit quick & dirty test target
+  siehe logs in  \work\VXWORKS\LIBSRC\MIPIOS\TEST\BK_HOME
+- Guarding/Signaling implementiert
+- TargetAutoConnect implementiert
+
+
+ToDo MIPIOS VxWorks Host
+========================
+1.
+dataSize > 1000  also FRAGMENTIERUNG
+ - SetStat BLK
+ - Setblock
+ - Getblock
+ 
+2.
+ev. out of order Problem
+
+3.
+Stop/Restart
+
+4.
+memShow
+
+5.
+new Feature: wait for Device ready
+
+6.
+get Target Debugs
+
+7.
+Performance Data
+ - min max current 		Total
+ - min max current per	Device
+ - retry counter		Total
+ - retry counter   per  Device
+ 
+ 8. MIPIOS Configuration
+
+--------------------------------------------------------------------------------
+Von: Ulf Franke 
+Gesendet: Montag, 26. Januar 2009 11:43
+An: Inge Wende
+Cc: Christian Schuster
+Betreff: MIPIOS VxWorks Coding: Bröckchen
+
+Hi Inge,
+
+ 
+
+hier der Status zum VxWorks Host Coding.
+
+ 
+
+Zuallererst fehlt das Assesment der Architekturspezifikation.
+
+ 
+
+Bitte nicht vergessen, dass dies nur ein Teil des MIPIOS Projekts ist und die in der Mail vom
+
+>> Gesendet: Montag, 27. Oktober 2008 08:36
+s.u. mit ??? gekennzeichneten Arbeiten, wahrscheinlich noch nicht abgeschätzt/geplant wurden,
+
+wie z.B. MIPIOS Target, LINUX, Windows,  Validierung und Verifikation.
+
+ 
+
+Ich habe die Requirementpunkte aus der Arch. Spec. herausgenommen:
+
+ 
+
+ 
+
+MEN_MIPIOS_SA_0100   [DES] UDP Sockets............................................................................... 36        OK
+
+MEN_MIPIOS_SA_0110   [FUNC] Communication Timeout and Retries........................................... 36       timeouts fehlen 
+
+MEN_MIPIOS_SA_0130   [FUNC] Signal polling............................................................................. 37        fehlt
+
+MEN_MIPIOS_SA_0140   [FUNC] Signal polling Priority................................................................. 37        fehlt
+
+MEN_MIPIOS_SA_0150   [FUNC] Acknowledge Delayed............................................................... 37       fehlt
+
+MEN_MIPIOS_SA_0155   [FUNC] Host/Target Signal Installation/Deinstallation and Signaling........... 38      OK 
+
+MEN_MIPIOS_SA_0160   [DES] One forward and one backward Channel per Target....................... 39      OK
+
+MEN_MIPIOS_SA_0170   [DES] Host initiated Communication only................................................. 39       OK 
+
+MEN_MIPIOS_SA_0180   [FUNC] Guarding and Timeouts.............................................................. 39        fehlt 
+
+MEN_MIPIOS_SA_0190   [FUNC] Guarding Mode at Host.............................................................. 39       fehlt 
+
+MEN_MIPIOS_SA_0200   [DES] Each Frame must be answered before sending a new one............... 39       OK 
+
+MEN_MIPIOS_SA_0300   [FUNC] Large Buffer handling................................................................ 40         fehlt noch bei Setstat BLK, SetBlk,GetBlk,
+
+MEN_MIPIOS_SA_0310   [FUNC] Target Debug Buffer................................................................. 40         fehlt
+
+MEN_MIPIOS_SA_0320   [FUNC] Target Debug Data................................................................... 41         fehlt
+
+MEN_MIPIOS_SA_0400   [DES] MIPIOS Frame............................................................................ 42        OK
+
+MEN_MIPIOS_SA_0410   [DES] Each MIPIOS Line will be controlled by an own Instance............... 43       OK
+
+MEN_MIPIOS_SA_0420   [FUNC] MIPIOS Scheduling................................................................... 44       teilweise 
+
+MEN_MIPIOS_SA_0450   [FUNC] MDIS API Call Behavior........................................................... 44        OK
+
+MEN_MIPIOS_SA_0460   [FUNC] M_open and Descriptor............................................................. 44        OK
+
+MEN_MIPIOS_SA_0461   [DESC] PathMapping............................................................................. 44         OK
+
+MEN_MIPIOS_SA_0470   [DESC] Lock Mode................................................................................ 45        OK
+
+MEN_MIPIOS_SA_0475   [FUNC] MIPIOS Host States................................................................. 46         teilweise, Stop/Restart fehlt
+
+MEN_MIPIOS_SA_0480   [FUNC] MIPIOS Configuration/Discover................................................ 47         teilweise
+
+MEN_MIPIOS_SA_0500   [FUNC] Short LinkLoss Behavior............................................................ 47        OK
+
+MEN_MIPIOS_SA_0510   [FUNC] Multi Connect Behavior............................................................. 48         OK
+
+MEN_MIPIOS_SA_0520   [FUNC] In Order Frame Numbering........................................................ 48         OK
+
+MEN_MIPIOS_SA_0530   [FUNC] Receive Handling of no MIPIOS Frames.................................... 48         OK
+
+MEN_MIPIOS_SA_0540   [FUNC] Receive Handling of Target Autoconnect Frames in wrong Mode 48         OK
+
+MEN_MIPIOS_SA_0700   [FUNC] MIPIOS Frame Type, Command and Data................................. 49        OK
+
+MEN_MIPIOS_SA_1000   [DESC] VxWorks MIPIOS Licence........................................................ 51         OK
+
+MEN_MIPIOS_SA_1005   [DESC] VxWorks MIPIOS Exclude Switch............................................. 51         OK
+
+MEN_MIPIOS_SA_1006   [DESC] VxWorks MIPIOS User Interface.............................................. 51          teilweise
+
+MEN_MIPIOS_SA_1008   [FUNC] VxWorks MIPIOS Software Modules and Tasks........................ 52        OK
+
+MEN_MIPIOS_SA_1010   [FUNC] VxWorks MIPIOS Scheduling................................................... 53          teilweise s.o.
+
+MEN_MIPIOS_SA_1020   [FUNC] VxWorks MIPIOS Open........................................................... 53         OK
+
+MEN_MIPIOS_SA_1025   [FUNC] VxWorks MIPIOS M_open....................................................... 53         OK
+
+MEN_MIPIOS_SA_1030   [FUNC] VxWorks MIPIOS M_read,write,set/getstat,blockread,blockwrite 54       OK 
+
+MEN_MIPIOS_SA_1040   [FUNC] VxWorks MIPIOS Host Configuration Data............................... 55         fehlt
+
+ 
+
+Ich bin für diese Woche am Signal Polling SA_0130   SA_0140   dran.
+
+ 
+
+        :) Ulf
+
+>> -----Ursprüngliche Nachricht-----
+>> Von: Ulf Franke
+>> Gesendet: Montag, 27. Oktober 2008 08:36
+>> An: Inge Wende
+>> Cc: Dieter Pfeuffer; Christian Kauntz; Anita Wanka; Günter
+>> Leonhardt; Christian Schuster
+>> Betreff: AW: MIPIOS restart: Protokoll der Besprechung
+>>
+>> Hallo Inge,
+>>
+>> hier die Abschätzung für meine Arbeiten.
+
+
+>> ToDo: beinhaltet nur die Software Sicht und keine HW Inbetriebnahme/Endprüfungstests, IC Verification...
+
+Die Leute, für die eine Arbeit festgelegt wurde, bitte den Aufwand abschätzen.
+
+Falls ich noch etwas vergessen habe, bitte eMail an mich. Danke!
+
+ 
+
+- Target OS Voruntersuchung
+
+- uCLiunx gl Aufwand ???
+
+- MicroC/OS-II RTOS wer ??? Aufwand ???
+
+- Aufwandsabschätzung Windows dp Aufwand 30h
+
+ 
+
+ 
+
+- MIPIOS Core Arch Spec.
+
+- Common uf, 80% weiterer Aufwand 20h <<
+
+- VxWorks Host uf, 80% weiterer Aufwand 20h <<
+
+- LINUX Host wer ??? Aufwand ???
+
+- Windows Host wer ??? Aufwand ???
+
+- Target wer ??? Aufwand ??? abhänging von Voruntersuchung
+
+- MIPIOS Core Coding
+
+- VxWorks Host uf, 20% weiterer Aufwand 120..200h <<
+
+- VxWorks Test Target uf, 5% weiterer Aufwand 40h <<
+
+- LINUX Host wer ??? Aufwand ???
+
+- Windows Host wer ??? Aufwand ???
+
+- Target wer ??? Aufwand ??? abhänging von Voruntersuchung
+
+ 
+
+- MIPIOS Core Verification Spec.
+
+- Simulation uf ??? Aufwand ???
+
+- VxWorks uf ??? Aufwand ???
+
+- LINUX wer ??? Aufwand ???
+
+- Windows wer ??? Aufwand ???
+
+- Target wer ??? Aufwand ???
+
+- System wer ??? Aufwand ???
+
+- MIPIOS Core Verification Test
+
+- Simulation wer ??? Aufwand ???
+
+- VxWorks+Targets wer ??? Aufwand ???
+
+- LINUX+Targets wer ??? Aufwand ???
+
+- Windows+Targets wer ??? Aufwand ???
+
+- Target wer ??? Aufwand ???
+
+- MIPIOS Systemtest wer ??? Aufwand ???
+
+- MIPIOS Tools
+
+- Host: MIPIOS System Scanner grafisch cs ??? Aufwand ???
+
+- Host: MIPIOS System Configurator grafisch cs ??? Aufwand ???
+
+- Host: Windows/LINUX Wireshark MIPIOS extenstion wer ??? Aufwand 80..120 h
+
+- Target: Target Configurator wer ??? Aufwand ???
+
+( komandozeilen basiert f. Endprüfung portabel
+
+grafisch Windows )
+
+- MIPIOS Tool Test
+
+- Host: MIPIOS System Scanner grafisch wer ??? Aufwand ???
+
+- Host: MIPIOS System Configurator grafisch wer ??? Aufwand ???
+
+- Host: Windows/LINUX Wireshark MIPIOS extenstion wer ??? Aufwand ???
+
+- Target: Target Configurator wer ??? Aufwand ???
+
+- MIPIOS User Dokumentation
+
+- Target wer ??? Aufwand ???
+
+- VxWorks wer ??? Aufwand ???
+
+- LINUX wer ??? Aufwand ???
+
+- Windows wer ??? Aufwand ???
+
+>>
+>> :) Ulf
+
+
+>>
+>> >> ToDo: beinhaltet nur die Software Sicht und keine HW
+>> Inbetriebnahme/Endprüfungstests, IC Verification...
+>>
+>> Die Leute, für die eine Arbeit festgelegt wurde, bitte den
+>> Aufwand abschätzen.
+>> Falls ich noch etwas vergessen habe, bitte eMail an mich. Danke!
+>>
+>>
+>> - Target OS Voruntersuchung
+>>      - uCLiunx                                              
+>>                      gl  Aufwand ???
+>>      - MicroC/OS-II RTOS                                    
+>>      wer ??? Aufwand ???
+>>
+>> - Aufwandsabschätzung Windows                               
+>>                                              dp  Aufwand 30h
+>>
+>>
+>>
+>> - MIPIOS Core Arch Spec.
+>>      - Common                                               
+>>                                              uf, 80% 
+>> weiterer Aufwand 20h                 <<
+>>      - VxWorks Host                                         
+>>                                      uf, 80%  weiterer
+>> Aufwand 20h                  <<
+>>      - LINUX Host                                           
+>>      wer ??? Aufwand ???
+>>      - Windows Host                                         
+>>      wer ??? Aufwand ???
+>>      - Target                                               
+>>              wer ??? Aufwand ??? abhänging von Voruntersuchung
+>>
+>> - MIPIOS Core Coding
+>>      - VxWorks Host                                         
+>>                                      uf, 20% weiterer
+>> Aufwand 120..200h            <<
+>>      - VxWorks Test Target                                  
+>>                                      uf,  5% weiterer
+>> Aufwand 40h                  <<
+>>      - LINUX Host                                           
+>>      wer ??? Aufwand ???
+>>      - Windows Host                                         
+>>      wer ??? Aufwand ???
+>>      - Target                                               
+>>              wer ??? Aufwand ??? abhänging von Voruntersuchung
+>>
+>>
+>> - MIPIOS Core Verification Spec.
+>>      - Simulation                                           
+>>                                      uf  ??? Aufwand ???
+>>      - VxWorks                                              
+>>                                              uf  ??? Aufwand ???
+>>      - LINUX                                                
+>>      wer ??? Aufwand ???
+>>      - Windows                                              
+>>              wer ??? Aufwand ???
+>>      - Target                                               
+>>              wer ??? Aufwand ???
+>>      - System                                               
+>>              wer ??? Aufwand ???
+>>
+>> - MIPIOS Core Verification Test
+>>      - Simulation                                           
+>>      wer ??? Aufwand ???
+>>
+>>      - VxWorks+Targets                                      
+>>              wer ??? Aufwand ???
+>>      - LINUX+Targets                                        
+>>      wer ??? Aufwand ???
+>>      - Windows+Targets                                      
+>>              wer ??? Aufwand ???
+>>
+>>      - Target                                               
+>>              wer ??? Aufwand ???
+>>
+>>      - MIPIOS Systemtest                                    
+>>      wer ??? Aufwand ???
+>>
+>> - MIPIOS Tools
+>>      - Host: MIPIOS System Scanner grafisch                 
+>>                      cs ??? Aufwand ???
+>>      - Host: MIPIOS System Configurator grafisch            
+>>                      cs ??? Aufwand ???
+>>      - Host: Windows/LINUX Wireshark MIPIOS extenstion      
+>> wer ??? Aufwand 80..120 h
+>>      - Target: Target Configurator                          
+>> wer ??? Aufwand ???
+>>                ( komandozeilen basiert f. Endprüfung portabel
+>>                  grafisch  Windows )
+>>
+>> - MIPIOS Tool Test
+>>      - Host: MIPIOS System Scanner grafisch                 
+>> wer ??? Aufwand ???
+>>      - Host: MIPIOS System Configurator grafisch            
+>> wer ??? Aufwand ???
+>>      - Host: Windows/LINUX Wireshark MIPIOS extenstion      
+>> wer ??? Aufwand ???
+>>      - Target: Target Configurator                          
+>> wer ??? Aufwand ???
+>>
+>> - MIPIOS User Dokumentation
+>>      - Target                                               
+>>              wer ??? Aufwand ???
+>>      - VxWorks                                              
+>>              wer ??? Aufwand ???
+>>      - LINUX                                                
+>>      wer ??? Aufwand ???
+>>      - Windows                                              
+>>              wer ??? Aufwand ???
+>>
+>>
+>> :) Ulf
+>> 
+>>
+>> Mit freundlichen Gruessen / Best regards
+>>
+>> Dipl.-Ing. (TU) Ulf Franke,
+>> Neuwieder Straße 5-7
+>> Software Design MEN Mikro Elektronik GmbH
+>> 90411 Nuremberg, Germany
+>> Phone +49-911-99 33 5-110
+>> Fax +49-911-99 33 5-910
+>> E-Mail Ulf.Franke@men.de <mailto:Ulf.Franke@men.de>
+>> www.men.de <http://www.men.de/>
+>>
+>> -------------------------------------------------------------
+>> ---------
+>>
+>> MEN Mikro Elektronik GmbH - Geschäftsführer Manfred Schmitz,
+>> Udo Fuchs - Handelsregister Nürnberg HRB 5540 -
+>> UST-ID-Nr./VAT DE 133 528 744 - Umsatzsteuer-Nr./Turnover
+>> Tax No 238/159/58551 - WEEE-Reg.-Nr. DE 49081198 - Deutsche
+>> Bank AG Kto. Nr. 0390 211, BLZ 760 700 12 - HypoVereinsbank
+>> Kto. Nr. 1560 224 300, BLZ 760 200 70
+>> 
+>>
+>> >> -----Ursprüngliche Nachricht-----
+>> >> Von: Ulf Franke
+>> >> Gesendet: Montag, 20. Oktober 2008 16:23
+>> >> An: Detlev Schaadt; Christian Schuster
+>> >> Cc: Dieter Pfeuffer; Christian Kauntz; Anita Wanka;
+>> Günter Leonhardt;
+>> >> Inge Wende
+>> >> Betreff: MIPIOS restart: Protokoll der Besprechung
+>> >>
+>> >> Hi MIPIOS Team,
+>> >>
+>> >> das war die Agenda:
+>> >>
+>> >> >> Das letzte Treffen zu MIPIOS ist jetzt fast ein Jahr her.
+>> >> >>
+>> >> >> Also gibt's  ein MIPIOS Restart Treffen.
+>> >> >>
+>> >> >> - Zielmärkte/Features nochmal rekapitulieren
+>> >> >> - Ideensammlung Tools / Host / Targets / Tests
+>> >> >> - Projektplanung Meilensteine definieren
+>> >> >> - Festlegung wer, welche Aufgaben übernimmt
+>> >> >>
+>> >> >> Anschliessend kann jeder im Kämmerchen für seine Aufgaben eine
+>> >> >> Zeitabschätzung machen.
+>> >> >>
+>> >> >> Mit den Meilensteinen und der Zeitabschätzung kann dann die
+>> >> >> Zeitplanung erarbeitet werden.
+>> >>
+>> >>
+>> >> Hi Detlef,
+>> >>
+>> >> hat 0736_MIPIOS_AE05 EthHub ReqSpec "Michael Ernst IC"
+>> >> geplant ab "05.10.-09.10."
+>> >> im Jahre 2009 a.d. etwas mit unserem Projekt zu tun?
+>> >>
+>> >>
+>> >>
+>> >>
+>> >> >> - Zielmärkte/Features nochmal rekapitulieren
+>> >>
+>> >> Zielmärkte/Features unverändert
+>> >>
+>> >>
+>> >>
+>> >>
+>> >> >> ToDo: beinhaltet nur die Software Sicht und keine HW
+>> >> Inbetriebnahme/Endprüfungstests, IC Verification...
+>> >>
+>> >> Die Leute, für die eine Arbeit festgelegt wurde, bitte
+>> den Aufwand
+>> >> abschätzen.
+>> >> Falls ich noch etwas vergessen habe, bitte eMail an mich. Danke!
+>> >>
+>> >>
+>> >> - Target OS Voruntersuchung
+>> >>      - uCLiunx                                           
+>> >>                   gl  Aufwand ???
+>> >>      - MicroC/OS-II RTOS                                 
+>> >>   wer ??? Aufwand ???
+>> >>
+>> >> - Aufwandsabschätzung Windows                            
+>> >>                                           dp  Aufwand 30h
+>> >>
+>> >>
+>> >>
+>> >> - MIPIOS Core Arch Spec.
+>> >>   - Common                                               
+>> >>                                           uf, 80%
+>> >> weiterer Aufwand ???
+>> >>   - VxWorks Host                                         
+>> >>                                   uf, 80%  weiterer Aufwand ???
+>> >>   - LINUX Host                                           
+>> >>   wer ??? Aufwand ???
+>> >>   - Windows Host                                         
+>> >>   wer ??? Aufwand ???
+>> >>   - Target                                               
+>> >>           wer ??? Aufwand ??? abhänging von Voruntersuchung
+>> >>
+>> >> - MIPIOS Core Coding
+>> >>   - VxWorks Host                                         
+>> >>                                   uf, 20% weiterer Aufwand ???
+>> >>   - VxWorks Test Target                                  
+>> >>                                   uf,  5% weiterer Aufwand ???
+>> >>   - LINUX Host                                           
+>> >>   wer ??? Aufwand ???
+>> >>   - Windows Host                                         
+>> >>   wer ??? Aufwand ???
+>> >>   - Target                                               
+>> >>           wer ??? Aufwand ??? abhänging von Voruntersuchung
+>> >>
+>> >>
+>> >> - MIPIOS Core Verification Spec.
+>> >>   - Simulation                                           
+>> >>                                   uf  ??? Aufwand ???
+>> >>   - VxWorks                                              
+>> >>                                           uf  ??? Aufwand ???
+>> >>   - LINUX                                                
+>> >>   wer ??? Aufwand ???
+>> >>   - Windows                                              
+>> >>           wer ??? Aufwand ???
+>> >>   - Target                                               
+>> >>           wer ??? Aufwand ???
+>> >>   - System                                               
+>> >>           wer ??? Aufwand ???
+>> >>
+>> >> - MIPIOS Core Verification Test
+>> >>   - Simulation                                           
+>> >>   wer ??? Aufwand ???
+>> >>
+>> >>   - VxWorks+Targets                                      
+>> >>           wer ??? Aufwand ???
+>> >>   - LINUX+Targets                                        
+>> >>   wer ??? Aufwand ???
+>> >>   - Windows+Targets                                      
+>> >>           wer ??? Aufwand ???
+>> >>
+>> >>   - Target                                               
+>> >>           wer ??? Aufwand ???
+>> >>
+>> >>   - MIPIOS Systemtest                                    
+>> >>   wer ??? Aufwand ???
+>> >>
+>> >> - MIPIOS Tools
+>> >>   - Host: MIPIOS System Scanner grafisch                 
+>> >>                   cs ??? Aufwand ???
+>> >>   - Host: MIPIOS System Configurator grafisch            
+>> >>                   cs ??? Aufwand ???
+>> >>   - Host: Windows/LINUX Wireshark MIPIOS extenstion      
+>> >> wer ??? Aufwand 80..120 h
+>> >>   - Target: Target Configurator                          
+>> >> wer ??? Aufwand ???
+>> >>             ( komandozeilen basiert f. Endprüfung portabel
+>> >>               grafisch  Windows )
+>> >>
+>> >> - MIPIOS Tool Test
+>> >>   - Host: MIPIOS System Scanner grafisch                 
+>> >> wer ??? Aufwand ???
+>> >>   - Host: MIPIOS System Configurator grafisch            
+>> >> wer ??? Aufwand ???
+>> >>   - Host: Windows/LINUX Wireshark MIPIOS extenstion      
+>> >> wer ??? Aufwand ???
+>> >>   - Target: Target Configurator                          
+>> >> wer ??? Aufwand ???
+>> >>
+>> >> - MIPIOS User Dokumentation
+>> >>   - Target                                               
+>> >>           wer ??? Aufwand ???
+>> >>   - VxWorks                                              
+>> >>           wer ??? Aufwand ???
+>> >>   - LINUX                                                
+>> >>   wer ??? Aufwand ???
+>> >>   - Windows                                              
+>> >>           wer ??? Aufwand ???
+>> >>
+>> >>
+>> >> :) Ulf
+>> >> 
+>> >>
+>> >> Mit freundlichen Gruessen / Best regards
+>> >>
+>> >> Dipl.-Ing. (TU) Ulf Franke,
+>> >> Neuwieder Straße 5-7
+>> >> Software Design MEN Mikro Elektronik GmbH
+>> >> 90411 Nuremberg, Germany
+>> >> Phone +49-911-99 33 5-110
+>> >> Fax +49-911-99 33 5-910
+>> >> E-Mail Ulf.Franke@men.de <mailto:Ulf.Franke@men.de> www.men.de
+>> >> <http://www.men.de/>
+>> >>
+>> >> -------------------------------------------------------------
+>> >> ---------
+>> >>
+>> >> MEN Mikro Elektronik GmbH - Geschäftsführer Manfred Schmitz, Udo
+>> >> Fuchs - Handelsregister Nürnberg HRB 5540 -
+>> UST-ID-Nr./VAT DE 133 528
+>> >> 744 - Umsatzsteuer-Nr./Turnover Tax No 238/159/58551 -
+>> WEEE-Reg.-Nr.
+>> >> DE 49081198 - Deutsche Bank AG Kto. Nr. 0390 211, BLZ 760
+>> 700 12 -
+>> >> HypoVereinsbank Kto. Nr. 1560 224 300, BLZ 760 200 70
+>> >>
+>> >> 

@@ -1,0 +1,26 @@
+@INCLUDE_PATH = $(MEN_DOXYGENTMPL)
+@INCLUDE = DoxyfileCommon
+
+PROJECT_NAME           = "SYSPARAM2"
+PROJECT_NUMBER		   = "for SYSPARAM2 fileset $(MEN_FILESET_REVISION)"
+INPUT                  = \
+                    ../COM \
+					$(MEN_COM_INC)/MEN/sysparam2.h
+            
+PREDEFINED			   = SYSP_CONFIG_MENMON
+OUTPUT_DIRECTORY       = .
+EXTRACT_ALL            = YES
+EXTRACT_STATIC         = YES
+GENERATE_HTMLHELP      = YES
+WARNINGS               = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_IF_UNDOCUMENTED   = YES
+GENERATE_HTMLHELP      = YES
+
+GENERATE_RTF           = YES
+RTF_OUTPUT             = rtf
+COMPACT_RTF            = NO
+RTF_HYPERLINKS         = NO
+RTF_STYLESHEET_FILE    = $(MEN_DOXYGENTMPL)/RTF/men_rtfstyle.cfg
+RTF_EXTENSIONS_FILE    = 
+

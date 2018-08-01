@@ -1,0 +1,32 @@
+@echo off
+@echo "START"   > out
+
+set WIND_HOST_TYPE=x86-win32
+set GNUMAKE=%WIND_BASE%\host\%WIND_HOST_TYPE%\bin\make.exe
+set GCC_EXEC_PREFIX=%WIND_BASE%\host\%WIND_HOST_TYPE%\lib\gcc-lib\
+set TOOL=gnu
+set MEN_DIR=
+set MEN_VX_DIR=s:/work_vxM78/VXWORKS
+set CPU=PPC603
+
+
+cd P699_TEST
+CALL mk.bat
+cd ..
+
+
+REM ## copy the Test tools object file ####
+copy S:\work\VXWORKS\LIB\MEN\objPPC603gnu\p699_test.o  s:\work_vxM78\WFTPD_HOME\
+
+if errorlevel 1 GOTO FAIL
+goto ENDEND
+
+:FAIL
+  echo ===========================
+  echo "=> ERRORs detected"
+  echo ===========================
+goto ENDEND
+
+
+:ENDEND
+

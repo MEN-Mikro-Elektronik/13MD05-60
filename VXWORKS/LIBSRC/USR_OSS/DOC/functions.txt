@@ -1,0 +1,950 @@
+Function Description
+====================
+Thu Mar 16 10:20:38 MET 2000
+ 
+Overview of all Functions
+-------------------------
+
+UOS_ErrnoGet           - Get global error code (errno) 
+UOS_MikroDelayInit     - Calibrates the loop counter for UOS_MikroDelay. 
+UOS_MikroDelay         - Wait with microsecond resolution in a loop. 
+UOS_Delay              - Lets a task sleep for a specified time. 
+UOS_MsecTimerGet       - Read the current timer value (based on system ticks). 
+UOS_MsecTimerResolutio - Get the minimum timer resolution. 
+UOS_Ident              - Return ident string of UOS module. 
+UOS_DL_NewList         - Initialize list header (empty list) 
+UOS_DL_Remove          - remove a node from a list 
+UOS_DL_RemHead         - remove a node from the head of the list 
+UOS_DL_AddTail         - add a node at the tail to the list 
+UOS_SharedMemInit      - Create shared memory handle 
+UOS_SharedMemExit      - Remove shared memory handle 
+UOS_SharedMemSet       - Create shared memory area 
+UOS_SharedMemLink      - Link to exisiting shared memory area 
+UOS_SharedMemClear     - Unlink/Remove shared memory area 
+UOS_ErrString          - Get pointer to a generated error string. 
+UOS_KeyStdIoSetOfTaskS - If called in context of tShell and UOS_KeyStdIoFd==-1, 
+UOS_KeyPressed         - Check if any key pressed 
+UOS_KeyWait            - Wait until any key pressed 
+UOS_SigInit            - Init signal handling 
+UOS_SigExit            - Exit signal handling 
+UOS_SigInstall         - Install a signal to be received 
+UOS_SigRemove          - Remove an installed signal. 
+UOS_SigMask            - Mask all signals 
+UOS_SigUnMask          - Unmask all signals 
+UOS_SigWait            - Wait until signal received or timeout occured. 
+localSigHandler        - Local signal handler. 
+UOS_CallbackInit       - Create callback handle 
+UOS_CallbackExit       - Remove callback handle 
+UOS_CallbackSet        - Install callback function 
+UOS_CallbackClear      - De-Install callback function 
+UOS_CallbackMask       - Prevent application from beeing interrupted by callbacks 
+UOS_CallbackUnMask     - Allow callbacks to occurr 
+UOS_CbMsgReceiver      - Callback message receiver task. 
+UOS_Random             - Create a new random integer value 
+UOS_RandomMap          - Map created integer value into specified range 
+UOS_OS_LineArgs        - Scans a command string. Used by main() replacing. 
+ 
+
+Function UOS_ErrnoGet()
+-----------------------
+
+Syntax:
+    u_int32 UOS_ErrnoGet( void )
+
+Description:
+    Get global error code (errno)
+    The function returns the last occured system error code
+    of the calling process.
+
+Input:
+    -
+
+Output:
+    return     error code
+
+
+Function UOS_MikroDelayInit()
+-----------------------------
+
+Syntax:
+    int32 UOS_MikroDelayInit( void )
+
+Description:
+    Calibrates the loop counter for UOS_MikroDelay.
+
+    Error ERR_UOS_NO_MIKRODELAY (Overflow) is returned
+    if the function is not available.
+
+    Note:  this routine do nothing under VxWorks
+
+Input:
+    -
+
+Output:
+    return  success (0) or error code
+
+
+Function UOS_MikroDelay()
+-------------------------
+
+Syntax:
+    int32 UOS_MikroDelay( u_int32 usec )
+
+Description:
+    Wait with microsecond resolution in a loop.
+
+    NOTE: May take longer if code/data are not in cache
+          or other tasks have a higher priority.
+
+Input:
+    usec    time to wait (0..UOS_MAX_USEC) [usec]
+
+Output:
+    return  success (0) or error code
+
+
+Function UOS_Delay()
+--------------------
+
+Syntax:
+    int32 UOS_Delay( u_int32 msec )
+
+Description:
+    Lets a task sleep for a specified time.
+
+    Time will rounded up to the systems minimum ticker
+    resolution. This (rounded) time is returned.
+
+Input:
+    msec    time to sleep [msec]
+
+Output:
+    return  rounded time [msec]
+
+
+Function UOS_MsecTimerGet()
+---------------------------
+
+Syntax:
+    u_int32 UOS_MsecTimerGet(void)
+
+Description:
+    Read the current timer value (based on system ticks).
+
+    Time will rounded to the minimum timer resolution. 
+    This (rounded) time is returned.
+
+Input:
+    -
+
+Output:
+    return   elapsed time [msec]
+
+
+Function UOS_MsecTimerResolution()
+----------------------------------
+
+Syntax:
+    u_int32 UOS_MsecTimerResolution(void)
+
+Description:
+    Get the minimum timer resolution.
+
+Input:
+    -
+
+Output:
+    return   timer resolution [msec]
+
+
+Function UOS_Ident()
+--------------------
+
+Syntax:
+    char* UOS_Ident( void )
+
+Description:
+    Return ident string of UOS module.
+
+Input:
+    -
+
+Output:
+    return  pointer to ident string
+
+
+Function UOS_DL_NewList()
+-------------------------
+
+Syntax:
+    UOS_DL_LIST *UOS_DL_NewList( UOS_DL_LIST *l )
+
+Description:
+    Initialize list header (empty list)
+
+Input:
+    l - ptr to list structure 
+
+Output:
+    returns: same as input
+
+
+Function UOS_DL_Remove()
+------------------------
+
+Syntax:
+    UOS_DL_NODE *UOS_DL_Remove( UOS_DL_NODE *n )
+
+Description:
+    remove a node from a list
+
+Input:
+    nput......:  n - node to remove
+
+Output:
+    returns: same as input
+
+
+Function UOS_DL_RemHead()
+-------------------------
+
+Syntax:
+    UOS_DL_NODE *UOS_DL_RemHead( UOS_DL_LIST *l )
+
+Description:
+    remove a node from the head of the list 
+
+Input:
+    l - ptr to list header
+
+Output:
+    returns: removed node ( NULL if list was empty )
+
+
+Function UOS_DL_AddTail()
+-------------------------
+
+Syntax:
+    UOS_DL_NODE *UOS_DL_AddTail( UOS_DL_LIST *l, UOS_DL_NODE *n )
+
+Description:
+    add a node at the tail to the list
+
+Input:
+    l - ptr to list functions
+    n - node to add
+
+Output:
+    returns: added node
+
+
+Function UOS_SharedMemInit()
+----------------------------
+
+Syntax:
+    int32 UOS_SharedMemInit(
+        int32 path,
+        UOS_SHMEM_HANDLE **smHdlP
+    )
+
+Description:
+    Create shared memory handle
+
+    This function has to be called before any shared memory
+    area can be created or linked.        
+
+    Possible errors:
+    ERR_UOS_MEM_ALLOC       no free memory to create handle 
+
+Input:
+    path        path number
+    smHdlP      pointer to variable where shared memory handle
+                will be stored
+
+Output:
+    *smHdlP     shared memory handle | NULL
+    return      success (0) or error code
+
+
+Function UOS_SharedMemExit()
+----------------------------
+
+Syntax:
+    int32 UOS_SharedMemExit(
+        UOS_SHMEM_HANDLE **smHdlP
+    )
+
+Description:
+    Remove shared memory handle
+
+    The function removes the shared memory handle.
+
+Input:
+    smHdlP      pointer to shared memory handle
+
+Output:
+    return      success (0) or error code
+
+
+Function UOS_SharedMemSet()
+---------------------------
+
+Syntax:
+    int32 UOS_SharedMemSet(
+        UOS_SHMEM_HANDLE *smHdl,
+        u_int32 smNr,
+        u_int32 size,
+        void **appAddrP
+    )
+
+Description:
+    Create shared memory area
+
+    The function creates the specified shared memory area "smNr"
+    via M_LL_BLK_SHMEM_SET setstat at the driver.
+
+    The shared memory size is defined by the application.
+
+    The shared memory's physical address is mapped to the 
+    application's address space and returned via "appAddrP". 
+
+    Possible errors:
+    ERR_UOS_MEM_ALLOC       no free memory to create handle 
+    ERR_UOS_SETSTAT         the above status call failed
+    ERR_UOS_NO_PERMIT       can't map shared memory address
+
+    If error ERR_UOS_SETSTAT is returned, the caused driver
+    error message (MDIS) can be queried via M_errstring().
+
+Input:
+    smHdl       shared memory handle
+    smNr        shared memory area index (0..n)
+    size        shared memory area size [bytes]
+
+Output:
+    appAddrP    pointer to shared memory area
+    return      success (0) or error code
+
+
+Function UOS_SharedMemLink()
+----------------------------
+
+Syntax:
+    int32 UOS_SharedMemLink
+    (
+        UOS_SHMEM_HANDLE *smHdl,
+        u_int32 smNr,
+        u_int32 *sizeP,
+        void **appAddrP
+    )
+
+Description:
+    Link to exisiting shared memory area
+
+    The function links to the existing specified shared memory
+    area "smNr" via M_LL_BLK_SHMEM_LINK setstat at the driver.
+
+    The shared memory's physical address is mapped to the 
+    application's address space and returned via "appAddrP". 
+    The shared memory areas size is returned via "sizeP".
+
+    Possible errors:
+    ERR_UOS_MEM_ALLOC       no free memory to create handle 
+    ERR_UOS_SETSTAT         the above status call failed
+    ERR_UOS_NO_PERMIT       can't map shared memory address
+
+    If error ERR_UOS_SETSTAT is returned, the caused driver
+    error message (MDIS) can be queried via M_errstring().
+
+Input:
+    smHdl       shared memory handle
+    smNr        shared memory area index (0..n)
+
+Output:
+    sizeP       shared memory area size [bytes]
+    appAddrP    pointer to shared memory area
+    return      success (0) or error code
+
+
+Function UOS_SharedMemClear()
+-----------------------------
+
+Syntax:
+    int32 UOS_SharedMemClear
+    (
+        UOS_SHMEM_HANDLE *smHdl,
+        u_int32 smNr
+    )
+
+Description:
+    Unlink/Remove shared memory area
+
+    The function unlinks from the specified shared memory area
+    via M_LL_BLK_SHMEM_CLEAR setstat at the driver.
+
+    If the last link has been removed, the driver removes and
+    deallocates the shared memory area.
+
+    Possible errors:
+    ERR_UOS_SETSTAT         the above status call failed
+
+    If error ERR_UOS_SETSTAT is returned, the caused driver
+    error message (MDIS) can be queried via M_errstring().
+
+Input:
+    smHdl       shared memory handle
+    smNr        shared memory area index (0..n)
+
+Output:
+    return      success (0) or error code
+
+
+Function UOS_ErrString()
+------------------------
+
+Syntax:
+    char* UOS_ErrString(int32 errCode)
+
+Description:
+    Get pointer to a generated error string.
+
+    Creates detailed error message for UOS_xxx() Functions.
+
+Input:
+    errCode    error code
+
+Output:
+    return     pointer to error message
+
+
+Function UOS_KeyStdIoSetOfTaskSet()
+-----------------------------------
+
+Syntax:
+    int32 UOS_KeyStdIoSetOfTaskSet( void )
+
+Description:
+    If called in context of tShell and UOS_KeyStdIoFd==-1,
+    do nothing.
+
+    Otherwise, set the task stdio to <UOS_KeyStdIoFd>.
+    <UOS_KeyStdIoFd> must be valid file descriptor and should
+    differ from shell input file descriptor if spawned in a
+    seperate task
+
+Input:
+    -
+
+Output:
+    return 0 | error code
+
+Globals:
+    UOS_KeyStdIoFd
+
+Function UOS_KeyPressed()
+-------------------------
+
+Syntax:
+    int32 UOS_KeyPressed( void )
+
+Description:
+    Check if any key pressed
+
+    This function checks if any character is buffered
+    in the stdin path. If so, the char this read and returned
+    as integer value. If not, -1 is returned.
+
+    Task id of the calling task must differ from the tShell task
+    id and stdin of the calling task must differ from stdin of
+    tShell.
+
+    Note: non blocking
+
+Input:
+    -
+
+Output:
+    return     error (-1) or key code
+               -1      no key pressed
+               0..255  char code of pressed key
+
+
+Function UOS_KeyWait()
+----------------------
+
+Syntax:
+    int32 UOS_KeyWait( void )
+
+Description:
+    Wait until any key pressed
+
+    This function waits until any character could be read
+    from the stdin path.
+
+    Task id of the calling task must differ from the tShell task
+    id and stdin of the calling task must differ from stdin of
+    tShell.
+
+    Note: blocking
+
+Input:
+    -
+
+Output:
+    return     error (-1) or key code
+               -1      read error
+               0..255  char code of pressed key
+
+
+Function UOS_SigInit()
+----------------------
+
+Syntax:
+    int32 UOS_SigInit(void (*sigHandler)(u_int32 sigCode))
+
+Description:
+    Init signal handling
+
+Input:
+    sigHandler     signal handler routine
+
+Output:
+    return         success (0) or error code
+
+Globals:
+    UOS_SigList
+
+Function UOS_SigExit()
+----------------------
+
+Syntax:
+    int32 UOS_SigExit(void)
+
+Description:
+    Exit signal handling
+
+    The function removes all installed signals and
+    de-installs the user signal handler routine           
+
+    If signal handling not initialized, the function returns
+    an ERR_UOS_NOT_INIZED error.
+
+Input:
+    -
+
+Output:
+    return     success (0) or error code
+
+Globals:
+    UOS_SigList
+
+Function UOS_SigInstall()
+-------------------------
+
+Syntax:
+    int32 UOS_SigInstall( u_int32 sigCode )
+
+Description:
+    Install a signal to be received
+
+    The function adds the specified signal to the signal handler
+    which was installed with UOS_SigInit().
+
+    After calling this function, the specified signal causes 
+    the signal handler to be called.
+
+    If specified signal is already installed, the function returns
+    an ERR_UOS_BUSY error.
+
+    If specified signal is not allowed, the function returns
+    an ERR_UOS_ILL_SIG error.
+
+    If signal handling not initialized, the function returns
+    an ERR_UOS_NOT_INIZED error.
+
+    If signal() call fails, the function returns ERROR.
+
+Input:
+    sigCode    signal code
+
+Output:
+    return     success (0) or error code
+
+Globals:
+    UOS_SigList
+
+Function UOS_SigRemove()
+------------------------
+
+Syntax:
+    int32 UOS_SigRemove(u_int32 sigCode)
+
+Description:
+    Remove an installed signal.
+
+    If signal is not installed, the function returns
+    an ERR_UOS_NOT_INSTALLED error.
+
+    If signal handling not initialized, the function returns
+    an ERR_UOS_NOT_INIZED error.
+
+    Note for VxWorks:
+    All signal are masked and the old signal mask of the task
+    is set after deinstallation.
+
+Input:
+    sigCode    signal code
+
+Output:
+    return     success (0) or error code
+
+Globals:
+    UOS_SigList
+
+Function UOS_SigMask()
+----------------------
+
+Syntax:
+    int32 UOS_SigMask(void)
+
+Description:
+    Mask all signals
+
+    The function disables the signal handler to receive signals.
+    All incomming signals are queued.
+
+    If signal handling not initialized, the function returns
+    an ERR_UOS_NOT_INIZED error.
+
+Input:
+    -
+
+Output:
+    return     success (0) or error code
+
+Globals:
+    UOS_SigList
+
+Function UOS_SigUnMask()
+------------------------
+
+Syntax:
+    int32 UOS_SigUnMask(void)
+
+Description:
+    Unmask all signals
+
+    The function enables the signal handler to receive signals.
+
+    The function checks if any signal is already queued:
+    If so, it reads the signal from the queue and calls the 
+    user signal handler.
+
+    If signal handling not initialized, the function returns
+    an ERR_UOS_NOT_INIZED error.
+
+Input:
+    -
+
+Output:
+    return     success (0) or error code
+
+Globals:
+    UOS_SigList
+
+Function UOS_SigWait()
+----------------------
+
+Syntax:
+    int32 UOS_SigWait(u_int32 msec, u_int32 *sigCodeP)
+
+Description:
+    Wait until signal received or timeout occured.
+
+    The function implicitly unmask signals and waits with a
+    given timeout until a deadly or previously installed signal
+    is received.
+
+    After that, the function returns with the received signal.
+
+    If the process received a deadly signal (i.e. was killed),
+    the function returns with error ERR_UOS_ABORTED and a valid
+    signal code in sigCodeP.
+
+    If no signal was received within the timeout period,
+    the function returns with error ERR_UOS_TIMEOUT
+
+    If signal handling not initialized, the function returns
+    an ERR_UOS_NOT_INIZED error.
+
+    NOTE: Given timeout will be rounded up to system ticks
+
+Input:
+    msec       wait timeout (0=endless) [msec]
+
+Output:
+    sigCodeP   received signal | undefined at error
+    return     success (0) or error code
+
+Globals:
+    UOS_SigList
+
+Function localSigHandler()
+--------------------------
+
+Syntax:
+    static void localSigHandler( u_int32 sigNo )
+
+Description:
+    Local signal handler.
+    Execute the installed user signal handler and
+    release the sigWait semaphore.
+
+Input:
+    sigNo   fired signal number
+
+Output:
+    -
+
+Globals:
+    UOS_SigList
+
+Function UOS_CallbackInit()
+---------------------------
+
+Syntax:
+    int32 UOS_CallbackInit
+    (
+        int32 path,
+        UOS_CALLBACK_HANDLE **cbHdlP
+    )
+
+Description:
+    Create callback handle
+
+    This function has to be called before any callback function
+    can be installed.         
+
+    Possible errors:
+    ERR_UOS_MEM_ALLOC       no free memory to create handle 
+    ERR_UOS_GETSTAT         the above status call failed
+
+    If error ERR_UOS_GETSTAT is returned, the caused driver
+    error message (MDIS) can be queried via M_errstring().
+
+Input:
+    path        path number
+
+Output:
+    cbHdlP      pointer to callback handle | NULL
+    return      success (0) or error code
+
+
+Function UOS_CallbackExit()
+---------------------------
+
+Syntax:
+    int32 UOS_CallbackExit
+    (
+        UOS_CALLBACK_HANDLE **cbHdlP
+    )
+
+Description:
+    Remove callback handle
+
+Input:
+    cbHdlP      pointer to callback handle
+
+Output:
+    return      success (0) or error code
+    *cbHdlP     NULL
+
+
+Function UOS_CallbackSet()
+--------------------------
+
+Syntax:
+    int32 UOS_CallbackSet
+    (
+        UOS_CALLBACK_HANDLE *cbHdl,
+        u_int32    callNr,
+        void       (*funct)(),
+        void       *appArg
+    )
+
+Description:
+    Install callback function
+
+    The function installs the specified callback function
+    via M_LL_BLK_CALLBACK setstat at the driver.
+
+    Possible errors:
+    ERR_UOS_SETSTAT         the above status call failed
+
+    If error ERR_UOS_SETSTAT is returned, the caused driver
+    error message (MDIS) can be queried via M_errstring().
+
+Input:
+    cbHdl       callback handle
+    callNr      callback function index (0..maxCallback-1)
+    funct       callback function pointer
+    appArg      callback function argument
+
+Output:
+    return      success (0) or error code
+
+
+Function UOS_CallbackClear()
+----------------------------
+
+Syntax:
+    int32 UOS_CallbackClear
+    (
+        UOS_CALLBACK_HANDLE *cbHdl,
+        u_int32    callNr
+    )
+
+Description:
+    De-Install callback function
+
+    The function de-installs the specified callback function
+    via M_LL_BLK_CALLBACK setstat at the driver.
+
+    Possible errors:
+    ERR_UOS_SETSTAT         the above status call failed
+
+    If error ERR_UOS_SETSTAT is returned, the caused driver
+    error message (MDIS) can be queried via M_errstring().
+
+Input:
+    cbHdl       callback handle
+    callNr      callback function index (0..maxCallback-1)
+
+Output:
+    return      success (0) or error code
+
+
+Function UOS_CallbackMask()
+---------------------------
+
+Syntax:
+    int32 UOS_CallbackMask( UOS_CALLBACK_HANDLE *cbHdl )
+
+Description:
+    Prevent application from beeing interrupted by callbacks
+
+Input:
+    cbHdl       callback handle
+
+Output:
+    return      success (0) or error code
+
+Globals:
+    UOS_CbMsgMaskCnt
+
+Function UOS_CallbackUnMask()
+-----------------------------
+
+Syntax:
+    int32 UOS_CallbackUnMask( UOS_CALLBACK_HANDLE *cbHdl )
+
+Description:
+    Allow callbacks to occurr
+
+    Executes any pending callback that has been arrived while callbacks 
+    were masked        
+
+Input:
+    cbHdl       callback handle
+
+Output:
+    return      success (0) or error code
+
+Globals:
+    UOS_CbMsgMaskCnt
+
+Function UOS_CbMsgReceiver()
+----------------------------
+
+Syntax:
+    void UOS_CbMsgReceiver( void )
+
+Description:
+    Callback message receiver task.
+
+Input:
+    -
+
+Output:
+    -
+
+Globals:
+    UOS_CbList
+
+Function UOS_Random()
+---------------------
+
+Syntax:
+    u_int32 UOS_Random(u_int32 old)
+
+Description:
+    Create a new random integer value
+
+Input:
+    old     initial or last returned random value
+
+Output:
+    return  random integer value (0..0xffffffff)
+
+
+Function UOS_RandomMap()
+------------------------
+
+Syntax:
+    u_int32 UOS_RandomMap(u_int32 val, u_int32 ra, u_int32 re)
+
+Description:
+    Map created integer value into specified range
+
+    Maps a random integer value 'val' returned from UOS_Random()
+    into range ra..re.
+
+Input:
+    val     integer value
+    ra      min value
+    re      max value
+
+Output:
+    return  mapped integer value [ra..re]
+
+
+Function UOS_OS_LineArgs()
+--------------------------
+
+Syntax:
+    int UOS_OS_LineArgs
+    (
+        char *dummyArg,
+        char *lp,
+        char **argbuf,
+        int  maxargs,
+        char *separators,
+        char *termchars
+    )
+
+Description:
+    Scans a command string. Used by main() replacing.
+
+    attention: separators will be replaced with a '\0' character 
+
+Input:
+    dummyArg   dummy
+    lp         input line
+    argbuf     ptr array for results (maxarg+1 entries !)
+    maxargs    size of argbuf
+    separators argument separator chars
+    termchars  termination characters 
+
+Output:
+    return  number of args < -1
+

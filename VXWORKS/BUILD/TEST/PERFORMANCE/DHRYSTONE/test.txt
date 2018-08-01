@@ -1,0 +1,25 @@
+ld < D:\work\VXWORKS\BUILD\TEST\PERFORMANCE\DHRYSTONE\I486\drhy.o
+ld < D:\work\VXWORKS\BUILD\TEST\PERFORMANCE\DHRYSTONE\68K\drhy.o
+ld < D:\work\VXWORKS\BUILD\TEST\PERFORMANCE\DHRYSTONE\PPC603\drhy.o
+
+sp vx_main,100
+
+/* disable data cache */
+cacheEnable  0
+cacheDisable 1
+vx_main
+
+
+cacheEnable  1
+cacheDisable 0
+vx_main
+
+
+cacheDisable 0
+cacheDisable 1
+vx_main
+
+cacheEnable  1
+cacheEnable  0
+vx_main
+

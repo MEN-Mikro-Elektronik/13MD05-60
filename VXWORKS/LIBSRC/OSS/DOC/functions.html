@@ -1,0 +1,2074 @@
+<html>
+<head>
+<title>OSS library</title>
+<style type=text/css>
+    Body { background-color: #ffffff; }
+    A:link { color: #c50038; }
+    A:hover { color: #28669b; }
+    P, H1, H2, H3, H3, H5, LI {
+        color: #434343;
+        font-family: Arial, Helvetica, Univers;
+    }
+    P, LI { font-size: 9.000000pt; }
+</style>
+</head>
+<body>
+<h1>OSS library</h1>
+<p>Fri Mar 17 14:25:09 MET 2000</p>
+<h2>Overview of all Chapters</h2>
+<a href="#chapt0">Chapter: system independend functions using os-functions</a><br>
+<a href="#chapt1">Chapter: Functions for double linked lists</a><br>
+<a href="#chapt2">Chapter: Byte swap routines</a><br>
+<a href="#chapt3">Chapter: task routines</a><br>
+<a href="#chapt4">Chapter: OSS Alarm routines</a><br>
+<a href="#chapt5">Chapter: Interrupt related routines</a><br>
+<a href="#chapt6">Chapter: Signal routines</a><br>
+<a href="#chapt7">Chapter: Semaphore routines</a><br>
+<a href="#chapt8">Chapter: Address translation routines</a><br>
+<a href="#chapt9">Chapter: shared memory interface</a><br>
+<a href="#chapt10">Chapter: callback interface</a><br>
+<a href="#chapt11">Chapter: ISA PNP support</a><br>
+
+<h2>Overview of all Functions</h2>
+<a name="chapt0"><a href="#intro0"><h3>system independend functions using os-functions</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#OSS_Ident">OSS_Ident</a></P></TD><TD><P>Gets the pointer to ident string. </P></TD></TR>
+<TR><TD><P><a href="#OSS_Init">OSS_Init</a></P></TD><TD><P>Initializes the debug handle and OSS_MicroDelay(). </P></TD></TR>
+<TR><TD><P><a href="#OSS_Exit">OSS_Exit</a></P></TD><TD><P>Remove the debug handle. </P></TD></TR>
+<TR><TD><P><a href="#OSS_MemGet">OSS_MemGet</a></P></TD><TD><P>Allocates memory block ( long aligned ). </P></TD></TR>
+<TR><TD><P><a href="#OSS_MemFree">OSS_MemFree</a></P></TD><TD><P>Frees memory block. </P></TD></TR>
+<TR><TD><P><a href="#OSS_MemChk">OSS_MemChk</a></P></TD><TD><P>Checks access permission of specified memory block. </P></TD></TR>
+<TR><TD><P><a href="#OSS_MemCopy">OSS_MemCopy</a></P></TD><TD><P>Copy data block. </P></TD></TR>
+<TR><TD><P><a href="#OSS_MemFill">OSS_MemFill</a></P></TD><TD><P>Fill data block. </P></TD></TR>
+<TR><TD><P><a href="#OSS_StrLen">OSS_StrLen</a></P></TD><TD><P>Get the len of string. </P></TD></TR>
+<TR><TD><P><a href="#OSS_StrCmp">OSS_StrCmp</a></P></TD><TD><P>compares str1 and str2 lexicographicaly. </P></TD></TR>
+<TR><TD><P><a href="#OSS_StrNcmp">OSS_StrNcmp</a></P></TD><TD><P>compares n bytes of str1 and str2 lexicographicaly. </P></TD></TR>
+<TR><TD><P><a href="#OSS_StrTok">OSS_StrTok</a></P></TD><TD><P>breaks string into tokens. </P></TD></TR>
+<TR><TD><P><a href="#OSS_Sprintf">OSS_Sprintf</a></P></TD><TD><P>Print to string (variable arguments) </P></TD></TR>
+<TR><TD><P><a href="#OSS_Vsprintf">OSS_Vsprintf</a></P></TD><TD><P>Print to string (va_list argument list) </P></TD></TR>
+<TR><TD><P><a href="#OSS_StrCpy">OSS_StrCpy</a></P></TD><TD><P>Copy two strings </P></TD></TR>
+<TR><TD><P><a href="#OSS_DbgLevelSet">OSS_DbgLevelSet</a></P></TD><TD><P>set the current debug level of the oss module. </P></TD></TR>
+<TR><TD><P><a href="#OSS_DbgLevelGet">OSS_DbgLevelGet</a></P></TD><TD><P>get the current debug level of the oss module. </P></TD></TR>
+<TR><TD><P><a href="#OSS_Delay">OSS_Delay</a></P></TD><TD><P>Let a process sleep for a specified time. </P></TD></TR>
+<TR><TD><P><a href="#OSS_MikroDelayInit">OSS_MikroDelayInit</a></P></TD><TD><P>Calibrates the loop counter for OSS_MikroDelay. </P></TD></TR>
+<TR><TD><P><a href="#OSS_MikroDelay">OSS_MikroDelay</a></P></TD><TD><P>delays at least mikroSec in a loop. </P></TD></TR>
+<TR><TD><P><a href="#OSS_TickRateGet">OSS_TickRateGet</a></P></TD><TD><P>Get the current tick rate. </P></TD></TR>
+<TR><TD><P><a href="#OSS_TickGet">OSS_TickGet</a></P></TD><TD><P>Get the current system tick. </P></TD></TR>
+<TR><TD><P><a href="#OSS_AssignResources">OSS_AssignResources</a></P></TD><TD><P>Assign the resources e.g. memory space, interrupts... . </P></TD></TR>
+<TR><TD><P><a href="#OSS_MapPhysToVirtAddr">OSS_MapPhysToVirtAddr</a></P></TD><TD><P>Maps the physical address to the virtual address. </P></TD></TR>
+<TR><TD><P><a href="#OSS_UnMapVirtAddr">OSS_UnMapVirtAddr</a></P></TD><TD><P>Unmaps the virtual address. </P></TD></TR>
+<TR><TD><P><a href="#OSS_MemCheckInit">OSS_MemCheckInit</a></P></TD><TD><P>Do nothing. </P></TD></TR>
+<TR><TD><P><a href="#OSS_MemCheckAddNode">OSS_MemCheckAddNode</a></P></TD><TD><P>Add a memory node element. </P></TD></TR>
+<TR><TD><P><a href="#OSS_MemCheckFreeNode">OSS_MemCheckFreeNode</a></P></TD><TD><P>Remove a memory node element. Check node alement is valid. </P></TD></TR>
+<TR><TD><P><a href="#OSS_MemCheckTerm">OSS_MemCheckTerm</a></P></TD><TD><P>Check empty memory list. </P></TD></TR>
+</TABLE>
+<a name="chapt1"><a href="#intro1"><h3>
+Functions for double linked lists</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#OSS_DL_NewList">OSS_DL_NewList</a></P></TD><TD><P>Initialize list header (empty list) </P></TD></TR>
+<TR><TD><P><a href="#OSS_DL_Remove">OSS_DL_Remove</a></P></TD><TD><P>remove a node from a list </P></TD></TR>
+<TR><TD><P><a href="#OSS_DL_RemHead">OSS_DL_RemHead</a></P></TD><TD><P>remove a node from the head of the list </P></TD></TR>
+<TR><TD><P><a href="#OSS_DL_AddTail">OSS_DL_AddTail</a></P></TD><TD><P>add a node at the tail to the list </P></TD></TR>
+</TABLE>
+<a name="chapt2"><a href="#intro2"><h3>
+Byte swap routines</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#OSS_Swap16">OSS_Swap16</a></P></TD><TD><P>Swap bytes in word. </P></TD></TR>
+<TR><TD><P><a href="#OSS_Swap32">OSS_Swap32</a></P></TD><TD><P>Swap bytes in double word. </P></TD></TR>
+</TABLE>
+<a name="chapt3"><a href="#intro3"><h3>
+task routines</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#OSS_GetPid">OSS_GetPid</a></P></TD><TD><P>Get current task id. </P></TD></TR>
+</TABLE>
+<a name="chapt4"><a href="#intro4"><h3>
+OSS Alarm routines</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#OSS_AlarmCreate">OSS_AlarmCreate</a></P></TD><TD><P>Creates the alarm handle. </P></TD></TR>
+<TR><TD><P><a href="#OSS_AlarmRemove">OSS_AlarmRemove</a></P></TD><TD><P>Remove a alarm handle. </P></TD></TR>
+<TR><TD><P><a href="#OSS_AlarmSet">OSS_AlarmSet</a></P></TD><TD><P>Activates an alarm subroutine </P></TD></TR>
+<TR><TD><P><a href="#OSS_AlarmClear">OSS_AlarmClear</a></P></TD><TD><P>De-activate an alarm subroutine </P></TD></TR>
+<TR><TD><P><a href="#OSS_AlarmScheduler">OSS_AlarmScheduler</a></P></TD><TD><P>Alarm handler scheduler. </P></TD></TR>
+</TABLE>
+<a name="chapt5"><a href="#intro5"><h3>
+Interrupt related routines</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#OSS_SetIrqNum0">OSS_SetIrqNum0</a></P></TD><TD><P>Tell OSS the value of INT_NUM_IRQ0 define (vxWorks specific) </P></TD></TR>
+<TR><TD><P><a href="#OSS_IrqMask">OSS_IrqMask</a></P></TD><TD><P>Masks device interrupt. </P></TD></TR>
+<TR><TD><P><a href="#OSS_IrqUnMask">OSS_IrqUnMask</a></P></TD><TD><P>Unmasks previously masked device interrupt. </P></TD></TR>
+<TR><TD><P><a href="#OSS_IrqLevelToVector">OSS_IrqLevelToVector</a></P></TD><TD><P>Compute interrupt vector from interrupt number and bus type. </P></TD></TR>
+</TABLE>
+<a name="chapt6"><a href="#intro6"><h3>
+Signal routines</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#OSS_SigCreate">OSS_SigCreate</a></P></TD><TD><P>allocates memory and fills the signal structure. </P></TD></TR>
+<TR><TD><P><a href="#OSS_SigSend">OSS_SigSend</a></P></TD><TD><P>Sends a specified signal or event to a process. </P></TD></TR>
+<TR><TD><P><a href="#OSS_SigRemove">OSS_SigRemove</a></P></TD><TD><P>deallocates signal structure memory and set handle to 0. </P></TD></TR>
+<TR><TD><P><a href="#OSS_SigInfo">OSS_SigInfo</a></P></TD><TD><P>Gets the installed signal number and process id. </P></TD></TR>
+</TABLE>
+<a name="chapt7"><a href="#intro7"><h3>
+Semaphore routines</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#OSS_SemCreate">OSS_SemCreate</a></P></TD><TD><P>creates a binary or counting semaphore and allocates </P></TD></TR>
+<TR><TD><P><a href="#OSS_SemRemove">OSS_SemRemove</a></P></TD><TD><P>deletes the semaphore and frees the allocated memory </P></TD></TR>
+<TR><TD><P><a href="#OSS_SemWait">OSS_SemWait</a></P></TD><TD><P>Takes the semaphore or waits with timeout. </P></TD></TR>
+<TR><TD><P><a href="#OSS_SemSignal">OSS_SemSignal</a></P></TD><TD><P>Signals ( releases) specified semaphore. </P></TD></TR>
+</TABLE>
+<a name="chapt8"><a href="#intro8"><h3>
+Address translation routines</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#OSS_BusToPhysAddr">OSS_BusToPhysAddr</a></P></TD><TD><P>Find out the local physical address of a bus device with </P></TD></TR>
+<TR><TD><P><a href="#OSS_PciAddrTranslationInit">OSS_PciAddrTranslationInit</a></P></TD><TD><P>Initializes the offsets to the PCI IO and MEMORY space. </P></TD></TR>
+<TR><TD><P><a href="#OSS_PciGetConfig">OSS_PciGetConfig</a></P></TD><TD><P>Gets PCI configuration registers. </P></TD></TR>
+<TR><TD><P><a href="#OSS_PciSetConfig">OSS_PciSetConfig</a></P></TD><TD><P>Sets PCI configuration registers. </P></TD></TR>
+<TR><TD><P><a href="#OSS_PciSlotToPciDevice">OSS_PciSlotToPciDevice</a></P></TD><TD><P>Converts the mechanical slot number to pci device nbr. </P></TD></TR>
+<TR><TD><P><a href="#PciGetReg">PciGetReg</a></P></TD><TD><P>Convert <which> parameter of OSS_PciGet/SetConfig </P></TD></TR>
+</TABLE>
+<a name="chapt9"><a href="#intro9"><h3>
+shared memory interface</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#OSS_SharedMemCreate">OSS_SharedMemCreate</a></P></TD><TD><P>Create shared memory handle </P></TD></TR>
+<TR><TD><P><a href="#OSS_SharedMemRemove">OSS_SharedMemRemove</a></P></TD><TD><P>Remove shared memory handle </P></TD></TR>
+<TR><TD><P><a href="#OSS_SharedMemCheckNr">OSS_SharedMemCheckNr</a></P></TD><TD><P>Check shared memory area index </P></TD></TR>
+<TR><TD><P><a href="#OSS_SharedMemCheckSize">OSS_SharedMemCheckSize</a></P></TD><TD><P>Check shared memory area size </P></TD></TR>
+<TR><TD><P><a href="#OSS_SharedMemSet">OSS_SharedMemSet</a></P></TD><TD><P>Create a shared memory area </P></TD></TR>
+<TR><TD><P><a href="#OSS_SharedMemLink">OSS_SharedMemLink</a></P></TD><TD><P>Link to an exisiting shared memory area </P></TD></TR>
+<TR><TD><P><a href="#OSS_SharedMemClear">OSS_SharedMemClear</a></P></TD><TD><P>Unlink/Deinstall a shared memory area </P></TD></TR>
+<TR><TD><P><a href="#AddSharedMem">AddSharedMem</a></P></TD><TD><P>Add shared memory entry to linked list </P></TD></TR>
+<TR><TD><P><a href="#FindSharedMem">FindSharedMem</a></P></TD><TD><P>Find shared memory entry in linked list </P></TD></TR>
+<TR><TD><P><a href="#RemoveSharedMem">RemoveSharedMem</a></P></TD><TD><P>Remove shared memory entry from linked list </P></TD></TR>
+</TABLE>
+<a name="chapt10"><a href="#intro10"><h3>
+callback interface</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#OSS_CallbackCreate">OSS_CallbackCreate</a></P></TD><TD><P>Create callback handle </P></TD></TR>
+<TR><TD><P><a href="#OSS_CallbackRemove">OSS_CallbackRemove</a></P></TD><TD><P>Remove callback handle </P></TD></TR>
+<TR><TD><P><a href="#OSS_CallbackExec">OSS_CallbackExec</a></P></TD><TD><P>Execute callback routine (with app/drv arguments) </P></TD></TR>
+<TR><TD><P><a href="#OSS_CallbackExec2">OSS_CallbackExec2</a></P></TD><TD><P>Execute callback routine (with drv/drv arguments) </P></TD></TR>
+<TR><TD><P><a href="#OSS_CallbackSetStat">OSS_CallbackSetStat</a></P></TD><TD><P>Generic SetStat call for callback control </P></TD></TR>
+<TR><TD><P><a href="#OSS_CallbackGetStat">OSS_CallbackGetStat</a></P></TD><TD><P>Generic GetStat call for callback control </P></TD></TR>
+<TR><TD><P><a href="#OSS_CallbackSet">OSS_CallbackSet</a></P></TD><TD><P>Install Callback function from driver </P></TD></TR>
+<TR><TD><P><a href="#OSS_CallbackClear">OSS_CallbackClear</a></P></TD><TD><P>Remove callback function from driver </P></TD></TR>
+</TABLE>
+<a name="chapt11"><a href="#intro11"><h3>
+ISA PNP support</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#OSS_IsaGetConfig">OSS_IsaGetConfig</a></P></TD><TD><P>Gets ISAPNP configuration data. </P></TD></TR>
+</TABLE>
+ 
+<a name="intro0"><h1>system independend functions using os-functions </h1></a>
+<pre>for LowLevel Driver, MDIS and other
+
+Required:
+Switches: PCI                 for PCI bus support
+
+</pre>
+<a name="OSS_Ident"><h2>Function OSS_Ident()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    char* OSS_Ident( void )
+</pre><h3>Description</h3>
+<pre>    Gets the pointer to ident string.
+
+</pre><h3>Input</h3>
+<pre>    -
+
+</pre><h3>Output</h3>
+<pre>    return  pointer to ident string
+
+</pre>
+<a name="OSS_Init"><h2>Function OSS_Init()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32  OSS_Init( void )
+</pre><h3>Description</h3>
+<pre>    Initializes the debug handle and OSS_MicroDelay().
+
+</pre><h3>Input</h3>
+<pre>    ---
+
+</pre><h3>Output</h3>
+<pre>    return  success (0) or error code
+
+</pre><h3>Globals</h3>
+<pre>    dbgHdl
+</pre>
+<a name="OSS_Exit"><h2>Function OSS_Exit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32  OSS_Exit( void )
+</pre><h3>Description</h3>
+<pre>    Remove the debug handle.
+
+</pre><h3>Input</h3>
+<pre>    -
+
+</pre><h3>Output</h3>
+<pre>    return  success (0) or error code
+
+</pre>
+<a name="OSS_MemGet"><h2>Function OSS_MemGet()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void* OSS_MemGet
+    (
+        OSS_HANDLE  *osHdl,
+        u_int32     size,
+        u_int32     *gotsize
+    )
+</pre><h3>Description</h3>
+<pre>    Allocates memory block ( long aligned ).
+
+</pre><h3>Input</h3>
+<pre>    osHdl     pointer to os specific struct for complicated os
+    size      required block size [bytes]
+    *gotsize  gotten   block size [bytes]                   OUT
+
+</pre><h3>Output</h3>
+<pre>    return    = 0  not enough memory
+              &#62; 0  ptr to memory block
+
+</pre>
+<a name="OSS_MemFree"><h2>Function OSS_MemFree()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_MemFree
+    (
+        OSS_HANDLE *osHdl,
+        void       *addr,
+        u_int32    size
+    )
+</pre><h3>Description</h3>
+<pre>    Frees memory block.
+
+</pre><h3>Input</h3>
+<pre>    osHdl     pointer to os specific struct for complicated os
+    addr      ptr to memory block
+    size      size of memory block
+
+</pre><h3>Output</h3>
+<pre>    return 0 | error code
+
+</pre>
+<a name="OSS_MemChk"><h2>Function OSS_MemChk()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_MemChk
+    (
+        OSS_HANDLE *osHdl,
+        void       *addr,
+        u_int32    size,
+        int32      mode
+    )
+</pre><h3>Description</h3>
+<pre>    Checks access permission of specified memory block.
+    If no MMU returns always 0.
+
+</pre><h3>Input</h3>
+<pre>    osHdl     pointer to os specific struct for complicated os
+    addr      ptr to memory block
+    size      size of memory block
+    mode      access mode (OSS_READ | OSS_WRITE)
+
+</pre><h3>Output</h3>
+<pre>    return    0=ok. or error code
+
+</pre>
+<a name="OSS_MemCopy"><h2>Function OSS_MemCopy()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void OSS_MemCopy
+    (
+       OSS_HANDLE *osHdl,
+       u_int32    size,
+       char       *src,
+       char       *dest
+    )
+</pre><h3>Description</h3>
+<pre>    Copy data block.
+
+    NOTE: Can be called by ISR.
+
+</pre><h3>Input</h3>
+<pre>    osHdl   pointer to os specific struct for complicated os
+    size
+    *src
+    *dest
+
+</pre><h3>Output</h3>
+<pre>    ---
+
+</pre>
+<a name="OSS_MemFill"><h2>Function OSS_MemFill()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void OSS_MemFill
+    (
+        OSS_HANDLE *osHdl,
+        u_int32    size,
+        char       *adr,
+        int8       value
+    )
+</pre><h3>Description</h3>
+<pre>    Fill data block.
+
+    NOTE: Can be called by ISR.
+
+</pre><h3>Input</h3>
+<pre>    osHdl   pointer to os specific struct for complicated os
+    size
+    *adr
+    value
+
+</pre><h3>Output</h3>
+<pre>    ---
+
+</pre>
+<a name="OSS_StrLen"><h2>Function OSS_StrLen()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    u_int32 OSS_StrLen
+    (
+        OSS_HANDLE  *osHdl,
+        char        *string
+    )
+</pre><h3>Description</h3>
+<pre>    Get the len of string.
+
+</pre><h3>Input</h3>
+<pre>    osHdl     pointer to os specific struct for complicated os
+    string  pointer to string
+
+</pre><h3>Output</h3>
+<pre>    length of string
+
+</pre>
+<a name="OSS_StrCmp"><h2>Function OSS_StrCmp()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_StrCmp
+    (
+        OSS_HANDLE  *osHdl,
+        char        *str1,
+        char        *str2
+    )
+</pre><h3>Description</h3>
+<pre>    compares str1 and str2 lexicographicaly.
+
+</pre><h3>Input</h3>
+<pre>    osHdl     pointer to os specific struct for complicated os
+    str1  pointer to string
+    str2  pointer to string
+
+</pre><h3>Output</h3>
+<pre>    0 if equal
+    1 if str1[x] &#62; str2[x] ( first different char )
+    -1 if str1[x] &#60; str2[x] ( first different char )
+
+</pre>
+<a name="OSS_StrNcmp"><h2>Function OSS_StrNcmp()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_StrNcmp
+    (
+        OSS_HANDLE  *osHdl,
+        char        *str1,
+        char        *str2,
+        u_int32     nbrOfBytes
+    )
+</pre><h3>Description</h3>
+<pre>    compares n bytes of str1 and str2 lexicographicaly.
+
+</pre><h3>Input</h3>
+<pre>    osHdl     pointer to os specific struct for complicated os
+    str1       pointer to string
+    str2       pointer to string
+    nbrOfBytes number of bytes to compare
+
+</pre><h3>Output</h3>
+<pre>    0 if first n bytes are equal
+    1 if str1[x] &#62; str2[x] ( different char )
+    -1 if str1[x] &#60; str2[x] ( different char )
+
+</pre>
+<a name="OSS_StrTok"><h2>Function OSS_StrTok()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    char* OSS_StrTok
+    (
+        OSS_HANDLE  *osHdl,
+        char        *string,
+        char        *separator,
+        char        **lastP
+    )
+</pre><h3>Description</h3>
+<pre>    breaks string into tokens.
+    The first separator is replaced by 0. lastP is points to
+    the first character after the found separator.
+    Each subsequent call, with a NULL pointer as first argument
+    starts searching from the lastP pointer.
+
+    NOTES: OSS_StrTok is reentrant.
+
+</pre><h3>Input</h3>
+<pre>    osHdl     pointer to os specific struct for complicated os
+    string     string to break into tokens
+               should NULL for second and following
+               calls
+    separator  separator string
+    lastP      start of next separator search      IN OUT
+               should NULL for the first call of
+               the string
+
+</pre><h3>Output</h3>
+<pre>    pointer to token | NULL if separator not found
+
+</pre>
+<a name="OSS_Sprintf"><h2>Function OSS_Sprintf()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_Sprintf
+    (
+        OSS_HANDLE  *oss,
+        char *str,
+        const char *fmt,
+        ...
+    )
+</pre><h3>Description</h3>
+<pre>    Print to string (variable arguments)
+
+    Formatters restrictions:
+    - %d and %ld/%D are equal
+    - abort on %e, %f and %g
+
+</pre><h3>Input</h3>
+<pre>    oss        oss handle (pointer to os-specific struct)
+    str        destination string
+    fmt        format string
+    ...        argument(s)
+</pre><h3>Output</h3>
+<pre>    return     nbr of chars written into str
+</pre>
+<a name="OSS_Vsprintf"><h2>Function OSS_Vsprintf()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_Vsprintf
+    (
+        OSS_HANDLE  *oss,
+        char *str,
+        const char *fmt,
+        va_list arg
+    )
+</pre><h3>Description</h3>
+<pre>    Print to string (va_list argument list)
+
+</pre><h3>Input</h3>
+<pre>    oss        oss handle (pointer to os-specific struct)
+    str        destination string
+    fmt        format string
+    va_list    argument list
+</pre><h3>Output</h3>
+<pre>    return     nr of chars written into str
+</pre>
+<a name="OSS_StrCpy"><h2>Function OSS_StrCpy()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void OSS_StrCpy
+    (
+        OSS_HANDLE  *oss,
+        char        *from,
+        char        *to
+    )
+</pre><h3>Description</h3>
+<pre>    Copy two strings
+
+</pre><h3>Input</h3>
+<pre>    oss       oss handle (pointer to os-specific struct)
+    from      source string
+    to        dest string
+</pre><h3>Output</h3>
+<pre>    -
+</pre>
+<a name="OSS_DbgLevelSet"><h2>Function OSS_DbgLevelSet()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void  OSS_DbgLevelSet
+    (
+        OSS_HANDLE *osHdl,
+        u_int32 newLevel
+    )
+</pre><h3>Description</h3>
+<pre>    set the current debug level of the oss module.
+
+</pre><h3>Input</h3>
+<pre>    osHdl     pointer to os specific struct for complicated os
+    newLevel  the new debug level
+
+</pre><h3>Output</h3>
+<pre>    ---
+
+</pre><h3>Globals</h3>
+<pre>    DbgLev   - is set to new value.
+
+</pre>
+<a name="OSS_DbgLevelGet"><h2>Function OSS_DbgLevelGet()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    u_int32  OSS_DbgLevelGet
+    (
+        OSS_HANDLE *osHdl
+    )
+</pre><h3>Description</h3>
+<pre>    get the current debug level of the oss module.
+
+</pre><h3>Input</h3>
+<pre>    osHdl   pointer to os specific struct for complicated os
+
+</pre><h3>Output</h3>
+<pre>    return current debug level
+
+</pre>
+<a name="OSS_Delay"><h2>Function OSS_Delay()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_Delay
+    (
+        OSS_HANDLE *osHdl,
+        int32      msec
+    )
+</pre><h3>Description</h3>
+<pre>    Let a process sleep for a specified time.
+    Time may rounded up to the systems minimum ticker
+    resolution. This (rounded) time is returned.
+
+    NOTE: The function may not be aborted by signals !
+
+</pre><h3>Input</h3>
+<pre>    osHdl  pointer to os specific struct for complicated os
+    msec
+
+</pre><h3>Output</h3>
+<pre>    return rounded time [msec]
+
+</pre>
+<a name="OSS_MikroDelayInit"><h2>Function OSS_MikroDelayInit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_MikroDelayInit
+    (
+        OSS_HANDLE *osHdl
+    )
+</pre><h3>Description</h3>
+<pre>    Calibrates the loop counter for OSS_MikroDelay.
+    Disables interrupts and task rescheduling.
+    Calibrates the counter for some system ticks.
+
+    NOTE for VxWorks:
+    Disables and reenables task rescheduling.
+
+    Tested from MC68332@20MHz to PPC603e@200MHz.
+
+</pre><h3>Input</h3>
+<pre>    osHdl   pointer to os specific struct for complicated os
+
+</pre><h3>Output</h3>
+<pre>    0 | ERR_OSS_NO_MIKRODELAY (Overflow)
+
+</pre><h3>Globals</h3>
+<pre>    OSS_MikroDelayDevider, MikroDelayStop1, MikroDelayStop2
+    OSS_MikroDelayIsInit
+</pre>
+<a name="OSS_MikroDelay"><h2>Function OSS_MikroDelay()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_MikroDelay
+    (
+        OSS_HANDLE *osHdl,
+        u_int32 mikroSec
+    )
+</pre><h3>Description</h3>
+<pre>    delays at least mikroSec in a loop.
+
+    NOTE: Can be called by ISR.
+
+    NOTE: may longer if code/ data are not in cache
+          or other tasks have a higher priority.
+
+</pre><h3>Input</h3>
+<pre>    osHdl   pointer to os specific struct for complicated os
+    int32 mikroSec
+
+</pre><h3>Output</h3>
+<pre>    0 | error code
+
+</pre>
+<a name="OSS_TickRateGet"><h2>Function OSS_TickRateGet()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_TickRateGet( OSS_HANDLE *osHdl )
+</pre><h3>Description</h3>
+<pre>    Get the current tick rate.
+
+</pre><h3>Input</h3>
+<pre>    osHdl   pointer to os specific struct for complicated os
+
+</pre><h3>Output</h3>
+<pre>    return current ticks per second
+
+</pre>
+<a name="OSS_TickGet"><h2>Function OSS_TickGet()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    u_int32 OSS_TickGet(OSS_HANDLE *oss)
+</pre><h3>Description</h3>
+<pre>    Get the current system tick.
+
+</pre><h3>Input</h3>
+<pre>    oss     pointer to os specific struct for complicated os
+</pre><h3>Output</h3>
+<pre>    return  current tick
+</pre>
+<a name="OSS_AssignResources"><h2>Function OSS_AssignResources()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_AssignResources
+    (
+        OSS_HANDLE      *osHdl,
+        int32           busType,
+        int32           busNbr,
+        int32           resNbr,
+        OSS_RESOURCES   res[]
+    )
+</pre><h3>Description</h3>
+<pre>    Assign the resources e.g. memory space, interrupts... .
+
+    NOTE: This function is necessary for operating systems like
+          Windows NT which register all the resources that a
+          driver need. This function should be call before
+          'OSS_MapPhysToVirtAddr'.
+
+          Currently, only memory spaces and interrupts are
+          supported as resources.
+
+</pre><h3>Input</h3>
+<pre>    osHdl   pointer to os specific struct for complicated os
+    busType OSS_BUSTYPE_NONE | VME | PCI | ISA
+    busNbr  e.g. pci bus nbr. 5
+    resNbr  number of resources
+    res[]   resource field
+
+</pre><h3>Output</h3>
+<pre>    0 | error code
+
+</pre>
+<a name="OSS_MapPhysToVirtAddr"><h2>Function OSS_MapPhysToVirtAddr()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_MapPhysToVirtAddr
+    (
+        OSS_HANDLE *osHdl,
+        void       *physAddr,
+        u_int32    size,
+        int32      addrSpace,
+        int32      busType,
+        int32      busNbr,
+        void       **virtAddrP
+    )
+</pre><h3>Description</h3>
+<pre>    Maps the physical address to the virtual address.
+
+</pre><h3>Input</h3>
+<pre>    osHdl   pointer to os specific struct for complicated os
+    physAddr
+    size
+    addrSpace  OSS_ADDRSPACE_MEM | OSS_ADDRSPACE_IO 
+    busType    OSS_BUSTYPE_NONE | VME | PCI
+    busNbr     e.g. pci bus nbr. 5
+
+</pre><h3>Output</h3>
+<pre>    virtAddrP
+    return 0 | error code
+
+</pre><h3>Globals</h3>
+<pre>    OSS_MapCounter
+
+</pre>
+<a name="OSS_UnMapVirtAddr"><h2>Function OSS_UnMapVirtAddr()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_UnMapVirtAddr
+    (
+        OSS_HANDLE *osHdl,
+        void       **virtAddr,
+        u_int32    size,
+        int32      addrSpace
+    )
+</pre><h3>Description</h3>
+<pre>    Unmaps the virtual address.
+
+</pre><h3>Input</h3>
+<pre>    osHdl     pointer to os specific struct for complicated os
+    virtAddr  pointer to variable where virtual address will be stored
+    size      size in bytes
+    addrSpace OSS_ADDRSPACE_MEM | OSS_ADDRSPACE_IO 
+
+</pre><h3>Output</h3>
+<pre>    0 | error code
+    *virtAddr virtual address
+
+</pre><h3>Globals</h3>
+<pre>    OSS_MapCounter
+
+</pre>
+<a name="OSS_MemCheckInit"><h2>Function OSS_MemCheckInit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    static void OSS_MemCheckInit( void )
+</pre><h3>Description</h3>
+<pre>    Do nothing.
+
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    -
+</pre>
+<a name="OSS_MemCheckAddNode"><h2>Function OSS_MemCheckAddNode()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    static void OSS_MemCheckAddNode( char *addr, u_int32 size )
+</pre><h3>Description</h3>
+<pre>    Add a memory node element.
+    Insert OSS_MEMCHECK_MAGIC_START and OSS_MEMCHECK_MAGIC_END
+    before start and after end of allocated memory.
+
+</pre><h3>Input</h3>
+<pre>    addr  address of allocated memory
+    size  size of allocated memory
+</pre><h3>Output</h3>
+<pre>    -
+</pre><h3>Globals</h3>
+<pre>    OSS_MemCheckList
+</pre>
+<a name="OSS_MemCheckFreeNode"><h2>Function OSS_MemCheckFreeNode()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    static void OSS_MemCheckFreeNode( char *addr, u_int32 size )
+</pre><h3>Description</h3>
+<pre>    Remove a memory node element. Check node alement is valid.
+    Check OSS_MEMCHECK_MAGIC_START and OSS_MEMCHECK_MAGIC_END
+    before start and after end of allocated memory.
+    Log message for pointer underrun/overrun and not valid addr
+    or size.
+
+</pre><h3>Input</h3>
+<pre>    addr  address of allocated memory
+    size  size of allocated memory
+</pre><h3>Output</h3>
+<pre>    -
+</pre><h3>Globals</h3>
+<pre>    OSS_MemCheckList
+</pre>
+<a name="OSS_MemCheckTerm"><h2>Function OSS_MemCheckTerm()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    static void OSS_MemCheckTerm( void )
+</pre><h3>Description</h3>
+<pre>    Check empty memory list.
+    Log message for not freed list elements.
+
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    -
+</pre><h3>Globals</h3>
+<pre>    OSS_MemCheckList
+</pre><a name="intro1"><h1>Functions for double linked lists </h1></a>
+<pre>(functionality cloned from AMIGA ROM kernel)
+Required:  
+Switches: 
+
+</pre>
+<a name="OSS_DL_NewList"><h2>Function OSS_DL_NewList()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    OSS_DL_LIST *OSS_DL_NewList( OSS_DL_LIST *l )
+</pre><h3>Description</h3>
+<pre>    Initialize list header (empty list)
+
+</pre><h3>Input</h3>
+<pre>    l - ptr to list structure 
+</pre><h3>Output</h3>
+<pre>    returns: same as input
+</pre>
+<a name="OSS_DL_Remove"><h2>Function OSS_DL_Remove()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    OSS_DL_NODE *OSS_DL_Remove( OSS_DL_NODE *n )
+</pre><h3>Description</h3>
+<pre>    remove a node from a list
+
+</pre><h3>Input</h3>
+<pre>    nput......:  n node to remove
+</pre><h3>Output</h3>
+<pre>    returns: same as input
+</pre>
+<a name="OSS_DL_RemHead"><h2>Function OSS_DL_RemHead()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    OSS_DL_NODE *OSS_DL_RemHead( OSS_DL_LIST *l )
+</pre><h3>Description</h3>
+<pre>    remove a node from the head of the list 
+
+</pre><h3>Input</h3>
+<pre>    l - ptr to list header
+</pre><h3>Output</h3>
+<pre>    returns: removed node ( NULL if list was empty )
+</pre>
+<a name="OSS_DL_AddTail"><h2>Function OSS_DL_AddTail()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    OSS_DL_NODE *OSS_DL_AddTail( OSS_DL_LIST *l, OSS_DL_NODE *n )
+</pre><h3>Description</h3>
+<pre>    add a node at the tail to the list
+</pre><h3>Input</h3>
+<pre>    l - ptr to list functions
+    n - node to add
+</pre><h3>Output</h3>
+<pre>    returns: added node
+</pre><a name="intro2"><h1>Byte swap routines </h1></a>
+<pre></pre>
+<a name="OSS_Swap16"><h2>Function OSS_Swap16()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    u_int16 OSS_Swap16( u_int16 word )
+</pre><h3>Description</h3>
+<pre>    Swap bytes in word.
+
+</pre><h3>Input</h3>
+<pre>    word      word to swap
+</pre><h3>Output</h3>
+<pre>    return    swapped word
+</pre>
+<a name="OSS_Swap32"><h2>Function OSS_Swap32()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    u_int32 OSS_Swap32( u_int32 dword )
+</pre><h3>Description</h3>
+<pre>    Swap bytes in double word.
+
+</pre><h3>Input</h3>
+<pre>    dword     double word to swap
+</pre><h3>Output</h3>
+<pre>    return    swapped word
+</pre><a name="intro3"><h1>task routines </h1></a>
+<pre>system independend functions using os-functions
+for LowLevel Driver, MDIS and other
+
+Required:
+Switches: 
+
+</pre>
+<a name="OSS_GetPid"><h2>Function OSS_GetPid()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    u_int32 OSS_GetPid(OSS_HANDLE *oss)
+</pre><h3>Description</h3>
+<pre>    Get current task id.
+
+    Note:  Task ID is invalid if called at interrupt level.
+</pre><h3>Input</h3>
+<pre>    osHdl   pointer to os specific struct for complicated os
+</pre><h3>Output</h3>
+<pre>    return  task id
+</pre><a name="intro4"><h1>OSS Alarm routines </h1></a>
+<pre></pre>
+<a name="OSS_AlarmCreate"><h2>Function OSS_AlarmCreate()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_AlarmCreate
+    (
+        OSS_HANDLE       *osHdl,
+        void             (*funct)(),
+        void             *arg,
+        OSS_ALARM_HANDLE **alarmP
+    )
+</pre><h3>Description</h3>
+<pre>    Creates the alarm handle.
+    Allocates memory and fills the alarm structure.
+    Spawns the alarm task at the first create.
+
+</pre><h3>Input</h3>
+<pre>    osHdl   oss handle for complicated OS
+    funct   alarm function to call
+    arg     argument for the alarm function
+    alarmP  pointer to variable where the alarm handle will stored
+
+</pre><h3>Output</h3>
+<pre>    *alarmP alarm handle
+    return  success (0) or error code
+
+</pre><h3>Globals</h3>
+<pre>    OSS_AlarmTaskId, OSS_AlarmTaskPriority,OSS_AlarmTaskStackSize
+    OSS_AlarmInstCounter, OSS_AlarmList
+</pre>
+<a name="OSS_AlarmRemove"><h2>Function OSS_AlarmRemove()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_AlarmRemove
+    (
+        OSS_HANDLE       *osHdl,
+        OSS_ALARM_HANDLE **alarmP
+    )
+</pre><h3>Description</h3>
+<pre>    Remove a alarm handle.
+    De-activate alarm if already installed.
+    Deallocates alarm structure.
+    Kills the alarm task at the last remove.
+
+</pre><h3>Input</h3>
+<pre>    osHdl   oss handle for complicated OS
+    alarmP  pointer to variable where the alarm handle is stored
+
+</pre><h3>Output</h3>
+<pre>    *alarmP alarm handle
+    return   success (0) or error code
+
+</pre>
+<a name="OSS_AlarmSet"><h2>Function OSS_AlarmSet()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_AlarmSet
+    (
+        OSS_HANDLE       *osHdl,
+        OSS_ALARM_HANDLE *alarm,
+        u_int32          msec,
+        u_int32          cyclic,
+        u_int32          *realMsecP
+    )
+</pre><h3>Description</h3>
+<pre>    Activates an alarm subroutine
+    Returns an error if already active
+
+    Alarm time may rounded up to the systems minimum ticker
+    resolution. This (rounded) time is retured via realMsec.
+
+</pre><h3>Input</h3>
+<pre>    osHdl      oss handle for complicated OS
+    alarm      alarm handle
+    msec       alarm time [msec]
+    cyclic     cyclic (1) or single (0) alarm
+    realMsecP  pointer to variable where rounded alarm time [msec]
+               stored
+</pre><h3>Output</h3>
+<pre>    *realMsecP rounded alarm time [msec]
+    return   success (0) or error code
+
+</pre>
+<a name="OSS_AlarmClear"><h2>Function OSS_AlarmClear()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_AlarmClear
+    (
+        OSS_HANDLE       *osHdl,
+        OSS_ALARM_HANDLE *alarm
+    )
+</pre><h3>Description</h3>
+<pre>    De-activate an alarm subroutine
+    Returns an error if not active.
+
+</pre><h3>Input</h3>
+<pre>    osHdl   oss handle for complicated OS
+    alarm   alarm handle
+
+</pre><h3>Output</h3>
+<pre>    return  success (0) or error code
+
+</pre>
+<a name="OSS_AlarmScheduler"><h2>Function OSS_AlarmScheduler()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void OSS_AlarmScheduler( void )
+</pre><h3>Description</h3>
+<pre>    Alarm handler scheduler.
+
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    -
+</pre><h3>Globals</h3>
+<pre>    OSS_AlarmList
+</pre><a name="intro5"><h1>Interrupt related routines </h1></a>
+<pre></pre>
+<a name="OSS_SetIrqNum0"><h2>Function OSS_SetIrqNum0()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void OSS_SetIrqNum0( int intNumIrq0 )
+</pre><h3>Description</h3>
+<pre>    Tell OSS the value of INT_NUM_IRQ0 define (vxWorks specific)
+
+    normally 0x20 for PCs 0x0 for other architectures      
+</pre><h3>Input</h3>
+<pre>    intNumIrq0     value of INT_NUM_IRQ0
+</pre><h3>Output</h3>
+<pre>    -
+</pre><h3>Globals</h3>
+<pre>    OSS_IrqNum0
+</pre>
+<a name="OSS_IrqMask"><h2>Function OSS_IrqMask()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void OSS_IrqMask
+    (
+        OSS_HANDLE *osHdl,
+        OSS_IRQ_HANDLE* irqHandle
+    )
+</pre><h3>Description</h3>
+<pre>    Masks device interrupt.
+
+    NOTE for VxWorks:
+    System routines should not called after lock interrupts!
+    Task will locked and rescheduling will disabled!
+
+</pre><h3>Input</h3>
+<pre>    osHdl   pointer to os specific struct for complicated os
+    irqHandle  pointer to the os specific irq structure
+
+</pre><h3>Output</h3>
+<pre>    ---
+
+</pre>
+<a name="OSS_IrqUnMask"><h2>Function OSS_IrqUnMask()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void OSS_IrqUnMask
+    (
+        OSS_HANDLE *osHdl,
+        OSS_IRQ_HANDLE *irqHandle
+    )
+</pre><h3>Description</h3>
+<pre>    Unmasks previously masked device interrupt.
+
+    NOTE for VxWorks:
+    Task will unlock and rescheduling will enabled!
+
+</pre><h3>Input</h3>
+<pre>    osHdl   pointer to os specific struct for complicated os
+    irqHandle  pointer to the os specific irq structure
+
+</pre><h3>Output</h3>
+<pre>    ---
+
+</pre>
+<a name="OSS_IrqLevelToVector"><h2>Function OSS_IrqLevelToVector()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_IrqLevelToVector
+    (
+        OSS_HANDLE *osHdl,
+        int32      busType,
+        int32      irqNbr,
+        int32      *vector
+    )
+</pre><h3>Description</h3>
+<pre>    Compute interrupt vector from interrupt number and bus type.
+
+</pre><h3>Input</h3>
+<pre>    osHdl     os handle
+    busType   bus type
+    irqNbr    interrupt number  0..15
+
+</pre><h3>Output</h3>
+<pre>    vector    interrupt vector  e.g. irqNbr + OSS_IrqNum0
+    return    0 | error code
+
+</pre><h3>Globals</h3>
+<pre>    OSS_IrqNum0 architecture depend e.g. 0x20 for PC
+</pre><a name="intro6"><h1>Signal routines </h1></a>
+<pre></pre>
+<a name="OSS_SigCreate"><h2>Function OSS_SigCreate()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_SigCreate
+    (
+        OSS_HANDLE       *osHdl,
+        int32            value,
+        OSS_SIG_HANDLE   **sigHandleP
+    )
+</pre><h3>Description</h3>
+<pre>    allocates memory and fills the signal structure.
+
+    NOTE for VxWorks:
+    The calling task ID will be stored.
+
+</pre><h3>Input</h3>
+<pre>    osHdl   pointer to os specific struct for complicated os
+    value   signal number or a event id
+    sigHandleP                                               OUT
+
+</pre><h3>Output</h3>
+<pre>    0 | error code
+
+</pre>
+<a name="OSS_SigSend"><h2>Function OSS_SigSend()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_SigSend
+    (
+        OSS_HANDLE *osHdl,
+        OSS_SIG_HANDLE* sigHandle
+    )
+</pre><h3>Description</h3>
+<pre>    Sends a specified signal or event to a process.
+
+    NOTE: Can be called by ISR.
+
+    NOTE for VxWorks:
+    The signal is sended to the installing task.
+
+</pre><h3>Input</h3>
+<pre>    osHdl   pointer to os specific struct for complicated os
+    sigHandle
+
+</pre><h3>Output</h3>
+<pre>    0=ok. or error code
+
+</pre>
+<a name="OSS_SigRemove"><h2>Function OSS_SigRemove()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_SigRemove
+    (
+        OSS_HANDLE     *osHdl,
+        OSS_SIG_HANDLE **sigHandleP
+    )
+</pre><h3>Description</h3>
+<pre>    deallocates signal structure memory and set handle to 0.
+
+    NOTE for VxWorks:
+    The function fails if the removing taskID is not
+    equal the installing taskID.
+
+</pre><h3>Input</h3>
+<pre>    osHdl   pointer to os specific struct for complicated os
+    sigHandleP                                           IN OUT
+
+</pre><h3>Output</h3>
+<pre>    0 | error code
+
+</pre>
+<a name="OSS_SigInfo"><h2>Function OSS_SigInfo()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_SigInfo
+    (
+        OSS_HANDLE     *osHdl,
+        OSS_SIG_HANDLE *sigHdl,
+        int32          *signalNbrP,
+        int32          *processIdP
+    )
+</pre><h3>Description</h3>
+<pre>    Gets the installed signal number and process id.
+    If sigHdl is not valid &#60;*signalNbrP&#62; is set to zero.
+    If processID is not supported &#60;*processIdP&#62; is set to zero.
+
+</pre><h3>Input</h3>
+<pre>    osHdl   os handle
+    sigHdl  signal handle
+
+</pre><h3>Output</h3>
+<pre>    signalNbrP 0 | signal number
+    processIdP 0 | process id
+    return     0
+
+</pre><a name="intro7"><h1>Semaphore routines </h1></a>
+<pre></pre>
+<a name="OSS_SemCreate"><h2>Function OSS_SemCreate()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_SemCreate
+    (
+        OSS_HANDLE *osHdl,
+        int32          semType,
+        int32          initVal,
+        OSS_SEM_HANDLE **semHandleP
+    )
+</pre><h3>Description</h3>
+<pre>    creates a binary or counting semaphore and allocates
+    memory for the OSS_SEM_HANDLE structure.
+
+    NOTE for VxWorks:
+    The queuing style for the blocked task is priority.
+
+</pre><h3>Input</h3>
+<pre>    osHdl    pointer to os specific struct for complicated os
+    semType  OSS_SEM_BIN | OSS_SEM_COUNT
+    initVal  0 - empty   | &#62;= 1 full
+    semHandleP pointer to semaphore handle pointer        IN OUT
+
+</pre><h3>Output</h3>
+<pre>    0 | error code
+
+</pre>
+<a name="OSS_SemRemove"><h2>Function OSS_SemRemove()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_SemRemove
+    (
+        OSS_HANDLE *osHdl,
+        OSS_SEM_HANDLE** semHandleP
+    )
+</pre><h3>Description</h3>
+<pre>    deletes the semaphore and frees the allocated memory
+    and set the handle to 0.
+
+</pre><h3>Input</h3>
+<pre>    osHdl   pointer to os specific struct for complicated os
+    semHandleP pointer to semaphore handle pointer        IN OUT
+
+</pre><h3>Output</h3>
+<pre>    0 | error code
+
+</pre>
+<a name="OSS_SemWait"><h2>Function OSS_SemWait()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_SemWait
+    (
+        OSS_HANDLE      *osHdl,
+        OSS_SEM_HANDLE  *semHandle,
+        int32           msec
+    )
+</pre><h3>Description</h3>
+<pre>    Takes the semaphore or waits with timeout.
+
+    NOTE:
+    Timeout will be rounded up to the system tick.
+
+    NOTE for VxWorks:
+    A counting semaphore is count down if value is not 0.
+
+</pre><h3>Input</h3>
+<pre>    osHdl   pointer to os specific struct for complicated os
+    semHandle
+    msec      OSS_SEM_NOWAIT
+            | OSS_SEM_WAITFOREVER
+            | &#62; 0 milli sec for wait
+
+</pre><h3>Output</h3>
+<pre>    return  0 | ERR_OSS_SIG_OCCURED | ERR_OSS_TIMEOUT
+
+</pre>
+<a name="OSS_SemSignal"><h2>Function OSS_SemSignal()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_SemSignal
+    (
+        OSS_HANDLE *osHdl,
+        OSS_SEM_HANDLE* semHandle
+    )
+</pre><h3>Description</h3>
+<pre>    Signals ( releases) specified semaphore.
+
+    NOTE: Can be called by ISR.
+
+    NOTE for VxWorks:
+    A countig semaphore is count up.
+
+</pre><h3>Input</h3>
+<pre>    osHdl   pointer to os specific struct for complicated os
+    OSS_SEM_HANDLE* semHandle
+
+</pre><h3>Output</h3>
+<pre>    0 | error code
+
+</pre><a name="intro8"><h1>Address translation routines </h1></a>
+<pre></pre>
+<a name="OSS_BusToPhysAddr"><h2>Function OSS_BusToPhysAddr()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_BusToPhysAddr
+    (
+        OSS_HANDLE *osHdl,
+        int32       busType,
+        void       **physicalAddrP,
+        ...
+    )
+</pre><h3>Description</h3>
+<pre>    Find out the local physical address of a bus device with
+    the help of a OS- and CPU-Board specific routine.
+
+    if busType == OSS_BUSTYPE_NONE
+    arg3      void  *localAddr
+
+    if busType == OSS_BUSTYPE_VME
+    arg3   void    *vmeBusAddr
+    arg4   u_int32 vmeSpace          VMEbus space (Axx/Dxx)
+              D00..D07 = VMEbus addr range (OSS_VME_A16/24/32)
+              D08..D15 = VMEbus data width (OSS_VME_D16/24/32)
+              D08..D15 always ignored -&#62; see sysBusToLocal()
+    arg5   u_int32 size
+
+    if busType == OSS_BUSTYPE_PCI
+    arg3   int32  busNbr       0..255
+    arg4   int32  pciDevNbr    0..31
+    arg5   int32  pciFunction  0..7
+    arg6   int32  addrNbr      0..5
+
+    if busType == OSS_BUSTYPE_ISA
+      not supported
+
+</pre><h3>Input</h3>
+<pre>    osHdl   pointer to os specific struct for complicated os
+    busType           OSS_BUSTYPE_NONE |  OSS_BUSTYPE_VME
+                      OSS_BUSTYPE_PCI |  OSS_BUSTYPE_ISA
+    ...               arg3..argN
+
+</pre><h3>Output</h3>
+<pre>    physicalAddrP     physical memory address
+    return            0 | error code
+
+</pre>
+<a name="OSS_PciAddrTranslationInit"><h2>Function OSS_PciAddrTranslationInit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void OSS_PciAddrTranslationInit( u_int32 pciIoBase, u_int32 pciMemBase )
+</pre><h3>Description</h3>
+<pre>    Initializes the offsets to the PCI IO and MEMORY space.
+</pre><h3>Input</h3>
+<pre>    pciIoBase  e.g. 0x80000000 for MPC106 Addr Map A | 0x00 for IBM PC
+    pciMemBase e.g. 0xC0000000 for MPC106 Addr Map A | 0x00 for IBM PC
+</pre><h3>Output</h3>
+<pre>    -
+</pre><h3>Globals</h3>
+<pre>    OSS_PciAddrTranslationIsInit
+</pre>
+<a name="OSS_PciGetConfig"><h2>Function OSS_PciGetConfig()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_PciGetConfig
+    (
+        OSS_HANDLE *osHdl,
+        int32       busNbr,
+        int32       pciDevNbr,
+        int32       pciFunction,
+        int32       which,
+        int32       *valueP
+    )
+</pre><h3>Description</h3>
+<pre>    Gets PCI configuration registers.
+
+    NOTE: Specification 2.1 compliant.
+
+</pre><h3>Input</h3>
+<pre>    osHdl        pointer to os specific struct for complicated os
+    busNbr       pci bus nbr  0..255
+    pciDevNbr    device nbr   0..31
+    pciFunction  function nbr 0..7
+    which        0x000000xx  xx=OSS_PCI_VENDOR..OSS_PCI_INT_LINE
+                 0x010000xx  xx=reg idx, byte access
+                 0x020000xx  xx=reg idx, word access
+                 0x040000xx  xx=reg idx, long access
+
+</pre><h3>Output</h3>
+<pre>    valueP       output value
+    return       0 | error code
+
+</pre>
+<a name="OSS_PciSetConfig"><h2>Function OSS_PciSetConfig()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_PciSetConfig
+    (
+        OSS_HANDLE *osHdl,
+        int32       busNbr,
+        int32       pciDevNbr,
+        int32       pciFunction,
+        int32       which,
+        int32       value
+    )
+</pre><h3>Description</h3>
+<pre>    Sets PCI configuration registers.
+
+    NOTE: Specification 2.1 compliant.
+
+</pre><h3>Input</h3>
+<pre>    osHdl        pointer to os specific struct for complicated os
+    busNbr       pci bus nbr  0..255
+    pciDevNbr    device nbr   0..31
+    pciFunction  function nbr 0..7
+    which        0x000000xx  xx=OSS_PCI_VENDOR..OSS_PCI_INT_LINE
+                 0x010000xx  xx=reg idx, byte access
+                 0x020000xx  xx=reg idx, word access
+                 0x040000xx  xx=reg idx, long access
+
+    value        value to write
+</pre><h3>Output</h3>
+<pre>    return       0 | error code
+
+</pre>
+<a name="OSS_PciSlotToPciDevice"><h2>Function OSS_PciSlotToPciDevice()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_PciSlotToPciDevice
+    (
+        OSS_HANDLE *osHdl,
+        int32      busNbr,
+        int32      mechSlot,
+        int32      *pciDevNbrP
+    )
+</pre><h3>Description</h3>
+<pre>    Converts the mechanical slot number to pci device nbr.
+
+    NOTE:
+    ( PCI device nbr. =&#62; IDSEL ) with the help of a table.
+    The table values are depend on the PCI to PCI brigde.
+
+</pre><h3>Input</h3>
+<pre>    osHdl        os specific data for complicated os
+    busNbr       pci bus nbr 0..255
+    mechSlot     mech slot 1..8
+
+</pre><h3>Output</h3>
+<pre>    pciDevNbrP   1..31
+    return       0 | code
+
+</pre>
+<a name="PciGetReg"><h2>Function PciGetReg()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    static int32 PciGetReg( 
+        OSS_HANDLE *oss, 
+        u_int32 which, 
+        int16 *idxP, 
+        int16 *accessP )
+</pre><h3>Description</h3>
+<pre>    Convert &#60;which&#62; parameter of OSS_PciGet/SetConfig 
+
+    Convert to register index and access size
+</pre><h3>Input</h3>
+<pre>    oss            OSS handle
+    which          parameter as passed to OSS_PciGet/SetConfig 
+</pre><h3>Output</h3>
+<pre>    return         success (0) or error code
+    *idxP          register index
+    *accessP       access size (1,2,4)
+</pre><a name="intro9"><h1>shared memory interface </h1></a>
+<pre>
+Required:
+Switches: 
+
+</pre>
+<a name="OSS_SharedMemCreate"><h2>Function OSS_SharedMemCreate()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_SharedMemCreate(
+        OSS_HANDLE       *oss,
+        OSS_SHMEM_HANDLE **smHdlP
+    )
+</pre><h3>Description</h3>
+<pre>    Create shared memory handle
+
+    The function creates the global shared memory handle for
+    all subsequent OSS_SharedMemXXX() calls.
+
+    Allocates memory and initializes the handle.
+
+</pre><h3>Input</h3>
+<pre>    oss          oss handle
+</pre><h3>Output</h3>
+<pre>    smHdlP       pointer to shared memory handle
+    return       success (0) or error code
+</pre>
+<a name="OSS_SharedMemRemove"><h2>Function OSS_SharedMemRemove()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_SharedMemRemove(
+        OSS_HANDLE       *oss,
+        OSS_SHMEM_HANDLE **smHdlP
+    )
+</pre><h3>Description</h3>
+<pre>    Remove shared memory handle
+
+    The function removes implicitly all installed shared 
+    memory areas and cleanup and deallocates the handle.
+
+</pre><h3>Input</h3>
+<pre>    oss        oss handle
+    smHdlP     pointer to shared memory handle
+</pre><h3>Output</h3>
+<pre>    return     success (0) or error code
+    *smHdlP    NULL
+</pre>
+<a name="OSS_SharedMemCheckNr"><h2>Function OSS_SharedMemCheckNr()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_SharedMemCheckNr(
+        OSS_HANDLE       *oss,
+        OSS_SHMEM_HANDLE *smHdl,
+        OSS_SHMEM_SET    *smSet,
+        u_int32          minNr,
+        u_int32          maxNr,
+        u_int32          *smNr
+    )
+</pre><h3>Description</h3>
+<pre>    Check shared memory area index
+
+    The function checks if the shared memory area index "smNr"
+    in the given "smSet" structure is in the specified range.
+
+    Following data structure is passed via 'smSet':
+
+    typedef struct {              
+        u_int32    smNr;       IN:  index (0..n)
+        u_int32    size;       (ignored)
+        void       *drvAddr;   (ignored)
+    } OSS_SHMEM_SET;
+
+    The actual index (as defined in 'smSet') is returned.
+
+    This function should be used for error checking and error
+    handling in application triggered shared memory calls.
+
+    If the index is not in range, the function returns with 
+    ERR_OSS_ILL_PARAM. 
+
+</pre><h3>Input</h3>
+<pre>    oss      oss handle
+    smHdl    shared memory handle
+    smSet    data structure
+    minNr    minimum index
+    maxNr    maximum index
+</pre><h3>Output</h3>
+<pre>    smNr     actual index
+    return   success (0) or error code
+</pre>
+<a name="OSS_SharedMemCheckSize"><h2>Function OSS_SharedMemCheckSize()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_SharedMemCheckSize(
+        OSS_HANDLE       *oss,
+        OSS_SHMEM_HANDLE *smHdl,
+        OSS_SHMEM_SET    *smSet,
+        u_int32          minSize,
+        u_int32          maxSize,
+        u_int32          *smSize
+    )
+</pre><h3>Description</h3>
+<pre>    Check shared memory area size
+
+    The function checks if the shared memory area size "size"
+    in the given "smSet" structure is in the specified range.
+
+    Following data structure is passed via 'smSet':
+
+    typedef struct {              
+        u_int32    smNr;       (ignored)
+        u_int32    size;       IN:  shared memory size [bytes]
+        void       *drvAddr;   (ignored)
+    } OSS_SHMEM_SET;
+
+    The actual size (as defined in 'smSet') is returned.
+
+    This function should be used for error checking and error
+    handling in application triggered shared memory calls.
+
+    If the size is not in range, the function returns with 
+    ERR_OSS_ILL_PARAM. 
+
+</pre><h3>Input</h3>
+<pre>    oss      oss handle
+    smHdl    shared memory handle
+    smSet    data structure
+    minSize  minimum size
+    maxSize  maximum size
+</pre><h3>Output</h3>
+<pre>    smSize   actual size
+    return   success (0) or error code
+</pre>
+<a name="OSS_SharedMemSet"><h2>Function OSS_SharedMemSet()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_SharedMemSet(
+        OSS_HANDLE       *oss,
+        OSS_SHMEM_HANDLE *smHdl,
+        OSS_SHMEM_SET    *smSet
+    )
+</pre><h3>Description</h3>
+<pre>    Create a shared memory area
+
+    For application triggered shared memory calls, this
+    function has to be called on M_MK_BLK_SHMEM_SET setstat.
+
+    Following data structure is passed via 'smSet':
+
+    typedef struct {              
+        u_int32    smNr;       IN:  index (0..n)
+        u_int32    size;       IN:  shared memory size [bytes]
+        void       *drvAddr;   OUT: shared memory addr (driver)
+    } OSS_SHMEM_SET;
+
+    The function creates the shared memory area "smNr" with
+    specified size "size" and links to it. The area is initially
+    cleared with zero.
+
+    After successful creation of the area, the drivers memory
+    access address is returned via "drvAddr" parameter of the
+    structure.
+
+    The 
+
+    If the shared memory area already exists, the function
+    returns with ERR_OSS_SHMEM_SET. 
+
+</pre><h3>Input</h3>
+<pre>    oss       oss handle
+    smHdl     shared memory handle
+    smSet     installation data structure
+</pre><h3>Output</h3>
+<pre>    return    success (0) or error code
+</pre>
+<a name="OSS_SharedMemLink"><h2>Function OSS_SharedMemLink()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_SharedMemLink(
+        OSS_HANDLE       *oss,
+        OSS_SHMEM_HANDLE *smHdl,
+        OSS_SHMEM_SET    *smLink
+    )
+</pre><h3>Description</h3>
+<pre>    Link to an exisiting shared memory area
+
+    Has to be called on M_MK_BLK_SHMEM_LINK setstat calls.
+
+    Following data structure is passed via 'smLink':
+
+    typedef struct {              
+        u_int32    smNr;       IN:  index (0..n)
+        u_int32    size;       OUT: shared memory size [bytes]
+        void       *drvAddr;   OUT: shared memory addr (driver)
+    } OSS_SHMEM_LINK;
+
+    The function links to the shared memory area "smNr".
+
+    After successful linking of the area, the drivers memory
+    access address is returned via "drvAddr" parameter of the
+    structure and the shared memory size via "size".
+
+    If the shared memory area does not exist, the function
+    returns with ERR_OSS_SHMEM_LINK. 
+
+</pre><h3>Input</h3>
+<pre>    oss       oss handle
+    smHdl     shared memory handle
+    smLink    installation data structure
+</pre><h3>Output</h3>
+<pre>    smNr      actual index
+    smLinkCnt actual link counter
+    return    success (0) or error code
+</pre>
+<a name="OSS_SharedMemClear"><h2>Function OSS_SharedMemClear()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_SharedMemClear(
+        OSS_HANDLE       *oss,
+        OSS_SHMEM_HANDLE *smHdl,
+        OSS_SHMEM_CLEAR  *smClear
+    )
+</pre><h3>Description</h3>
+<pre>    Unlink/Deinstall a shared memory area
+
+    Has to be called on M_MK_SHMEM_CLEAR setstat calls.
+
+    Following data structure is passed via 'smClear':
+
+    typedef struct {
+        u_int32    smNr;     IN:  index (0..n)
+        u_int32    linkCnt;  OUT: link counter
+    } OSS_SHMEM_CLEAR;
+
+    The function unlinks from the shared memory area "smNr".
+
+    If the shared memory area has no more links, it is 
+    deinstalled and the used memory is deallocated.  
+
+    After successful unlinking, the actual link counter is
+    returned via "linkCnt" parameter of the structure.
+
+    If the returned link counter has reached zero,
+    no further access to the shared memory area is allowed !
+
+    If the shared memory area does not exist, the function
+    returns with ERR_OSS_SHMEM_CLR. 
+
+</pre><h3>Input</h3>
+<pre>    oss       oss handle
+    smHdl     shared memory handle
+    smClear   de-installation data structure
+</pre><h3>Output</h3>
+<pre>    smNr      actual index
+    smLinkCnt actual link counter
+    return    success (0) or error code
+</pre>
+<a name="AddSharedMem"><h2>Function AddSharedMem()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    static int32 AddSharedMem(
+        OSS_HANDLE       *oss,
+        OSS_SHMEM_HANDLE *smHdl,
+        u_int32          smNr,
+        u_int32          size,
+        void             *drvAddr
+    )
+</pre><h3>Description</h3>
+<pre>    Add shared memory entry to linked list
+
+</pre><h3>Input</h3>
+<pre>    oss        oss handle
+    smHdl      shared memory handle
+    smNr       shared memory index
+    size       shared memory size
+    drvAddr    shared memory addr (driver)
+</pre><h3>Output</h3>
+<pre>    return     success (0) or error code
+</pre>
+<a name="FindSharedMem"><h2>Function FindSharedMem()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    static OSS_SHMEM_TBL *FindSharedMem(
+        OSS_HANDLE       *oss,
+        OSS_SHMEM_HANDLE *smHdl,
+        u_int32          smNr
+    )
+</pre><h3>Description</h3>
+<pre>    Find shared memory entry in linked list
+
+</pre><h3>Input</h3>
+<pre>    oss        oss handle
+    smHdl      shared memory handle
+    smNr       shared memory index
+</pre><h3>Output</h3>
+<pre>    return     ptr to shared memory entry or NULL if not found
+</pre>
+<a name="RemoveSharedMem"><h2>Function RemoveSharedMem()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    static int32 RemoveSharedMem(
+        OSS_HANDLE       *oss,
+        OSS_SHMEM_HANDLE *smHdl,
+        u_int32          smNr
+    )
+</pre><h3>Description</h3>
+<pre>    Remove shared memory entry from linked list
+
+</pre><h3>Input</h3>
+<pre>    oss        oss handle
+    smHdl      shared memory handle
+    smNr       shared memory index
+</pre><h3>Output</h3>
+<pre>    return     success (0) or error (1)
+</pre><a name="intro10"><h1>callback interface </h1></a>
+<pre>
+Required:
+Switches: 
+
+</pre>
+<a name="OSS_CallbackCreate"><h2>Function OSS_CallbackCreate()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_CallbackCreate(
+        OSS_HANDLE           *oss,
+        u_int32              maxQueue,
+        OSS_CALLBACK_HANDLE  **cbHdlP
+    )
+</pre><h3>Description</h3>
+<pre>    Create callback handle
+
+    This function creates a callback handle for subsequent
+    OSS_CallbackXXX() calls.
+
+    maxQueue defines the maximum nr of queued callbacks
+
+    Allocates memory for the handle, and fills the handle.
+
+</pre><h3>Input</h3>
+<pre>    oss          oss handle
+    maxQueue     max queued callbacks
+</pre><h3>Output</h3>
+<pre>    cbHdlP       pointer to callback handle
+    return       success (0) or error code
+                 ERR_OSS_MEM_ALLOC
+</pre>
+<a name="OSS_CallbackRemove"><h2>Function OSS_CallbackRemove()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_CallbackRemove(
+        OSS_HANDLE          *oss,
+        OSS_CALLBACK_HANDLE **cbHdlP
+    )
+</pre><h3>Description</h3>
+<pre>    Remove callback handle
+
+    Removes all installed callbacks and deallocates the handle.
+
+</pre><h3>Input</h3>
+<pre>    oss        oss handle
+    cbHdlP     pointer to callback handle
+</pre><h3>Output</h3>
+<pre>    return     success (0) or error code
+               ERR_OSS_ILL_HANDLE
+</pre>
+<a name="OSS_CallbackExec"><h2>Function OSS_CallbackExec()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_CallbackExec(
+        OSS_HANDLE          *oss,
+        OSS_CALLBACK_HANDLE *cbHdl,
+        u_int32             callNr,
+        void                *drvArg
+    )
+</pre><h3>Description</h3>
+<pre>    Execute callback routine (with app/drv arguments)
+
+    Callback routine with index 'callNr' is triggered/executed:
+
+       void funct(void *appArg, void *drvArg)
+
+    where 'appArg' is the value defined with OSS_CallbackSet()
+    and 'drvArg' the value passed to this function.
+
+    Systems with direct callbacks:
+    =&#62; function with specified index is called
+
+    Systems with indirect callbacks:
+    =&#62; function pointer and argument are put into
+       the calling process callback-queue
+    =&#62; trigger signal is send to application
+
+</pre><h3>Input</h3>
+<pre>    oss        oss handle
+    cbHdl      callback handle
+    callNr     callback function index (0..n)
+    drvArg     callback function argument
+</pre><h3>Output</h3>
+<pre>    return     success (0) or error code
+               ERR_OSS_ILL_HANDLE
+               ERR_OSS_ILL_PARAM      - call number not existant
+               ERR_OSS_CALLBACK_OVER  - queue full
+               ERR_OSS_SIG_SEND       - can't send signal
+</pre>
+<a name="OSS_CallbackExec2"><h2>Function OSS_CallbackExec2()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_CallbackExec2(
+        OSS_HANDLE          *oss,
+        OSS_CALLBACK_HANDLE *cbHdl,
+        u_int32             callNr,
+        void                *appArg,
+        void                *drvArg
+    )
+</pre><h3>Description</h3>
+<pre>    Execute callback routine (with drv/drv arguments)
+
+    Callback routine with index 'callNr' is triggered/executed:
+
+       void funct(void *appArg, void *drvArg)
+
+    where 'appArg' and 'drvArg' are the values passed to this
+    function.
+
+    Systems with direct callbacks:
+    =&#62; function with specified index is called
+
+    Systems with indirect callbacks:
+    =&#62; function pointer and argument are put into
+       the calling process callback-queue
+    =&#62; trigger signal is send to application
+
+</pre><h3>Input</h3>
+<pre>    oss        oss handle
+    cbHdl      callback handle
+    callNr     callback function index (0..n)
+    appArg     callback function argument
+    drvArg     callback function argument
+</pre><h3>Output</h3>
+<pre>    return     success (0) or error code
+               ERR_OSS_ILL_HANDLE
+               ERR_OSS_ILL_PARAM      - call number not existant
+               ERR_OSS_CALLBACK_OVER  - queue full
+               ERR_OSS_SIG_SEND       - can't send signal
+</pre>
+<a name="OSS_CallbackSetStat"><h2>Function OSS_CallbackSetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_CallbackSetStat(
+        OSS_HANDLE          *oss,
+        OSS_CALLBACK_HANDLE *cbHdl,
+        OSS_CALLBACK_SETSTAT *arg)
+</pre><h3>Description</h3>
+<pre>    Generic SetStat call for callback control
+
+    Has to be called on M_MK_BLK_CALLBACK setstat calls.
+
+    OSS_CB_INSTALL:
+     Function 'funct' is installed as callback routine with
+     index 'callNr'. Argument 'appArg' will be passed to 'func'
+     as first argument:
+
+        void funct(void *appArg, void *drvArg)
+
+     Subsequent calls of OSS_CallbackExec() refer to this index.
+     Returns an error if routine already installed.
+
+    OSS_CB_DEINSTALL:
+     Callback routine with index 'callNr' is removed.
+     Returns an error if routine not installed.
+</pre><h3>Input</h3>
+<pre>    oss        oss handle
+    cbHdl      callback handle
+    arg        ptr to SetStat args
+</pre><h3>Output</h3>
+<pre>    return     success (0) or error code
+       ERR_OSS_ILL_HANDLE
+
+       OSS_CB_INIT_PROCESS:
+           ERR_OSS_MEM_ALLOC
+       OSS_CB_EXIT_PROCESS:
+           ERR_OSS                 - process not installed
+       OSS_CB_INSTALL:
+           ERR_OSS_MEM_ALLOC   
+           ERR_OSS_CALLBACK_SET    - callNr exists already
+           ERR_OSS                 - process not installed
+       OSS_CB_DEINSTALL:
+           ERR_OSS_CALLBACK_CLR    - callNr not installed
+
+</pre>
+<a name="OSS_CallbackGetStat"><h2>Function OSS_CallbackGetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_CallbackGetStat(
+        OSS_HANDLE          *oss,
+        OSS_CALLBACK_HANDLE *cbHdl,
+        OSS_CALLBACK_GETSTAT *arg)
+</pre><h3>Description</h3>
+<pre>    Generic GetStat call for callback control
+
+    Has to be called on M_MK_BLK_CALLBACK getstat calls.
+</pre><h3>Input</h3>
+<pre>    oss        oss handle
+    cbHdl      callback handle
+    arg        ptr to GetStat args
+</pre><h3>Output</h3>
+<pre>    return     success (0) or error code
+               ERR_OSS_ILL_HANDLE  - illegal handle
+               ERR_OSS             - process not installed
+               ERR_OSS_CALLBACK_EMPTY - no entries in queue
+</pre>
+<a name="OSS_CallbackSet"><h2>Function OSS_CallbackSet()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_CallbackSet(
+        OSS_HANDLE          *oss,
+        OSS_CALLBACK_HANDLE *cbHdl,
+        OSS_CALLBACK_SET    *cbSet)
+</pre><h3>Description</h3>
+<pre>    Install Callback function from driver
+
+    This function is only used when bypassing the callback
+    getstat/setstat interface (e.g. CanOpen)
+
+    Function 'funct' is installed as callback routine with
+    index 'callNr'. Argument 'appArg' will be passed to 'func'
+    as first argument:
+
+       void funct(void *appArg, void *drvArg)
+
+    Subsequent calls of OSS_CallbackExec() refer to this index.
+    Returns an error if routine already installed.
+
+</pre><h3>Input</h3>
+<pre>    oss        oss handle
+    cbHdl      callback handle
+    cbSet      callback set arguments 
+</pre><h3>Output</h3>
+<pre>    return     success (0) or error code
+</pre>
+<a name="OSS_CallbackClear"><h2>Function OSS_CallbackClear()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_CallbackClear(
+        OSS_HANDLE          *oss,
+        OSS_CALLBACK_HANDLE *cbHdl,
+        u_int32             callNr)
+</pre><h3>Description</h3>
+<pre>    Remove callback function from driver
+
+    This function is only used when bypassing the callback
+    getstat/setstat interface (e.g. CanOpen)
+
+</pre><h3>Input</h3>
+<pre>    oss        oss handle
+    cbHdl      callback handle
+    callNr     callnumber to be removed
+</pre><h3>Output</h3>
+<pre>    return     success (0) or error code
+</pre><a name="intro11"><h1>ISA PNP support </h1></a>
+<pre></pre>
+<a name="OSS_IsaGetConfig"><h2>Function OSS_IsaGetConfig()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 OSS_IsaGetConfig
+    (
+            OSS_HANDLE  *osHdl,
+            int8        *cardVendId,
+            int16       cardProdId,
+            int8        *devVendId,
+            int16       devProdId,
+            int32       devNbr,
+            int32       resType,
+            int32       resNbr,
+            u_int32     *valueP
+    )
+</pre><h3>Description</h3>
+<pre>    Gets ISAPNP configuration data.
+
+    Note:  Do nothing, for linking only.
+</pre><h3>Input</h3>
+<pre>    osHdl         os handle
+    cardVendId    card vendor id (3 character)                 
+    cardProdId    card product number (4 hex digit)            
+    devVendId     device vendor id (3 character)                 
+    devProdId     device product number (4 hex digit)            
+    devNbr        device number (decimal 0..9)
+    resType       resource type (OSS_ISA_...)
+    resNbr        resource number (decimal 0..9)
+
+</pre><h3>Output</h3>
+<pre>    valueP        output value 
+    return        error code
+
+</pre></body>
+</html>

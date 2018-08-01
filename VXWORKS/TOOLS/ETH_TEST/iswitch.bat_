@@ -1,0 +1,8 @@
+make clean
+make vxWorks.st > log.txt
+copy ..\all_ep02\usrConfig.c usrConfig_st.c
+copy iswitch_matrix.o D:\HOME
+copy iswitch_id.o D:\HOME
+copy iswitch_tests.o D:\HOME
+rem copy vxWorks.st D:\work\work_iSwitchSerTest\VXWORKS\Tornado_2\target\config\men_ep02
+rem pause

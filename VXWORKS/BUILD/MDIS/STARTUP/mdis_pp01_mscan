@@ -1,0 +1,63 @@
+ld < C:/work/VXWORKS/LIB/MEN/objPPC603gnutest/mdis_MEN_PP01_MSCAN.o
+
+version
+sysIdent
+repeater_test "-?"
+
+
+WD_CallbackTestInit
+
+#prepare PSC2 ports for CAN
+sysPrepareMpc5200Mscan
+
+# MDIS IRQ Parameter - BSP Specific
+OSS_SetIrqNum0( 0x00 )
+# intEnable routine - BSP Specific
+MK_SetIntEnableRtn( intEnable )
+# PCI address map  - CPU Board Specific
+OSS_PciAddrTranslationInit( 0xfe000000, 0x00000000 )
+
+OS2M_DrvInstall
+OS2M_DevCreate( "/mscan/0", &CANODIN_1, &ISA_1 )
+OS2M_DevCreate( "/mscan/1", &CANODIN_2, &ISA_2 )
+
+OS2M_Show
+
+# mscan_loopb "/mscan/0"
+# mscan_loopb "/mscan/1"
+# mscan_qstest "-b=0 -n=5 /mscan/0 /mscan/1"
+# mscan_menu "/mscan/0" 
+
+# PP01 LEFT TID=2 transmit RIGHT TID=1 <--> KM01 BACK TID=3 1MBit/s
+# PP01 LEFT   sp repeater_test, "-b=0 -n=30000 -t=2 -r=4 -u=0 -l /mscan/1"
+# PP01 RIGHT  repeater_test "-b=0 -n=30000 -t=1 -r=3 -u=0 -l /mscan/0"
+# KM01 BACK   repeater_test "-b=0 -n=30000 -t=3 -r=1 -u=0 -l /mscan/0"
+
+# PP01 LEFT TID=2 transmit RIGHT TID=1 <--> KM01 BACK TID=3 100kBit/s
+# PP01 LEFT   sp repeater_test, "-b=5 -n=30000 -t=2 -r=4 -u=0 -l /mscan/1"
+# PP01 RIGHT  repeater_test "-b=5 -n=30000 -t=1 -r=3 -u=0 -l /mscan/0"
+# KM01 BACK   repeater_test "-b=5 -n=30000 -t=3 -r=1 -u=0 -l /mscan/0"
+
+# 1MB/s .. 100kBit/s
+# KM01 BACK   repeater_test "-b=100 -n=300 -t=3 -r=1 -u=0 -l /mscan/0"
+# PP01 RIGHT  repeater_test "-b=100 -n=300 -t=1 -r=3 -u=0 -l /mscan/0"
+# PP01 LEFT   repeater_test "-b=100 -n=300 -t=4 -r=2 -u=0 -l /mscan/1"
+# KM01 B      repeater_test "-b=100 -n=300 -t=3 -r=1 -u=0 -l /mscan/1"
+
+# 1MB/s KM01-B PP01 Left
+# PP01 LEFT   repeater_test "-b=0 -n=3000 -t=1 -r=3 -u=0 -l /mscan/1"
+# KM01 B      repeater_test "-b=0 -n=3000 -t=3 -r=1 -u=0 -l /mscan/1"
+
+# 1MB/s .. 100kBit/s ID 2 KM01 BACKPLAN <----> PP01 LEFT ID 1
+# KM01 BACK   repeater_test "-b=100 -n=300 -t=1 -r=2 -u=0 -l /mscan/0"
+# PP01 LEFT   repeater_test "-b=100 -n=300 -t=2 -r=1 -u=0 -l /mscan/1"
+
+# 1MB/s .. 100kBit/s ID 1 KM01 BACKPLAN <----> PP01 LEFT ID 3
+# KM01 BACK   repeater_test "-b=100 -n=300 -t=3 -r=1 -u=0 -l /mscan/0"
+# PP01 LEFT   repeater_test "-b=100 -n=300 -t=1 -r=3 -u=0 -l /mscan/1"
+
+# KM01 BACK   repeater_test "-b=5 -n=300 -t=2 -r=1 -u=0 -l /mscan/0"
+# PP01 LEFT   repeater_test "-b=5 -n=300 -t=1 -r=2 -u=0 -l /mscan/1"
+
+sysCanBGet
+sysCanTermGet

@@ -1,0 +1,93 @@
+Function Description
+====================
+Thu Mar 16 10:20:24 MET 2000
+ 
+Overview of all Functions
+-------------------------
+
+BK_GetBBHandle         - Looks for <boardNameInstanz> in the baseboard list. 
+BK_UnGetBBHandle       - Decrements the link count of the current base board. 
+BK_Show                - Displays baseboard system and driver name and the link count. 
+ 
+
+Function BK_GetBBHandle()
+-------------------------
+
+Syntax:
+    int32 BK_GetBBHandle
+    (
+        DESC_SPEC                  *bbDescSpec,
+        char                       *boardNameInstanz,
+        BK_BASE_BOARD_LIST_ELEMENT **bbDataHdlP
+    )
+
+Description:
+    Looks for <boardNameInstanz> in the baseboard list.
+    Creates a new element and initialises the base board 
+    if not in list.
+    Increments the link count.
+    Initializes the BK module if BK_SemId == NULL.
+
+Input:
+    bbDescSpec       BBIS descriptor specifier
+    boardNameInstanz board name e.g. "D201_1"
+    bbDataHdlP       pointer to variable where pointer to
+                     list element is stored
+
+Output:
+    *bbDataHdlP      pointer to list element
+    return           0 or error code
+
+Globals:
+    BK_BaseBoardListAnchor
+
+
+Function BK_UnGetBBHandle()
+---------------------------
+
+Syntax:
+    int32 BK_UnGetBBHandle
+    (
+        BK_BASE_BOARD_LIST_ELEMENT **bbDataHdlP
+    )
+
+Description:
+    Decrements the link count of the current base board.
+    Removes the list element if last link is deleted (link count==0)
+    and deinitialises the base board.
+
+    Note: *bbDataHdlP is always set to zero
+
+Input:
+    bbDataHdlP       pointer to variable where pointer to
+                     list element is stored
+
+Output:
+    *bbDataHdlP      NULL
+    return           0 or error code
+
+Globals:
+    BK_BaseBoardListAnchor
+
+
+Function BK_Show()
+------------------
+
+Syntax:
+    int BK_Show( void )
+
+Description:
+    Displays baseboard system and driver name and the link count.
+
+    Note: Only initialized baseboards are in the baseboard system list.
+          A path must be open on a device to display the baseboard.
+
+Input:
+    -
+
+Output:
+    return  always 0
+
+Globals:
+    BK_BaseBoardListAnchor
+

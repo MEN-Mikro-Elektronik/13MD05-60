@@ -1,0 +1,7 @@
+README for ALL_DRV_X86 project
+------------------------------
+
+This project is not practically used, its a compile test project equipped 
+with as many drivers as possible for buildtests under Intel X86 architecture.
+
+For PowerPC pendant see ALL_DRV_PPC

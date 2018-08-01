@@ -1,0 +1,1035 @@
+<html>
+<head>
+<title>USR_OSS library</title>
+<style type=text/css>
+    Body { background-color: #ffffff; }
+    A:link { color: #c50038; }
+    A:hover { color: #28669b; }
+    P, H1, H2, H3, H3, H5, LI {
+        color: #434343;
+        font-family: Arial, Helvetica, Univers;
+    }
+    P, LI { font-size: 9.000000pt; }
+</style>
+</head>
+<body>
+<h1>USR_OSS library</h1>
+<p>Thu Mar 16 10:20:38 MET 2000</p>
+<h2>Overview of all Chapters</h2>
+<a href="#chapt0">Chapter: USER OSS - This module is the user oss core file.</a><br>
+<a href="#chapt1">Chapter: USER OSS IDENT - This module is used for version identification of UOS.</a><br>
+<a href="#chapt2">Chapter: functions for double linked lists</a><br>
+<a href="#chapt3">Chapter: USER OSS SHARED MEM - Routines to manage shared memory</a><br>
+<a href="#chapt4">Chapter: USER OSS ERRSTR - This module provides a function translateing error codes to human readable error strings.</a><br>
+<a href="#chapt5">Chapter: USER OSS KEY - This module checks for user interaction.</a><br>
+<a href="#chapt6">Chapter: USER OSS SIGNAL - This module provides signal handling routines at application level</a><br>
+<a href="#chapt7">Chapter: USER OSS CALLBACK - Routines to manage callbacks.</a><br>
+<a href="#chapt8">Chapter: USER OSS RANDOM - This module creates random integers.</a><br>
+<a href="#chapt9">Chapter: USER OSS LINEARGS - This module is used for lineargs and main() replacing.</a><br>
+
+<h2>Overview of all Functions</h2>
+<a name="chapt0"><a href="#intro0"><h3>USER OSS - This module is the user oss core file.</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#UOS_ErrnoGet">UOS_ErrnoGet</a></P></TD><TD><P>Get global error code (errno) </P></TD></TR>
+<TR><TD><P><a href="#UOS_MikroDelayInit">UOS_MikroDelayInit</a></P></TD><TD><P>Calibrates the loop counter for UOS_MikroDelay. </P></TD></TR>
+<TR><TD><P><a href="#UOS_MikroDelay">UOS_MikroDelay</a></P></TD><TD><P>Wait with microsecond resolution in a loop. </P></TD></TR>
+<TR><TD><P><a href="#UOS_Delay">UOS_Delay</a></P></TD><TD><P>Lets a task sleep for a specified time. </P></TD></TR>
+<TR><TD><P><a href="#UOS_MsecTimerGet">UOS_MsecTimerGet</a></P></TD><TD><P>Read the current timer value (based on system ticks). </P></TD></TR>
+<TR><TD><P><a href="#UOS_MsecTimerResolution">UOS_MsecTimerResolution</a></P></TD><TD><P>Get the minimum timer resolution. </P></TD></TR>
+</TABLE>
+<a name="chapt1"><a href="#intro1"><h3>
+USER OSS IDENT - This module is used for version identification of UOS.</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#UOS_Ident">UOS_Ident</a></P></TD><TD><P>Return ident string of UOS module. </P></TD></TR>
+</TABLE>
+<a name="chapt2"><a href="#intro2"><h3>
+functions for double linked lists</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#UOS_DL_NewList">UOS_DL_NewList</a></P></TD><TD><P>Initialize list header (empty list) </P></TD></TR>
+<TR><TD><P><a href="#UOS_DL_Remove">UOS_DL_Remove</a></P></TD><TD><P>remove a node from a list </P></TD></TR>
+<TR><TD><P><a href="#UOS_DL_RemHead">UOS_DL_RemHead</a></P></TD><TD><P>remove a node from the head of the list </P></TD></TR>
+<TR><TD><P><a href="#UOS_DL_AddTail">UOS_DL_AddTail</a></P></TD><TD><P>add a node at the tail to the list </P></TD></TR>
+</TABLE>
+<a name="chapt3"><a href="#intro3"><h3>
+USER OSS SHARED MEM - Routines to manage shared memory</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#UOS_SharedMemInit">UOS_SharedMemInit</a></P></TD><TD><P>Create shared memory handle </P></TD></TR>
+<TR><TD><P><a href="#UOS_SharedMemExit">UOS_SharedMemExit</a></P></TD><TD><P>Remove shared memory handle </P></TD></TR>
+<TR><TD><P><a href="#UOS_SharedMemSet">UOS_SharedMemSet</a></P></TD><TD><P>Create shared memory area </P></TD></TR>
+<TR><TD><P><a href="#UOS_SharedMemLink">UOS_SharedMemLink</a></P></TD><TD><P>Link to exisiting shared memory area </P></TD></TR>
+<TR><TD><P><a href="#UOS_SharedMemClear">UOS_SharedMemClear</a></P></TD><TD><P>Unlink/Remove shared memory area </P></TD></TR>
+</TABLE>
+<a name="chapt4"><a href="#intro4"><h3>
+USER OSS ERRSTR - This module provides a function translateing error codes to human readable error strings.</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#UOS_ErrString">UOS_ErrString</a></P></TD><TD><P>Get pointer to a generated error string. </P></TD></TR>
+</TABLE>
+<a name="chapt5"><a href="#intro5"><h3>
+USER OSS KEY - This module checks for user interaction.</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#UOS_KeyStdIoSetOfTaskSet">UOS_KeyStdIoSetOfTaskSet</a></P></TD><TD><P>If called in context of tShell and UOS_KeyStdIoFd==-1, </P></TD></TR>
+<TR><TD><P><a href="#UOS_KeyPressed">UOS_KeyPressed</a></P></TD><TD><P>Check if any key pressed </P></TD></TR>
+<TR><TD><P><a href="#UOS_KeyWait">UOS_KeyWait</a></P></TD><TD><P>Wait until any key pressed </P></TD></TR>
+</TABLE>
+<a name="chapt6"><a href="#intro6"><h3>
+USER OSS SIGNAL - This module provides signal handling routines at application level</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#UOS_SigInit">UOS_SigInit</a></P></TD><TD><P>Init signal handling </P></TD></TR>
+<TR><TD><P><a href="#UOS_SigExit">UOS_SigExit</a></P></TD><TD><P>Exit signal handling </P></TD></TR>
+<TR><TD><P><a href="#UOS_SigInstall">UOS_SigInstall</a></P></TD><TD><P>Install a signal to be received </P></TD></TR>
+<TR><TD><P><a href="#UOS_SigRemove">UOS_SigRemove</a></P></TD><TD><P>Remove an installed signal. </P></TD></TR>
+<TR><TD><P><a href="#UOS_SigMask">UOS_SigMask</a></P></TD><TD><P>Mask all signals </P></TD></TR>
+<TR><TD><P><a href="#UOS_SigUnMask">UOS_SigUnMask</a></P></TD><TD><P>Unmask all signals </P></TD></TR>
+<TR><TD><P><a href="#UOS_SigWait">UOS_SigWait</a></P></TD><TD><P>Wait until signal received or timeout occured. </P></TD></TR>
+<TR><TD><P><a href="#localSigHandler">localSigHandler</a></P></TD><TD><P>Local signal handler. </P></TD></TR>
+</TABLE>
+<a name="chapt7"><a href="#intro7"><h3>
+USER OSS CALLBACK - Routines to manage callbacks.</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#UOS_CallbackInit">UOS_CallbackInit</a></P></TD><TD><P>Create callback handle </P></TD></TR>
+<TR><TD><P><a href="#UOS_CallbackExit">UOS_CallbackExit</a></P></TD><TD><P>Remove callback handle </P></TD></TR>
+<TR><TD><P><a href="#UOS_CallbackSet">UOS_CallbackSet</a></P></TD><TD><P>Install callback function </P></TD></TR>
+<TR><TD><P><a href="#UOS_CallbackClear">UOS_CallbackClear</a></P></TD><TD><P>De-Install callback function </P></TD></TR>
+<TR><TD><P><a href="#UOS_CallbackMask">UOS_CallbackMask</a></P></TD><TD><P>Prevent application from beeing interrupted by callbacks </P></TD></TR>
+<TR><TD><P><a href="#UOS_CallbackUnMask">UOS_CallbackUnMask</a></P></TD><TD><P>Allow callbacks to occurr </P></TD></TR>
+<TR><TD><P><a href="#UOS_CbMsgReceiver">UOS_CbMsgReceiver</a></P></TD><TD><P>Callback message receiver task. </P></TD></TR>
+</TABLE>
+<a name="chapt8"><a href="#intro8"><h3>
+USER OSS RANDOM - This module creates random integers.</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#UOS_Random">UOS_Random</a></P></TD><TD><P>Create a new random integer value </P></TD></TR>
+<TR><TD><P><a href="#UOS_RandomMap">UOS_RandomMap</a></P></TD><TD><P>Map created integer value into specified range </P></TD></TR>
+</TABLE>
+<a name="chapt9"><a href="#intro9"><h3>
+USER OSS LINEARGS - This module is used for lineargs and main() replacing.</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#UOS_OS_LineArgs">UOS_OS_LineArgs</a></P></TD><TD><P>Scans a command string. Used by main() replacing. </P></TD></TR>
+</TABLE>
+ 
+<a name="intro0"><h1>USER OSS - This module is the user oss core file. </h1></a>
+<pre>
+In general the user operating system services module (prefix UOS)
+is used for common MDIS examples, running on different OS like
+WinNT, OS9 and VxWorks.
+
+You will get a better performance if you call the native VxWorks
+functions. Also you will have the restictions of VxWorks only.
+( i.e. signals )
+
+Only for shared memory and callbacks it is strongly recomended to use
+the UOS functions. Because the UOS functions following the
+conventions of the OSS shared memory and callback functions called
+by the low level driver.
+
+This module provides functions for errno getting and delaying.
+
+Required:
+Switches: --
+
+</pre>
+<a name="UOS_ErrnoGet"><h2>Function UOS_ErrnoGet()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    u_int32 UOS_ErrnoGet( void )
+</pre><h3>Description</h3>
+<pre>    Get global error code (errno)
+    The function returns the last occured system error code
+    of the calling process.
+
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    return     error code
+</pre>
+<a name="UOS_MikroDelayInit"><h2>Function UOS_MikroDelayInit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_MikroDelayInit( void )
+</pre><h3>Description</h3>
+<pre>    Calibrates the loop counter for UOS_MikroDelay.
+
+    Error ERR_UOS_NO_MIKRODELAY (Overflow) is returned
+    if the function is not available.
+
+    Note:  this routine do nothing under VxWorks
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    return  success (0) or error code
+</pre>
+<a name="UOS_MikroDelay"><h2>Function UOS_MikroDelay()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_MikroDelay( u_int32 usec )
+</pre><h3>Description</h3>
+<pre>    Wait with microsecond resolution in a loop.
+
+    NOTE: May take longer if code/data are not in cache
+          or other tasks have a higher priority.
+
+</pre><h3>Input</h3>
+<pre>    usec    time to wait (0..UOS_MAX_USEC) [usec]
+</pre><h3>Output</h3>
+<pre>    return  success (0) or error code
+</pre>
+<a name="UOS_Delay"><h2>Function UOS_Delay()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_Delay( u_int32 msec )
+</pre><h3>Description</h3>
+<pre>    Lets a task sleep for a specified time.
+
+    Time will rounded up to the systems minimum ticker
+    resolution. This (rounded) time is returned.
+
+</pre><h3>Input</h3>
+<pre>    msec    time to sleep [msec]
+</pre><h3>Output</h3>
+<pre>    return  rounded time [msec]
+</pre>
+<a name="UOS_MsecTimerGet"><h2>Function UOS_MsecTimerGet()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    u_int32 UOS_MsecTimerGet(void)
+</pre><h3>Description</h3>
+<pre>    Read the current timer value (based on system ticks).
+
+    Time will rounded to the minimum timer resolution. 
+    This (rounded) time is returned.
+
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    return   elapsed time [msec]
+</pre>
+<a name="UOS_MsecTimerResolution"><h2>Function UOS_MsecTimerResolution()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    u_int32 UOS_MsecTimerResolution(void)
+</pre><h3>Description</h3>
+<pre>    Get the minimum timer resolution.
+
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    return   timer resolution [msec]
+</pre><a name="intro1"><h1>USER OSS IDENT - This module is used for version identification of UOS. </h1></a>
+<pre>It is a part of the USR_OSS library.
+
+Required:
+Switches: --
+
+</pre>
+<a name="UOS_Ident"><h2>Function UOS_Ident()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    char* UOS_Ident( void )
+</pre><h3>Description</h3>
+<pre>    Return ident string of UOS module.
+
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    return  pointer to ident string
+</pre><a name="intro2"><h1>functions for double linked lists </h1></a>
+<pre>(functionality cloned from AMIGA ROM kernel)
+Required:  
+Switches: 
+
+</pre>
+<a name="UOS_DL_NewList"><h2>Function UOS_DL_NewList()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    UOS_DL_LIST *UOS_DL_NewList( UOS_DL_LIST *l )
+</pre><h3>Description</h3>
+<pre>    Initialize list header (empty list)
+
+</pre><h3>Input</h3>
+<pre>    l - ptr to list structure 
+</pre><h3>Output</h3>
+<pre>    returns: same as input
+</pre>
+<a name="UOS_DL_Remove"><h2>Function UOS_DL_Remove()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    UOS_DL_NODE *UOS_DL_Remove( UOS_DL_NODE *n )
+</pre><h3>Description</h3>
+<pre>    remove a node from a list
+
+</pre><h3>Input</h3>
+<pre>    nput......:  n - node to remove
+</pre><h3>Output</h3>
+<pre>    returns: same as input
+</pre>
+<a name="UOS_DL_RemHead"><h2>Function UOS_DL_RemHead()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    UOS_DL_NODE *UOS_DL_RemHead( UOS_DL_LIST *l )
+</pre><h3>Description</h3>
+<pre>    remove a node from the head of the list 
+
+</pre><h3>Input</h3>
+<pre>    l - ptr to list header
+</pre><h3>Output</h3>
+<pre>    returns: removed node ( NULL if list was empty )
+</pre>
+<a name="UOS_DL_AddTail"><h2>Function UOS_DL_AddTail()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    UOS_DL_NODE *UOS_DL_AddTail( UOS_DL_LIST *l, UOS_DL_NODE *n )
+</pre><h3>Description</h3>
+<pre>    add a node at the tail to the list
+</pre><h3>Input</h3>
+<pre>    l - ptr to list functions
+    n - node to add
+</pre><h3>Output</h3>
+<pre>    returns: added node
+</pre><a name="intro3"><h1>USER OSS SHARED MEM - Routines to manage shared memory </h1></a>
+<pre>It is a part of the USR_OSS library.
+
+Shared memory areas are used as a fast way to exchange
+data between application and driver.
+
+A shared memory area can be installed from the application or
+from the driver itself.
+
+Several applications may have access to the same shared
+memory area by linking to an already existing area.
+
+Shared memory areas are identified via a number, the 
+so-called "shared memory area index" (smNr).
+
+The INIT function creates a global shared mem handle for all 
+subsequent calls.
+
+Synchronization between application and driver access to
+the shared memory is not handled by this functions.
+
+The number of useable shared memory areas is not limited.
+
+Typical usage:
+
+    Installation:
+      UOS_SharedMemInit()
+      UOS_SharedMemSet/Link()
+    De-Installation:
+      UOS_SharedMemClear()
+      UOS_SharedMemExit()
+
+Corresponding with OSS driver shared memory functions.
+
+Required: -
+Switches: -
+
+</pre>
+<a name="UOS_SharedMemInit"><h2>Function UOS_SharedMemInit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_SharedMemInit(
+        int32 path,
+        UOS_SHMEM_HANDLE **smHdlP
+    )
+</pre><h3>Description</h3>
+<pre>    Create shared memory handle
+
+    This function has to be called before any shared memory
+    area can be created or linked.        
+
+    Possible errors:
+    ERR_UOS_MEM_ALLOC       no free memory to create handle 
+
+</pre><h3>Input</h3>
+<pre>    path        path number
+    smHdlP      pointer to variable where shared memory handle
+                will be stored
+</pre><h3>Output</h3>
+<pre>    *smHdlP     shared memory handle | NULL
+    return      success (0) or error code
+</pre>
+<a name="UOS_SharedMemExit"><h2>Function UOS_SharedMemExit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_SharedMemExit(
+        UOS_SHMEM_HANDLE **smHdlP
+    )
+</pre><h3>Description</h3>
+<pre>    Remove shared memory handle
+
+    The function removes the shared memory handle.
+
+</pre><h3>Input</h3>
+<pre>    smHdlP      pointer to shared memory handle
+</pre><h3>Output</h3>
+<pre>    return      success (0) or error code
+</pre>
+<a name="UOS_SharedMemSet"><h2>Function UOS_SharedMemSet()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_SharedMemSet(
+        UOS_SHMEM_HANDLE *smHdl,
+        u_int32 smNr,
+        u_int32 size,
+        void **appAddrP
+    )
+</pre><h3>Description</h3>
+<pre>    Create shared memory area
+
+    The function creates the specified shared memory area "smNr"
+    via M_LL_BLK_SHMEM_SET setstat at the driver.
+
+    The shared memory size is defined by the application.
+
+    The shared memory's physical address is mapped to the 
+    application's address space and returned via "appAddrP". 
+
+    Possible errors:
+    ERR_UOS_MEM_ALLOC       no free memory to create handle 
+    ERR_UOS_SETSTAT         the above status call failed
+    ERR_UOS_NO_PERMIT       can't map shared memory address
+
+    If error ERR_UOS_SETSTAT is returned, the caused driver
+    error message (MDIS) can be queried via M_errstring().
+
+</pre><h3>Input</h3>
+<pre>    smHdl       shared memory handle
+    smNr        shared memory area index (0..n)
+    size        shared memory area size [bytes]
+</pre><h3>Output</h3>
+<pre>    appAddrP    pointer to shared memory area
+    return      success (0) or error code
+</pre>
+<a name="UOS_SharedMemLink"><h2>Function UOS_SharedMemLink()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_SharedMemLink
+    (
+        UOS_SHMEM_HANDLE *smHdl,
+        u_int32 smNr,
+        u_int32 *sizeP,
+        void **appAddrP
+    )
+</pre><h3>Description</h3>
+<pre>    Link to exisiting shared memory area
+
+    The function links to the existing specified shared memory
+    area "smNr" via M_LL_BLK_SHMEM_LINK setstat at the driver.
+
+    The shared memory's physical address is mapped to the 
+    application's address space and returned via "appAddrP". 
+    The shared memory areas size is returned via "sizeP".
+
+    Possible errors:
+    ERR_UOS_MEM_ALLOC       no free memory to create handle 
+    ERR_UOS_SETSTAT         the above status call failed
+    ERR_UOS_NO_PERMIT       can't map shared memory address
+
+    If error ERR_UOS_SETSTAT is returned, the caused driver
+    error message (MDIS) can be queried via M_errstring().
+
+</pre><h3>Input</h3>
+<pre>    smHdl       shared memory handle
+    smNr        shared memory area index (0..n)
+</pre><h3>Output</h3>
+<pre>    sizeP       shared memory area size [bytes]
+    appAddrP    pointer to shared memory area
+    return      success (0) or error code
+</pre>
+<a name="UOS_SharedMemClear"><h2>Function UOS_SharedMemClear()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_SharedMemClear
+    (
+        UOS_SHMEM_HANDLE *smHdl,
+        u_int32 smNr
+    )
+</pre><h3>Description</h3>
+<pre>    Unlink/Remove shared memory area
+
+    The function unlinks from the specified shared memory area
+    via M_LL_BLK_SHMEM_CLEAR setstat at the driver.
+
+    If the last link has been removed, the driver removes and
+    deallocates the shared memory area.
+
+    Possible errors:
+    ERR_UOS_SETSTAT         the above status call failed
+
+    If error ERR_UOS_SETSTAT is returned, the caused driver
+    error message (MDIS) can be queried via M_errstring().
+
+</pre><h3>Input</h3>
+<pre>    smHdl       shared memory handle
+    smNr        shared memory area index (0..n)
+</pre><h3>Output</h3>
+<pre>    return      success (0) or error code
+</pre><a name="intro4"><h1>USER OSS ERRSTR - This module provides a function translateing error codes to human readable error strings. </h1></a>
+<pre>It is a part of the USR_OSS library.
+
+Required:  -
+Switches:  -
+
+</pre>
+<a name="UOS_ErrString"><h2>Function UOS_ErrString()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    char* UOS_ErrString(int32 errCode)
+</pre><h3>Description</h3>
+<pre>    Get pointer to a generated error string.
+
+    Creates detailed error message for UOS_xxx() Functions.
+
+</pre><h3>Input</h3>
+<pre>    errCode    error code
+</pre><h3>Output</h3>
+<pre>    return     pointer to error message
+</pre><a name="intro5"><h1>USER OSS KEY - This module checks for user interaction. </h1></a>
+<pre>It is a part of the USR_OSS library.
+It provides a blocking and a non blocking function.
+
+Required: -
+Switches: -
+
+</pre>
+<a name="UOS_KeyStdIoSetOfTaskSet"><h2>Function UOS_KeyStdIoSetOfTaskSet()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_KeyStdIoSetOfTaskSet( void )
+</pre><h3>Description</h3>
+<pre>    If called in context of tShell and UOS_KeyStdIoFd==-1,
+    do nothing.
+
+    Otherwise, set the task stdio to &#60;UOS_KeyStdIoFd&#62;.
+    &#60;UOS_KeyStdIoFd&#62; must be valid file descriptor and should
+    differ from shell input file descriptor if spawned in a
+    seperate task
+
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    return 0 | error code
+</pre><h3>Globals</h3>
+<pre>    UOS_KeyStdIoFd
+</pre>
+<a name="UOS_KeyPressed"><h2>Function UOS_KeyPressed()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_KeyPressed( void )
+</pre><h3>Description</h3>
+<pre>    Check if any key pressed
+
+    This function checks if any character is buffered
+    in the stdin path. If so, the char this read and returned
+    as integer value. If not, -1 is returned.
+
+    Task id of the calling task must differ from the tShell task
+    id and stdin of the calling task must differ from stdin of
+    tShell.
+
+    Note: non blocking
+
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    return     error (-1) or key code
+               -1      no key pressed
+               0..255  char code of pressed key
+</pre>
+<a name="UOS_KeyWait"><h2>Function UOS_KeyWait()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_KeyWait( void )
+</pre><h3>Description</h3>
+<pre>    Wait until any key pressed
+
+    This function waits until any character could be read
+    from the stdin path.
+
+    Task id of the calling task must differ from the tShell task
+    id and stdin of the calling task must differ from stdin of
+    tShell.
+
+    Note: blocking
+
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    return     error (-1) or key code
+               -1      read error
+               0..255  char code of pressed key
+</pre><a name="intro6"><h1>USER OSS SIGNAL - This module provides signal handling routines at application level </h1></a>
+<pre>It is a part of the USR_OSS library.
+
+The functions allow to install, mask and catch signals:
+- installing a user signal handler allows to catch signals
+- calling the UOS_SigWait routine allows to wait for signals
+
+Only deadly signals (system-dependend) or via UOS_SigInstall
+installed signals can be catched/handled.
+
+It is recommended to use the predefined signals UOS_SIG_USR1..2
+
+Note: VxWorks only allow to use and catch UOS_SIG_USR1..2.
+This library is written for compatibility purposes and
+therefore not fast.
+If a faster signal handling is required, a direct use
+of the VxWorks system call is recommended in the application.
+Don't change this library, because it's used for
+e.g. CANopen.
+
+Required: 
+Switches: DBG        
+
+</pre>
+<a name="UOS_SigInit"><h2>Function UOS_SigInit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_SigInit(void (*sigHandler)(u_int32 sigCode))
+</pre><h3>Description</h3>
+<pre>    Init signal handling
+
+</pre><h3>Input</h3>
+<pre>    sigHandler     signal handler routine
+</pre><h3>Output</h3>
+<pre>    return         success (0) or error code
+</pre><h3>Globals</h3>
+<pre>    UOS_SigList
+</pre>
+<a name="UOS_SigExit"><h2>Function UOS_SigExit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_SigExit(void)
+</pre><h3>Description</h3>
+<pre>    Exit signal handling
+
+    The function removes all installed signals and
+    de-installs the user signal handler routine           
+
+    If signal handling not initialized, the function returns
+    an ERR_UOS_NOT_INIZED error.
+
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    return     success (0) or error code
+</pre><h3>Globals</h3>
+<pre>    UOS_SigList
+</pre>
+<a name="UOS_SigInstall"><h2>Function UOS_SigInstall()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_SigInstall( u_int32 sigCode )
+</pre><h3>Description</h3>
+<pre>    Install a signal to be received
+
+    The function adds the specified signal to the signal handler
+    which was installed with UOS_SigInit().
+
+    After calling this function, the specified signal causes 
+    the signal handler to be called.
+
+    If specified signal is already installed, the function returns
+    an ERR_UOS_BUSY error.
+
+    If specified signal is not allowed, the function returns
+    an ERR_UOS_ILL_SIG error.
+
+    If signal handling not initialized, the function returns
+    an ERR_UOS_NOT_INIZED error.
+
+    If signal() call fails, the function returns ERROR.
+
+</pre><h3>Input</h3>
+<pre>    sigCode    signal code
+</pre><h3>Output</h3>
+<pre>    return     success (0) or error code
+</pre><h3>Globals</h3>
+<pre>    UOS_SigList
+</pre>
+<a name="UOS_SigRemove"><h2>Function UOS_SigRemove()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_SigRemove(u_int32 sigCode)
+</pre><h3>Description</h3>
+<pre>    Remove an installed signal.
+
+    If signal is not installed, the function returns
+    an ERR_UOS_NOT_INSTALLED error.
+
+    If signal handling not initialized, the function returns
+    an ERR_UOS_NOT_INIZED error.
+
+    Note for VxWorks:
+    All signal are masked and the old signal mask of the task
+    is set after deinstallation.
+</pre><h3>Input</h3>
+<pre>    sigCode    signal code
+</pre><h3>Output</h3>
+<pre>    return     success (0) or error code
+</pre><h3>Globals</h3>
+<pre>    UOS_SigList
+</pre>
+<a name="UOS_SigMask"><h2>Function UOS_SigMask()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_SigMask(void)
+</pre><h3>Description</h3>
+<pre>    Mask all signals
+
+    The function disables the signal handler to receive signals.
+    All incomming signals are queued.
+
+    If signal handling not initialized, the function returns
+    an ERR_UOS_NOT_INIZED error.
+
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    return     success (0) or error code
+</pre><h3>Globals</h3>
+<pre>    UOS_SigList
+</pre>
+<a name="UOS_SigUnMask"><h2>Function UOS_SigUnMask()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_SigUnMask(void)
+</pre><h3>Description</h3>
+<pre>    Unmask all signals
+
+    The function enables the signal handler to receive signals.
+
+    The function checks if any signal is already queued:
+    If so, it reads the signal from the queue and calls the 
+    user signal handler.
+
+    If signal handling not initialized, the function returns
+    an ERR_UOS_NOT_INIZED error.
+
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    return     success (0) or error code
+</pre><h3>Globals</h3>
+<pre>    UOS_SigList
+</pre>
+<a name="UOS_SigWait"><h2>Function UOS_SigWait()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_SigWait(u_int32 msec, u_int32 *sigCodeP)
+</pre><h3>Description</h3>
+<pre>    Wait until signal received or timeout occured.
+
+    The function implicitly unmask signals and waits with a
+    given timeout until a deadly or previously installed signal
+    is received.
+
+    After that, the function returns with the received signal.
+
+    If the process received a deadly signal (i.e. was killed),
+    the function returns with error ERR_UOS_ABORTED and a valid
+    signal code in sigCodeP.
+
+    If no signal was received within the timeout period,
+    the function returns with error ERR_UOS_TIMEOUT
+
+    If signal handling not initialized, the function returns
+    an ERR_UOS_NOT_INIZED error.
+
+    NOTE: Given timeout will be rounded up to system ticks
+
+</pre><h3>Input</h3>
+<pre>    msec       wait timeout (0=endless) [msec]
+</pre><h3>Output</h3>
+<pre>    sigCodeP   received signal | undefined at error
+    return     success (0) or error code
+</pre><h3>Globals</h3>
+<pre>    UOS_SigList
+</pre>
+<a name="localSigHandler"><h2>Function localSigHandler()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    static void localSigHandler( u_int32 sigNo )
+</pre><h3>Description</h3>
+<pre>    Local signal handler.
+    Execute the installed user signal handler and
+    release the sigWait semaphore.
+</pre><h3>Input</h3>
+<pre>    sigNo   fired signal number
+</pre><h3>Output</h3>
+<pre>    -
+</pre><h3>Globals</h3>
+<pre>    UOS_SigList
+</pre><a name="intro7"><h1>USER OSS CALLBACK - Routines to manage callbacks. </h1></a>
+<pre>
+Callback routines are user state functions which are triggered
+from the driver interrupt routine.  
+
+A callback routine can be installed from the application.
+When a callback routine is installed
+an application argument for the routine can be defined.
+
+The callback routine gots as input parameters the installed
+application argument and a driver specific argument:
+
+   void funct(void *appArg, void *drvArg)
+
+Callback routines are identified via a number, the so-called 
+"function index" (callNr).
+
+The INIT function creates a global callback handle for all 
+subsequent calls.
+
+Typical usage:
+
+     Installation:
+       UOS_CallbackInit()
+       UOS_CallbackSet()
+     De-Installation:
+       UOS_CallbackClear()
+       UOS_CallbackExit()
+
+Callback routines can be masked by using the 
+UOS_CallbackMask()/UOS_CallbackUnMask() functions.
+
+The functions correspond with the OSS_CallbackXXX functions
+of the OSS driver library.
+
+VxWorks specific:
+-----------------
+
+Required: -
+Switches: -
+
+</pre>
+<a name="UOS_CallbackInit"><h2>Function UOS_CallbackInit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_CallbackInit
+    (
+        int32 path,
+        UOS_CALLBACK_HANDLE **cbHdlP
+    )
+</pre><h3>Description</h3>
+<pre>    Create callback handle
+
+    This function has to be called before any callback function
+    can be installed.         
+
+    Possible errors:
+    ERR_UOS_MEM_ALLOC       no free memory to create handle 
+    ERR_UOS_GETSTAT         the above status call failed
+
+    If error ERR_UOS_GETSTAT is returned, the caused driver
+    error message (MDIS) can be queried via M_errstring().
+
+</pre><h3>Input</h3>
+<pre>    path        path number
+</pre><h3>Output</h3>
+<pre>    cbHdlP      pointer to callback handle | NULL
+    return      success (0) or error code
+</pre>
+<a name="UOS_CallbackExit"><h2>Function UOS_CallbackExit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_CallbackExit
+    (
+        UOS_CALLBACK_HANDLE **cbHdlP
+    )
+</pre><h3>Description</h3>
+<pre>    Remove callback handle
+
+</pre><h3>Input</h3>
+<pre>    cbHdlP      pointer to callback handle
+</pre><h3>Output</h3>
+<pre>    return      success (0) or error code
+    *cbHdlP     NULL
+</pre>
+<a name="UOS_CallbackSet"><h2>Function UOS_CallbackSet()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_CallbackSet
+    (
+        UOS_CALLBACK_HANDLE *cbHdl,
+        u_int32    callNr,
+        void       (*funct)(),
+        void       *appArg
+    )
+</pre><h3>Description</h3>
+<pre>    Install callback function
+
+    The function installs the specified callback function
+    via M_LL_BLK_CALLBACK setstat at the driver.
+
+    Possible errors:
+    ERR_UOS_SETSTAT         the above status call failed
+
+    If error ERR_UOS_SETSTAT is returned, the caused driver
+    error message (MDIS) can be queried via M_errstring().
+
+</pre><h3>Input</h3>
+<pre>    cbHdl       callback handle
+    callNr      callback function index (0..maxCallback-1)
+    funct       callback function pointer
+    appArg      callback function argument
+</pre><h3>Output</h3>
+<pre>    return      success (0) or error code
+</pre>
+<a name="UOS_CallbackClear"><h2>Function UOS_CallbackClear()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_CallbackClear
+    (
+        UOS_CALLBACK_HANDLE *cbHdl,
+        u_int32    callNr
+    )
+</pre><h3>Description</h3>
+<pre>    De-Install callback function
+
+    The function de-installs the specified callback function
+    via M_LL_BLK_CALLBACK setstat at the driver.
+
+    Possible errors:
+    ERR_UOS_SETSTAT         the above status call failed
+
+    If error ERR_UOS_SETSTAT is returned, the caused driver
+    error message (MDIS) can be queried via M_errstring().
+
+</pre><h3>Input</h3>
+<pre>    cbHdl       callback handle
+    callNr      callback function index (0..maxCallback-1)
+</pre><h3>Output</h3>
+<pre>    return      success (0) or error code
+</pre>
+<a name="UOS_CallbackMask"><h2>Function UOS_CallbackMask()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_CallbackMask( UOS_CALLBACK_HANDLE *cbHdl )
+</pre><h3>Description</h3>
+<pre>    Prevent application from beeing interrupted by callbacks
+
+</pre><h3>Input</h3>
+<pre>    cbHdl       callback handle
+</pre><h3>Output</h3>
+<pre>    return      success (0) or error code
+</pre><h3>Globals</h3>
+<pre>    UOS_CbMsgMaskCnt
+</pre>
+<a name="UOS_CallbackUnMask"><h2>Function UOS_CallbackUnMask()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 UOS_CallbackUnMask( UOS_CALLBACK_HANDLE *cbHdl )
+</pre><h3>Description</h3>
+<pre>    Allow callbacks to occurr
+
+    Executes any pending callback that has been arrived while callbacks 
+    were masked        
+</pre><h3>Input</h3>
+<pre>    cbHdl       callback handle
+</pre><h3>Output</h3>
+<pre>    return      success (0) or error code
+</pre><h3>Globals</h3>
+<pre>    UOS_CbMsgMaskCnt
+</pre>
+<a name="UOS_CbMsgReceiver"><h2>Function UOS_CbMsgReceiver()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void UOS_CbMsgReceiver( void )
+</pre><h3>Description</h3>
+<pre>    Callback message receiver task.
+
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    -
+</pre><h3>Globals</h3>
+<pre>    UOS_CbList
+</pre><a name="intro8"><h1>USER OSS RANDOM - This module creates random integers. </h1></a>
+<pre>It is a part of the USR_OSS library.
+
+Required: -
+Switches: -
+
+</pre>
+<a name="UOS_Random"><h2>Function UOS_Random()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    u_int32 UOS_Random(u_int32 old)
+</pre><h3>Description</h3>
+<pre>    Create a new random integer value
+
+</pre><h3>Input</h3>
+<pre>    old     initial or last returned random value
+</pre><h3>Output</h3>
+<pre>    return  random integer value (0..0xffffffff)
+</pre>
+<a name="UOS_RandomMap"><h2>Function UOS_RandomMap()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    u_int32 UOS_RandomMap(u_int32 val, u_int32 ra, u_int32 re)
+</pre><h3>Description</h3>
+<pre>    Map created integer value into specified range
+
+    Maps a random integer value 'val' returned from UOS_Random()
+    into range ra..re.
+
+</pre><h3>Input</h3>
+<pre>    val     integer value
+    ra      min value
+    re      max value
+</pre><h3>Output</h3>
+<pre>    return  mapped integer value [ra..re]
+</pre><a name="intro9"><h1>USER OSS LINEARGS - This module is used for lineargs and main() replacing. </h1></a>
+<pre>It is a part of the USR_OSS library.
+
+Required: -
+Switches: -
+
+</pre>
+<a name="UOS_OS_LineArgs"><h2>Function UOS_OS_LineArgs()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int UOS_OS_LineArgs
+    (
+        char *dummyArg,
+        char *lp,
+        char **argbuf,
+        int  maxargs,
+        char *separators,
+        char *termchars
+    )
+</pre><h3>Description</h3>
+<pre>    Scans a command string. Used by main() replacing.
+
+    attention: separators will be replaced with a '\0' character 
+
+</pre><h3>Input</h3>
+<pre>    dummyArg   dummy
+    lp         input line
+    argbuf     ptr array for results (maxarg+1 entries !)
+    maxargs    size of argbuf
+    separators argument separator chars
+    termchars  termination characters 
+
+</pre><h3>Output</h3>
+<pre>    return  number of args &#60; -1
+</pre></body>
+</html>

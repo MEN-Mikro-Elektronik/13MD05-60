@@ -1,0 +1,64 @@
+P10/P11 Plain Text Short Manual
+===============================
+
+	1. Introduction
+	2. The Files You Need
+	3. Compiling
+	4. Running the Driver
+
+
+1. Introduction
+---------------
+
+The P10/P11 is a quad serial module in PC-MIP format. The P10 supports
+four serial channels, two with full modem line support and two with RTS/CTS
+lines only. The four channels of the P11 are build as 4-wire (RS422)
+or 2-wire (RS485) serial devices. The wire mode is selectable either by 
+hardware or software. On board is a Oxford 16C954 UART compatible to 16C450/550/650
+but with 128 Byte FIFO und baudrate up to 1.152 MBaud.
+
+
+2. The Files You Need
+---------------------
+
+The neccessary files are:
+
+	/DOC/p10_drv.txt	this file
+	p10_drv.c		the driver source
+	p10_drv.h		the header source
+	makef.mak		the makefile for the driver
+	mk.bat			the batchfile for compiling the driver for the desired CPU
+
+
+Additionally there are some files for test and docu:
+	/TEST/p10_test.c	a test utility for the module/driver
+	/TEST/p10_test.txt	a short intro to the test
+	/TEST/makef.mak		the make file for the test
+	/TEST/mk.bat		the batchfile for calling the makefile
+
+	/EEPROM/oxprom.c	a utility for writing the defaults to the P10 EEPROM
+	/EEPROM/oxprom.h	the headerfile
+	/EEPROM/oxprom.txt	a short intro to oxprom
+	/EEPROM/makef.mak	the makefile for oxprom
+	/EEPROM/mk.bat		the batchfile to call the makefile
+
+
+3. Compiling
+------------
+
+For compiling the P10/P11 driver for the desired CPU type you have to modify
+the mk.bat file. Just comment or uncomment the CPU type you want to compile the
+driver for. Of course you must set the environment variables for the desired compiler.
+
+
+4. Running the Driver
+---------------------
+
+For running the driver load its object file and call p10Drv. Stick to the PDF manual
+for the arguments of the driver.
+
+
+
+have fun ;-)
+rl
+Roland.Loesel@men.de

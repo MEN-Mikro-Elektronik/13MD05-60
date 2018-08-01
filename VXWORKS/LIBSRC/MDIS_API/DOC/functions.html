@@ -1,0 +1,262 @@
+<html>
+<head>
+<title>MDIS_API library</title>
+<style type=text/css>
+    Body { background-color: #ffffff; }
+    A:link { color: #c50038; }
+    A:hover { color: #28669b; }
+    P, H1, H2, H3, H3, H5, LI {
+        color: #434343;
+        font-family: Arial, Helvetica, Univers;
+    }
+    P, LI { font-size: 9.000000pt; }
+</style>
+</head>
+<body>
+<h1>MDIS_API library</h1>
+<p>Thu Mar 16 10:30:03 MET 2000</p>
+<h2>Overview of all Chapters</h2>
+<a href="#chapt0">Chapter: MDIS_API - The MDIS user interface module.</a><br>
+<a href="#chapt1">Chapter: MDIS_ERRSTR - This module is a part of the common MDIS User-Interface.</a><br>
+
+<h2>Overview of all Functions</h2>
+<a name="chapt0"><a href="#intro0"><h3>MDIS_API - The MDIS user interface module.</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#M_open">M_open</a></P></TD><TD><P>Opens a path to a device. </P></TD></TR>
+<TR><TD><P><a href="#M_close">M_close</a></P></TD><TD><P>Closes a path to a device. </P></TD></TR>
+<TR><TD><P><a href="#M_read">M_read</a></P></TD><TD><P>Reads a long from current channel of the path. </P></TD></TR>
+<TR><TD><P><a href="#M_write">M_write</a></P></TD><TD><P>Writes a long from current channel of the path. </P></TD></TR>
+<TR><TD><P><a href="#M_getstat">M_getstat</a></P></TD><TD><P>Gets a status parameter of the path. e.g. current channel </P></TD></TR>
+<TR><TD><P><a href="#M_setstat">M_setstat</a></P></TD><TD><P>Sets a status parameter of the path. e.g. current channel </P></TD></TR>
+<TR><TD><P><a href="#M_getblock">M_getblock</a></P></TD><TD><P>Reads a block of maximum <length> bytes from the path. </P></TD></TR>
+<TR><TD><P><a href="#M_setblock">M_setblock</a></P></TD><TD><P>Writes a block of maximum <length> bytes to the path. </P></TD></TR>
+</TABLE>
+<a name="chapt1"><a href="#intro1"><h3>
+MDIS_ERRSTR - This module is a part of the common MDIS User-Interface.</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#M_errstring">M_errstring</a></P></TD><TD><P>Get a pointer to the generated error string. </P></TD></TR>
+</TABLE>
+ 
+<a name="intro0"><h1>MDIS_API - The MDIS user interface module. </h1></a>
+<pre>This module provides the common user callable MDIS functions.
+Common means, that this interface is available on
+all operating system supporting MDIS like WinNT, OS9
+and VxWorks.
+
+Required:  os2m.a, mk.a, oss.a
+Switches:  -
+
+</pre>
+<a name="M_open"><h2>Function M_open()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32  M_open( char *device )
+</pre><h3>Description</h3>
+<pre>    Opens a path to a device.
+
+    Note:  Calls OS2M_Open().
+           If it is the first path to the device it will initialized.
+           ( see also MDIS Kernel      - MK_Open()
+                      Low Level Driver - MXX_Init() )
+
+</pre><h3>Input</h3>
+<pre>    device   name of the device e.g. "/m34/0"
+
+</pre><h3>Output</h3>
+<pre>    return   ERROR or path number (file handle)
+
+</pre><h3>Globals</h3>
+<pre>    errno    error code
+
+</pre>
+<a name="M_close"><h2>Function M_close()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32  M_close( int32 path )
+</pre><h3>Description</h3>
+<pre>    Closes a path to a device.
+
+    Note:  Calls OS2M_Close().
+           If it is the last open path of the device
+           it will be deinitialized by the low level driver exit call.
+           ( see also MDIS Kernel      - MK_Close()
+                      Low Level Driver - MXX_Exit() )
+
+</pre><h3>Input</h3>
+<pre>    path        path number
+
+</pre><h3>Output</h3>
+<pre>    return   ERROR or OK
+
+</pre><h3>Globals</h3>
+<pre>    errno    error code
+
+</pre>
+<a name="M_read"><h2>Function M_read()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 M_read(int32 path, int32 *valueP )
+</pre><h3>Description</h3>
+<pre>    Reads a long from current channel of the path.
+
+    Note:  Calls MK_Read
+           ( see also MDIS Kernel      - MK_Read()
+           ( see also Low Level Driver - MXX_Read() )
+
+</pre><h3>Input</h3>
+<pre>    path        path number
+    valueP      pointer to variable where read value stored
+
+</pre><h3>Output</h3>
+<pre>    *int_valueP read value
+    return      ERROR or OK
+
+</pre><h3>Globals</h3>
+<pre>    errno    error code
+
+</pre>
+<a name="M_write"><h2>Function M_write()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 M_write(int32 path, int32 value )
+</pre><h3>Description</h3>
+<pre>    Writes a long from current channel of the path.
+
+    Note:  Calls MK_Write.
+           ( see also MDIS Kernel      - MK_Write()
+           ( see also Low Level Driver - MXX_Write() )
+
+</pre><h3>Input</h3>
+<pre>    path       path number
+    value      value to write
+
+</pre><h3>Output</h3>
+<pre>    return     ERROR or OK
+
+</pre><h3>Globals</h3>
+<pre>    errno      error code
+
+</pre>
+<a name="M_getstat"><h2>Function M_getstat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 M_getstat( int32 path, int32 code, int32 *dataP )
+</pre><h3>Description</h3>
+<pre>    Gets a status parameter of the path. e.g. current channel
+
+    Note:  Calls MK_GetStat().
+           ( see also MDIS Kernel      - MK_GetStat()
+           ( see also Low Level Driver - MXX_GetStat() )
+
+</pre><h3>Input</h3>
+<pre>    path    path number
+    code    specifies the obtained parameter ( see mdis_api.h )
+    dataP   pointer to variable where status stored
+
+</pre><h3>Output</h3>
+<pre>    *dataP  value of parameter
+    return  ERROR or OK
+
+</pre><h3>Globals</h3>
+<pre>    errno   error code
+
+</pre>
+<a name="M_setstat"><h2>Function M_setstat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 M_setstat( int32 path, int32 code, int32 data )
+</pre><h3>Description</h3>
+<pre>    Sets a status parameter of the path. e.g. current channel
+
+    Note:  Calls MK_SetStat().
+           ( see also MDIS Kernel      - MK_SetStat()
+           ( see also Low Level Driver - MXX_SetStat() )
+
+</pre><h3>Input</h3>
+<pre>    path    path number
+    code    specifies the obtained parameter ( see mdis_api.h )
+    data    new value of parameter
+
+</pre><h3>Output</h3>
+<pre>    return  ERROR or OK
+
+</pre><h3>Globals</h3>
+<pre>    errno   error code
+
+</pre>
+<a name="M_getblock"><h2>Function M_getblock()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 M_getblock( int32 path, u_int8 *buffer, int32 length )
+</pre><h3>Description</h3>
+<pre>    Reads a block of maximum &#60;length&#62; bytes from the path.
+
+    Note:  Calls MK_GetBlock().
+           ( see also MDIS Kernel      - MK_GetBlock()
+           ( see also Low Level Driver - MXX_BlockRead() )
+
+</pre><h3>Input</h3>
+<pre>    path     path number
+    buffer   pointer to a buffer where data will be stored
+    length   nbr of read bytes
+
+</pre><h3>Output</h3>
+<pre>    return   ERROR or nbr of read bytes
+
+</pre><h3>Globals</h3>
+<pre>    errno    error code
+
+</pre>
+<a name="M_setblock"><h2>Function M_setblock()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 M_setblock( int32 path, u_int8 *buffer, int32 length )
+</pre><h3>Description</h3>
+<pre>    Writes a block of maximum &#60;length&#62; bytes to the path.
+
+    Note:  Calls MK_SetBlock.
+           ( see also MDIS Kernel      - MK_SetBlock()
+           ( see also Low Level Driver - MXX_BlockWrite() )
+
+</pre><h3>Input</h3>
+<pre>    path     path number
+    buffer   pointer to a buffer where data are stored
+    length   nbr of read bytes
+
+</pre><h3>Output</h3>
+<pre>    return   ERROR or nbr of written bytes
+
+</pre><h3>Globals</h3>
+<pre>    errno    error code
+
+</pre><a name="intro1"><h1>MDIS_ERRSTR - This module is a part of the common MDIS User-Interface. </h1></a>
+<pre>It provides a translation table and a function converting error codes
+to human readable error strings.
+
+Required:  -
+Switches:  -
+
+</pre>
+<a name="M_errstring"><h2>Function M_errstring()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    char* M_errstring( int32 errCode )
+</pre><h3>Description</h3>
+<pre>    Get a pointer to the generated error string.
+
+    VxWorks Note:  Workaround for not reentrant M_errstring().
+                   It's a ringbuffer with 10 entries, which will be
+                   incremented at every call and wrap around at the end.
+
+</pre><h3>Input</h3>
+<pre>    errcode    error code
+
+</pre><h3>Output</h3>
+<pre>    return     pointer to error message
+
+</pre></body>
+</html>

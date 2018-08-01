@@ -1,0 +1,140 @@
+# windML_GRP_MEN16Z044.wrmdb - MEN 16Z044_DISP and P18 Graphics Driver database
+#
+#
+# modification history
+# --------------------
+# $Log: windML_GRP_MEN16Z044.wrmdb,v $
+# Revision 1.5  2011/09/08 10:33:53  ts
+# R: new Variant of 16Z044 was introduced with 1280x800 Resolution
+# M: added resolution to supported Resolutions
+#
+# Revision 1.4  2006/05/16 20:41:36  cs
+# added
+#     + versions swapping framebuffer data in HW
+#     + P18 versions
+#
+# Revision 1.3  2006/02/15 18:53:26  cs
+# removed unnecessary CPU definitions (PPC603,...)
+#
+#
+#---------------------
+
+GRAPHICSDEVICE=&men16z044:&men16z044_sw:&menp18:&menp18_sw
+
+
+men16z044.NAME="MEN Z044_DISP"
+men16z044.ARCH= &PENTIUM: \
+				&PENTIUM2:\
+				&PENTIUM3:\
+				&PENTIUM4:\
+				&PPC32
+men16z044.ENDIAN=&le:&be
+men16z044.SELECT=INCLUDE_MEN16Z044_GRAPHICS
+men16z044.OUTPUTTYPE=&genericoutputtype
+men16z044.MODE= &rgb565,320x240,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+				&rgb565,640x480,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+				&rgb565,800x600,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+				&rgb565,1024x768,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:  \
+				&rgb565,1280x1024,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR: \
+				&rgb565,1280x800,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR: \
+				&rgb565,320x240,75,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+				&rgb565,640x480,75,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+				&rgb565,800x600,75,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+				&rgb565,1024x768,75,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:  \
+				&rgb565,1280x1024,75,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR
+men16z044.RTPENABLED=true
+men16z044.OPTION=&jpeg:  \
+				 &dblbuff
+men16z044.GRAPHICSDEV_PARAM1=0
+men16z044.GRAPHICSDEV_PARAM2=0
+men16z044.IODRV=uglIoStdGraphicsPciDrv
+men16z044.IODRV_EXT=uglmen16z044Ioctl
+men16z044.IODRV_PARAM1=0
+men16z044.IODRV_PARAM2=0
+
+
+men16z044_sw.NAME="MEN Z044_DISP swapped FB"
+men16z044_sw.ARCH=  &PENTIUM: \
+					&PENTIUM2:\
+					&PENTIUM3:\
+					&PENTIUM4:\
+					&PPC32
+men16z044_sw.ENDIAN=&le:&be
+men16z044_sw.SELECT=INCLUDE_MEN16Z044_GRAPHICS
+men16z044_sw.OUTPUTTYPE=&genericoutputtype
+men16z044_sw.MODE=  &rgb565,320x240,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+					&rgb565,640x480,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+					&rgb565,800x600,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+					&rgb565,1024x768,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:  \
+					&rgb565,1280x1024,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR: \
+					&rgb565,1280x800,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR: \
+					&rgb565,320x240,75,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+					&rgb565,640x480,75,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+					&rgb565,800x600,75,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+					&rgb565,1024x768,75,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:  \
+					&rgb565,1280x1024,75,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR
+men16z044_sw.RTPENABLED=true
+men16z044_sw.OPTION=&jpeg:  \
+					&dblbuff
+men16z044_sw.GRAPHICSDEV_PARAM1=1
+men16z044_sw.GRAPHICSDEV_PARAM2=0
+men16z044_sw.IODRV=uglIoStdGraphicsPciDrv
+men16z044_sw.IODRV_EXT=uglmen16z044Ioctl
+men16z044_sw.IODRV_PARAM1=0
+men16z044_sw.IODRV_PARAM2=0
+
+
+menp18.NAME="MEN P18"
+menp18.ARCH=&PENTIUM: \
+			&PENTIUM2:\
+			&PENTIUM3:\
+			&PENTIUM4:\
+			&PPC32
+menp18.ENDIAN=&le:&be
+menp18.SELECT=INCLUDE_MEN16Z044_GRAPHICS
+menp18.OUTPUTTYPE=&genericoutputtype
+menp18.MODE= &rgb565,640x480,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+			 &rgb565,800x600,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+			 &rgb565,1024x768,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:  \
+			 &rgb565,1280x1024,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR: \
+			 &rgb565,640x480,75,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+			 &rgb565,800x600,75,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+			 &rgb565,1024x768,75,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:  \
+			 &rgb565,1280x1024,75,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR
+menp18.RTPENABLED=true
+menp18.OPTION=&jpeg:  \
+			  &dblbuff
+menp18.GRAPHICSDEV_PARAM1=0
+menp18.GRAPHICSDEV_PARAM2=0
+menp18.IODRV=uglIoStdGraphicsPciDrv
+menp18.IODRV_EXT=uglmen16z044Ioctl
+menp18.IODRV_PARAM1=0
+menp18.IODRV_PARAM2=0
+
+
+menp18_sw.NAME="MEN P18 swapped FB"
+menp18_sw.ARCH= &PENTIUM: \
+				&PENTIUM2:\
+				&PENTIUM3:\
+				&PENTIUM4:\
+				&PPC32
+menp18_sw.ENDIAN=&le:&be
+menp18_sw.SELECT=INCLUDE_MEN16Z044_GRAPHICS
+menp18_sw.OUTPUTTYPE=&genericoutputtype
+menp18_sw.MODE= &rgb565,640x480,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+				&rgb565,800x600,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+				&rgb565,1024x768,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:  \
+				&rgb565,1280x1024,60,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR: \
+				&rgb565,640x480,75,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+				&rgb565,800x600,75,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:   \
+				&rgb565,1024x768,75,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR:  \
+				&rgb565,1280x1024,75,uglmen16z044DevCreate,UGL_MODE_DIRECT_COLOR
+menp18_sw.RTPENABLED=true
+menp18_sw.OPTION=&jpeg:  \
+				 &dblbuff
+menp18_sw.GRAPHICSDEV_PARAM1=1
+menp18_sw.GRAPHICSDEV_PARAM2=0
+menp18_sw.IODRV=uglIoStdGraphicsPciDrv
+menp18_sw.IODRV_EXT=uglmen16z044Ioctl
+menp18_sw.IODRV_PARAM1=0
+menp18_sw.IODRV_PARAM2=0

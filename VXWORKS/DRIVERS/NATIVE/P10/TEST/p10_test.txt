@@ -1,0 +1,13 @@
+P10 Test Utility
+================
+
+To run the test stick to the following procedure:
+
+- connect a P10 to your system
+- connect the test adapter to the P10 (COM1 <-> COM2, COM3 <-> COM4)
+- run VxWorks
+- load the P10 driver
+- create the P10 channel devices with the name "/p10_0"
+- load the test
+- run the test by typing "p10Test"
+- all test must return OK

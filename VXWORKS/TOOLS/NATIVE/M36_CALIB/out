@@ -1,0 +1,2 @@
+"START"   
+ccppc -Wall -O2 -fvolatile -fno-builtin -DCPU=PPC603 -DVMEBLT=1   -Is:/work_vxM78/VXWORKS/INCLUDE/COM -Is:/work_vxM78/VXWORKS/INCLUDE/NATIVE -IG:\Windriver\vxworks-6.2/target -IG:\Windriver\vxworks-6.2/target/h -IG:\Windriver\vxworks-6.2/target/usr/h -IG:\Windriver\vxworks-6.2/target/h/wrn/coreip/ -IG:\Windriver\gnu\3.3.2-vxworks-6.2/x86-win32/lib/gcc-lib/powerpc-wrs-vxworks/3.3.2/include -I.  -DMAC_MEM_MAPPED -DVXWORKS -DPROG_FILE_NAME=m36n_calib  -c m36n_calib.c -o s:/work_vxM78/VXWORKS/LIB/MEN/objPPC603gnu/m36n_calib.o

@@ -1,0 +1,1 @@
+ccppc -o netio.o -I. -I$WIND_BASE/target/h -I$WIND_BASE/target/h/wrn/coreip -DVXWORKS   p513_netio.c 

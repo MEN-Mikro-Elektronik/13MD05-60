@@ -1,0 +1,29 @@
+# windML_PTR_MEN16Z031.wrmdb - MEN 16Z031_TOUCH Pointer Driver database
+#
+#
+# modification history
+# --------------------
+# $Log: windML_PTR_MEN16Z031.wrmdb,v $
+# Revision 1.2  2006/02/15 18:53:28  cs
+# removed unnecessary CPU definitions (PPC603,...)
+#
+#
+#---------------------
+
+POINTER=&men16z031
+
+men16z031.NAME="MEN 16Z031_TOUCH"
+men16z031.ARCH=&PENTIUM:\
+				&PENTIUM2:\
+				&PENTIUM3:\
+				&PENTIUM4:\
+				&PPC32
+men16z031.ENDIAN=&le:&be
+men16z031.SELECT=INCLUDE_MEN16Z031_POINTER
+men16z031.DEFINE=INCLUDE_UGL_INPUT
+men16z031.RTPENABLED=true
+men16z031.DEVNAME=/touchScreen/0
+men16z031.CREATE=uglMen16z031TsDriver
+men16z031.IODRV=uglIoMen16z031TsDrv
+men16z031.IODRV_PARAM1=0
+men16z031.IODRV_PARAM2=0

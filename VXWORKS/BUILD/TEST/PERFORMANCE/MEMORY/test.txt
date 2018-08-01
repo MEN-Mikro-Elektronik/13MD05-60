@@ -1,0 +1,28 @@
+vioFd = open("/vio/0", 1, 0)
+ioGlobalStdSet 1, vioFd
+ioGlobalStdSet 2, vioFd
+ioGlobalStdSet 0, vioFd
+logFdSet vioFd
+
+
+ld < D:\work\VXWORKS\BUILD\TEST\PERFORMANCE\MEMORY\X86\mem_perf.o
+ld < D:\work\VXWORKS\BUILD\TEST\PERFORMANCE\MEMORY\68k\mem_perf.o
+ld < D:\work\VXWORKS\BUILD\TEST\PERFORMANCE\MEMORY\PPC\mem_perf.o
+
+sysClkRateSet 400
+sp mem_perf_test
+
+sysClkRateSet 400
+sysClkRateSet 1000
+sysClkRateSet 4000
+
+
+cacheDisable 0
+cacheDisable 1
+
+cacheEnable 0
+cacheEnable 1
+
+
+sysL2CacheDisable
+sysL2CacheEnable

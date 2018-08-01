@@ -1,0 +1,38 @@
+Quick installation guide for WindML-4.x/5.x drivers 
+ (taken from guide for MEN EM01 VxWorks BSP 10EM01-60)
+------------------------------------------------------------
+
+- using Workbench 2.x/3.x (WindML 4.x, 5.x)
+    - move the following directories with sub directories from
+       $(TEMP)/Workbench/components/WindML4.x/config
+                                   (grp_men16z044.makefile
+                                    ptr_men16z031.makefile
+                                    windML_GRP_MEN16Z044.wrmdb
+                                    windML_PTR_MEN16Z031.wrmdb)
+       $(TEMP)/Workbench/components/WindML4.x/h
+                                   (udmen16z044.h
+                                    uglmen16z031.h)
+       $(TEMP)/Workbench/components/WindML4.x/src
+                                   (udmen16z044.c, Makefile
+                                    uglmen16z031.c, Makefile)
+
+      into your Workbench path under
+        $(WIND_COMPONENTS)/$(COMP_WINDML)/config
+        $(WIND_COMPONENTS)/$(COMP_WINDML)/h
+        $(WIND_COMPONENTS)/$(COMP_WINDML)/src
+
+    - Then setup a VxWorks Downloadable Kernel Module Project (DKM) +
+                   VxWorks Middleware Component +
+                   WindML Component: take care to select proper resolution for your
+                   16Z044 based graphics hardware or e.g. ugldemo will fail.
+
+    - BuildSpec is PPC32
+    - Configure Wind Media Library
+    - build the DKM project
+	- set the switch MEN_LINK_WINDML in the target\config\men_em01\Makefile
+	  to the appropiate Workbench workspace directory where your DKM project
+	  is located
+
+
+- when the build is done, a libwindml-5.3_dyn.a archive in folder 
+                    <workspace>\obj\vxworks-6.9\krnl\lib\... is generated which must be linked to the vxWorks.st image.

@@ -1,0 +1,7 @@
+README for ALL_DRV_PPC project
+------------------------------
+
+This project is not practically used, its a compile test project equipped 
+with as many drivers as possible for buildtests under PowerPC (QorIQ) architecture.
+
+For Intel pendant see ALL_DRV_X86

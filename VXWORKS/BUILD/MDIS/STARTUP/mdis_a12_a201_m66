@@ -1,0 +1,25 @@
+ld < C:/work/VXWORKS/LIB/MEN/objPPC603gnutest/mdis_MEN_A12.o
+
+#MDIS IRQ Parameter - BSP Specific
+OSS_SetIrqNum0( 0x00 )
+
+#intEnable routine - BSP Specific
+MK_SetIntEnableRtn( intEnable )
+MK_SetVmeIntEnableRtn( sysIntEnable )
+
+#address MAP B  - CPU Board Specific
+OSS_PciAddrTranslationInit( 0xfe000000, 0x00000000 )
+
+
+OS2M_DrvInstall
+OS2M_DevCreate( "/m66_a12/0",  &M66_SW_1, &A12 )
+OS2M_DevCreate( "/m66_a201/0", &M66_1,    &A201_1 )
+OS2M_Show
+
+fh1 = M_open( "/m66_a12/0" )
+M_close fh1
+DBG_Show
+
+fh2 = M_open( "/m66_a201/0" )
+M_close fh2
+DBG_Show

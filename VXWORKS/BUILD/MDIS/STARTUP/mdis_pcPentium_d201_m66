@@ -1,0 +1,25 @@
+# I have rebuild a pcPentium BSP without network.
+# Then I copied mdis_MEN_D2.o into the BSP directory
+# and renamed it to mdis_MEN_D2.obj.
+# The MACH_EXTRA entry links the object to the
+# vxWorks image.
+# MACH_EXTRA	   = mdis_MEN_D2.obj
+#
+
+#MDIS IRQ Parameter - BSP Specific
+OSS_SetIrqNum0( 0x20 )
+
+MK_SetIntConnectRtn(pciIntConnect)
+MK_SetIntEnableRtn( sysIntEnablePIC )
+
+OS2M_DrvInstall
+OS2M_DevCreate(  "/m66/0", &M66_1, &D201_1)
+OS2M_Show
+
+fh = M_open( "/m66/0" )
+
+i
+
+DBG_Show
+
+M_close fh

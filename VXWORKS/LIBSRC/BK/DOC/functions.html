@@ -1,0 +1,112 @@
+<html>
+<head>
+<title>BK library</title>
+<style type=text/css>
+    Body { background-color: #ffffff; }
+    A:link { color: #c50038; }
+    A:hover { color: #28669b; }
+    P, H1, H2, H3, H3, H5, LI {
+        color: #434343;
+        font-family: Arial, Helvetica, Univers;
+    }
+    P, LI { font-size: 9.000000pt; }
+</style>
+</head>
+<body>
+<h1>BK library</h1>
+<p>Thu Mar 16 10:20:24 MET 2000</p>
+<h2>Overview of all Functions</h2>
+<a name="chapt0"><a href="#intro0"><h3>VxWorks BBIS kernel</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#BK_GetBBHandle">BK_GetBBHandle</a></P></TD><TD><P>Looks for <boardNameInstanz> in the baseboard list. </P></TD></TR>
+<TR><TD><P><a href="#BK_UnGetBBHandle">BK_UnGetBBHandle</a></P></TD><TD><P>Decrements the link count of the current base board. </P></TD></TR>
+<TR><TD><P><a href="#BK_Show">BK_Show</a></P></TD><TD><P>Displays baseboard system and driver name and the link count. </P></TD></TR>
+</TABLE>
+ 
+<a name="intro0"><h1>VxWorks BBIS kernel </h1></a>
+<pre>The BBIS kernel exist once per CPU and contains data
+about the used base boards in the system.
+
+Required: -
+Switches: -
+
+</pre>
+<a name="BK_GetBBHandle"><h2>Function BK_GetBBHandle()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 BK_GetBBHandle
+    (
+        DESC_SPEC                  *bbDescSpec,
+        char                       *boardNameInstanz,
+        BK_BASE_BOARD_LIST_ELEMENT **bbDataHdlP
+    )
+</pre><h3>Description</h3>
+<pre>    Looks for &#60;boardNameInstanz&#62; in the baseboard list.
+    Creates a new element and initialises the base board 
+    if not in list.
+    Increments the link count.
+    Initializes the BK module if BK_SemId == NULL.
+
+</pre><h3>Input</h3>
+<pre>    bbDescSpec       BBIS descriptor specifier
+    boardNameInstanz board name e.g. "D201_1"
+    bbDataHdlP       pointer to variable where pointer to
+                     list element is stored
+
+</pre><h3>Output</h3>
+<pre>    *bbDataHdlP      pointer to list element
+    return           0 or error code
+
+</pre><h3>Globals</h3>
+<pre>    BK_BaseBoardListAnchor
+
+</pre>
+<a name="BK_UnGetBBHandle"><h2>Function BK_UnGetBBHandle()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 BK_UnGetBBHandle
+    (
+        BK_BASE_BOARD_LIST_ELEMENT **bbDataHdlP
+    )
+</pre><h3>Description</h3>
+<pre>    Decrements the link count of the current base board.
+    Removes the list element if last link is deleted (link count==0)
+    and deinitialises the base board.
+
+    Note: *bbDataHdlP is always set to zero
+
+</pre><h3>Input</h3>
+<pre>    bbDataHdlP       pointer to variable where pointer to
+                     list element is stored
+
+</pre><h3>Output</h3>
+<pre>    *bbDataHdlP      NULL
+    return           0 or error code
+
+</pre><h3>Globals</h3>
+<pre>    BK_BaseBoardListAnchor
+
+</pre>
+<a name="BK_Show"><h2>Function BK_Show()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int BK_Show( void )
+</pre><h3>Description</h3>
+<pre>    Displays baseboard system and driver name and the link count.
+
+    Note: Only initialized baseboards are in the baseboard system list.
+          A path must be open on a device to display the baseboard.
+
+</pre><h3>Input</h3>
+<pre>    -
+
+</pre><h3>Output</h3>
+<pre>    return  always 0
+
+</pre><h3>Globals</h3>
+<pre>    BK_BaseBoardListAnchor
+
+</pre></body>
+</html>

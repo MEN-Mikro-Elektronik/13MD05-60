@@ -1,0 +1,16 @@
+ld < D:/work/VXWORKS/BUILD/TEST/PERFORMANCE/SERIAL/serial_test.o
+ld < D:/work/VXWORKS/BUILD/TEST/PERFORMANCE/SERIAL/MC68040/serial_test.o
+ld < D:/work/VXWORKS/BUILD/TEST/PERFORMANCE/SERIAL/PPC603/serial_test.o
+ld < D:/work/VXWORKS/BUILD/TEST/PERFORMANCE/SERIAL/I80486/serial_test.o
+
+SERTEST_Ident
+
+serTestRxTx( "/tyCo/1", "/tyCo/1" )
+serTestHandshake( 0x800002f8, SERTEST_RTS, SERTEST_CTS );
+val=0
+serTestSetHandshake8250( 0x800002f8, SERTEST_RTS, 0 );
+serTestGetHandshake8250( 0x800002f8, SERTEST_CTS, &val );
+val
+serTestSetHandshake8250( 0x800002f8, SERTEST_RTS, 1 );
+serTestGetHandshake8250( 0x800002f8, SERTEST_CTS, &val );
+val

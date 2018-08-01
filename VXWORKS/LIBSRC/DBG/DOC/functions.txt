@@ -1,0 +1,190 @@
+Function Description
+====================
+Fri Mar 17 14:26:51 MET 2000
+ 
+Overview of all Functions
+-------------------------
+
+DBG_Init               - Initializes the debug output, allocates and returns debug 
+DBG_Exit               - Terminate the debug output 
+DBG_Write              - Print a debug message 
+DBG_Memdump            - Print a formatted hex dump 
+DBG_ShowRb             - Displays the ring buffer informations. 
+DBG_Show               - Writes the log messages in the DBG ring buffer to DBG_OutFd. 
+DBG_Stop               - Stops the dumping of the ringbuffer by setting 
+ 
+
+Function DBG_Init()
+-------------------
+
+Syntax:
+    int32 DBG_Init
+    (
+        char *name,
+        DBG_HANDLE **dbgP
+    )
+
+Description:
+    Initializes the debug output, allocates and returns debug
+    handle.
+
+    Allocates at first time (DBG_IsInit==FASLE) the DBG ring
+    buffer.
+
+Input:
+    name    name of debug output data module or NULL
+    dbgP    pointer to variable where debug handle will stored
+
+Output:
+    *dbgP   debug handle
+    return  success (0) or error code
+
+Globals:
+    DBG_IsInit, DBG_MappedToReservedMemP, DBG_MemP, DBG_MemSize
+    DBG_Count, DBG_WriteP and DBG_ReadP, DBG_MemEndP
+
+Function DBG_Exit()
+-------------------
+
+Syntax:
+    int32  DBG_Exit
+    (
+        DBG_HANDLE **dbgP
+    )
+
+Description:
+    Terminate the debug output
+
+Input:
+    dbgP    pointer to variable where debug handle is stored
+
+Output:
+    return  0 | EINVAL
+
+
+Function DBG_Write()
+--------------------
+
+Syntax:
+    int32 DBG_Write
+    (
+        DBG_HANDLE *dbg,
+        char *frmt,
+        ... 
+    )
+
+Description:
+    Print a debug message
+
+    NOTE: Floating point formatters are not supported.
+
+Input:
+    dbg    debug handle
+    *fmt   format string
+    arg1
+    ...
+    argN
+
+Output:
+    return  0 | error code ( EINVAL, EMSGSIZE )
+
+Globals:
+    DBG_Count, DBG_WriteP, DBG_MemEndP, DBG_MemP
+
+Function DBG_Memdump()
+----------------------
+
+Syntax:
+    int32  DBG_Memdump
+    (
+       DBG_HANDLE *dbg,
+       char    *txt,
+       void    *buf,
+       u_int32 len,
+       u_int32 fmt
+    )
+
+Description:
+    Print a formatted hex dump
+
+    Trailing blanks in the description string define the
+    indention of all following debug lines.
+
+Input:
+    txt     description string or NULL (first line)
+    buf     memory to dump
+    len     nr of bytes
+    fmt     dump format [bytes]
+            1=byte, 2=word, 4=long, 8=64bit 
+
+Output:
+    return  0 | error code ( EINVAL )
+
+
+Function DBG_ShowRb()
+---------------------
+
+Syntax:
+    void DBG_ShowRb( void )
+
+Description:
+    Displays the ring buffer informations.
+
+    Note:  Not a common function. Only for use from VxWorks Shell.
+
+Input:
+    -
+
+Output:
+    -
+
+
+Function DBG_Show()
+-------------------
+
+Syntax:
+    void DBG_Show( int crashSave )
+
+Description:
+    Writes the log messages in the DBG ring buffer to DBG_OutFd.
+    The default of DBG_OutFd is STDERR.
+    It runs in the endless mode, if it is spawn as a task and
+    the parameter <crashSave> is FALSE.
+
+    For dumping the logs after a crash, call DBG_Show() with
+    the parameter <crashSave> equal TRUE. If DBG_Init() was 
+    called (DBG_IsInit is TRUE), set DBG_Count = DBG_MemSize +1
+    to force to dump the whole ring buffer.
+
+    Note:  Not a common function. Only for use from VxWorks Shell.
+
+Input:
+    crashSave
+
+Output:
+    -
+
+Globals:
+    DBG_IsInit, DBG_MappedToReservedMemP, DBG_MemP, DBG_MemSize
+    DBG_Count, DBG_WriteP and DBG_ReadP, DBG_ShowEndless
+
+Function DBG_Stop()
+-------------------
+
+Syntax:
+    void DBG_Stop( void )
+
+Description:
+    Stops the dumping of the ringbuffer by setting 
+    DBG_ShowEndless to FALSE.
+
+    Note:  Not a common function. Only for use from VxWorks Shell.
+
+Input:
+    -
+
+Output:
+    -
+
+Globals:
+    DBG_ShowEndless

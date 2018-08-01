@@ -1,0 +1,671 @@
+<html>
+<head>
+<title>MK library</title>
+<style type=text/css>
+    Body { background-color: #ffffff; }
+    A:link { color: #c50038; }
+    A:hover { color: #28669b; }
+    P, H1, H2, H3, H3, H5, LI {
+        color: #434343;
+        font-family: Arial, Helvetica, Univers;
+    }
+    P, LI { font-size: 9.000000pt; }
+</style>
+</head>
+<body>
+<h1>MK library</h1>
+<p>Fri Mar 17 14:35:14 MET 2000</p>
+<h2>Overview of all Chapters</h2>
+<a href="#chapt0">Chapter: OS2M - The MDIS API to MDIS kernel glue module.</a><br>
+<a href="#chapt1">Chapter: MK - The VxWorks MDIS Kernel.</a><br>
+
+<h2>Overview of all Functions</h2>
+<a name="chapt0"><a href="#intro0"><h3>OS2M - The MDIS API to MDIS kernel glue module.</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#OS2M_DrvInstall">OS2M_DrvInstall</a></P></TD><TD><P>This routine initializes the MDIS driver. </P></TD></TR>
+<TR><TD><P><a href="#OS2M_DrvRemove">OS2M_DrvRemove</a></P></TD><TD><P>This routine deinitializes the MDIS driver. </P></TD></TR>
+<TR><TD><P><a href="#OS2M_DevCreate">OS2M_DevCreate</a></P></TD><TD><P>Installs the device to the OS2M device table. </P></TD></TR>
+<TR><TD><P><a href="#OS2M_DevRemove">OS2M_DevRemove</a></P></TD><TD><P>This routine deletes a device which was created </P></TD></TR>
+<TR><TD><P><a href="#OS2M_DbgLevelSet">OS2M_DbgLevelSet</a></P></TD><TD><P>sets the debug level of this module. </P></TD></TR>
+<TR><TD><P><a href="#OS2M_DbgLevelGet">OS2M_DbgLevelGet</a></P></TD><TD><P>gets the debug level of this module. </P></TD></TR>
+<TR><TD><P><a href="#OS2M_Show">OS2M_Show</a></P></TD><TD><P>Displays the device table and calls MK_Show and BK_Show. </P></TD></TR>
+</TABLE>
+<a name="chapt1"><a href="#intro1"><h3>
+MK - The VxWorks MDIS Kernel.</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#MK_Init">MK_Init</a></P></TD><TD><P>Init MDIS kernel globals </P></TD></TR>
+<TR><TD><P><a href="#MK_SetIntConnectRtn">MK_SetIntConnectRtn</a></P></TD><TD><P>Setup BSP specific routine to attach MDIS irq routines </P></TD></TR>
+<TR><TD><P><a href="#MK_SetIntEnableRtn">MK_SetIntEnableRtn</a></P></TD><TD><P>Setup BSP specific routine to enable interrupt level </P></TD></TR>
+<TR><TD><P><a href="#MK_SetVmeIntEnableRtn">MK_SetVmeIntEnableRtn</a></P></TD><TD><P>Setup BSP specific routine to enable VME interrupt level </P></TD></TR>
+<TR><TD><P><a href="#MK_Show">MK_Show</a></P></TD><TD><P>Display MDIS kernel device or path table information. </P></TD></TR>
+<TR><TD><P><a href="#MK_ShowIrqTbl">MK_ShowIrqTbl</a></P></TD><TD><P>Show MK interrupt table </P></TD></TR>
+<TR><TD><P><a href="#MK_Open">MK_Open</a></P></TD><TD><P>Open path on device and return path number. </P></TD></TR>
+<TR><TD><P><a href="#MK_MapAddrSpaces">MK_MapAddrSpaces</a></P></TD><TD><P>Map all address spaces required from device </P></TD></TR>
+<TR><TD><P><a href="#MK_Close">MK_Close</a></P></TD><TD><P>Closes path on a MDIS device. </P></TD></TR>
+<TR><TD><P><a href="#MK_SetStat">MK_SetStat</a></P></TD><TD><P>Sets status of specified code. </P></TD></TR>
+<TR><TD><P><a href="#MK_GetStat">MK_GetStat</a></P></TD><TD><P>Gets status of specified code. </P></TD></TR>
+<TR><TD><P><a href="#MK_Read">MK_Read</a></P></TD><TD><P>Read value from current channel </P></TD></TR>
+<TR><TD><P><a href="#MK_Write">MK_Write</a></P></TD><TD><P>Write value to the current channel </P></TD></TR>
+<TR><TD><P><a href="#MK_GetBlock">MK_GetBlock</a></P></TD><TD><P>Reads data block. </P></TD></TR>
+<TR><TD><P><a href="#MK_SetBlock">MK_SetBlock</a></P></TD><TD><P>Writes data block. </P></TD></TR>
+<TR><TD><P><a href="#MK_Irq">MK_Irq</a></P></TD><TD><P>Main MK interrupt service routine. called for all MDIS devs </P></TD></TR>
+<TR><TD><P><a href="#MK_IrqService">MK_IrqService</a></P></TD><TD><P>Global interrupt service entry. </P></TD></TR>
+<TR><TD><P><a href="#MK_BlkGetStat">MK_BlkGetStat</a></P></TD><TD><P>MDIS kernel blockgetstats. </P></TD></TR>
+<TR><TD><P><a href="#MK_LockDevice">MK_LockDevice</a></P></TD><TD><P>Lock semaphores depending on lockmode </P></TD></TR>
+<TR><TD><P><a href="#MK_UnlockDevice">MK_UnlockDevice</a></P></TD><TD><P>UnLock semaphores depending on lockmode </P></TD></TR>
+</TABLE>
+ 
+<a name="intro0"><h1>OS2M - The MDIS API to MDIS kernel glue module. </h1></a>
+<pre>This module implements the following functions:
+   -driver installation/deinstallation
+   -device table management/locking
+   -device locking
+
+Required: -
+Switches: -
+
+</pre>
+<a name="OS2M_DrvInstall"><h2>Function OS2M_DrvInstall()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    STATUS OS2M_DrvInstall( void )
+</pre><h3>Description</h3>
+<pre>    This routine initializes the MDIS driver.
+
+    OSS_Init is called for OSS_MikroDelayInit to adjust the 
+    internal delay limits. 
+    ( disables/reenables interrupts and task scheduling )
+
+    It should be called, before any reads, writes, ...
+    or OS2M_DevCreate() calls are performed.
+    Normally, it should be called from usrRoot() in usrConfig.c.
+
+    SEE ALSO: OSS_Init(), OSS_MikroDelayInit(), OS2M_DevCreate()
+
+</pre><h3>Input</h3>
+<pre>    -
+
+</pre><h3>Output</h3>
+<pre>    return  OK | ERROR
+
+</pre><h3>Globals</h3>
+<pre>    DrvNum_g, IOSemaphoresCreated_g, PathTableInitialized_g,
+    errno, OSS_IrqNum0
+
+</pre>
+<a name="OS2M_DrvRemove"><h2>Function OS2M_DrvRemove()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    STATUS  OS2M_DrvRemove( void )
+</pre><h3>Description</h3>
+<pre>    This routine deinitializes the MDIS driver.
+
+    For deinitialization the hardware and freeing the allocated
+    buffers, close (M_close) all open files on the device and call
+    OSS_DevRemove() for all devices before.
+
+    SEE ALSO: OS2M_DrvInstall(), OS2M_DevInstall/Remove()
+</pre><h3>Input</h3>
+<pre>    void
+
+</pre><h3>Output</h3>
+<pre>    -
+
+    Return.....: STATUS: OK | ERROR
+
+</pre><h3>Globals</h3>
+<pre>    DrvNum_g, errno
+
+</pre>
+<a name="OS2M_DevCreate"><h2>Function OS2M_DevCreate()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    STATUS OS2M_DevCreate
+    (
+        char      *devName,
+        DESC_SPEC *llDescSpec,
+        DESC_SPEC *bbDescSpec
+    )
+</pre><h3>Description</h3>
+<pre>    Installs the device to the OS2M device table.
+    Gets the low level driver entrys.
+    Creates the device data structure.
+
+</pre><h3>Input</h3>
+<pre>    devName     pointer to the device name
+    llDescSpec  low level driver descriptor specifier
+    bbDescSpec  base board descriptor specifier
+
+</pre><h3>Output</h3>
+<pre>    return OK | ERROR
+
+</pre><h3>Globals</h3>
+<pre>    errno
+
+</pre>
+<a name="OS2M_DevRemove"><h2>Function OS2M_DevRemove()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    STATUS  OS2M_DevRemove
+    (
+        char *device
+    )
+</pre><h3>Description</h3>
+<pre>    This routine deletes a device which was created
+    by OS2M_DevCreate().
+    It does not deinitialize the hardware.(Call M_close() before.)
+
+    SEE ALSO: OS2M_DrvRemove()
+</pre><h3>Input</h3>
+<pre>    device   name of the device e.g. "/m34/0"
+
+</pre><h3>Output</h3>
+<pre>    return OK | ERROR
+
+</pre><h3>Globals</h3>
+<pre>    errno
+
+</pre>
+<a name="OS2M_DbgLevelSet"><h2>Function OS2M_DbgLevelSet()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void OS2M_DbgLevelSet( u_int32 dbgLevel )
+</pre><h3>Description</h3>
+<pre>    sets the debug level of this module.
+
+</pre><h3>Input</h3>
+<pre>    dbgLevel - the new dbg level
+
+</pre><h3>Output</h3>
+<pre>    ---
+
+</pre>
+<a name="OS2M_DbgLevelGet"><h2>Function OS2M_DbgLevelGet()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void OS2M_DbgLevelGet( u_int32 *dbgLevelP )
+</pre><h3>Description</h3>
+<pre>    gets the debug level of this module.
+
+</pre><h3>Input</h3>
+<pre>    ---
+
+</pre><h3>Output</h3>
+<pre>    dbgLevelP - the current dbg level
+
+</pre>
+<a name="OS2M_Show"><h2>Function OS2M_Show()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void OS2M_Show( void )
+</pre><h3>Description</h3>
+<pre>    Displays the device table and calls MK_Show and BK_Show.
+
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    -
+</pre><h3>Globals</h3>
+<pre>    OS2M_DevTbl
+</pre><a name="intro1"><h1>MK - The VxWorks MDIS Kernel. </h1></a>
+<pre>
+Required: -
+Switches: -
+
+</pre>
+<a name="MK_Init"><h2>Function MK_Init()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 MK_Init(void)
+</pre><h3>Description</h3>
+<pre>    Init MDIS kernel globals
+
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    returns:   currently always 0
+</pre>
+<a name="MK_SetIntConnectRtn"><h2>Function MK_SetIntConnectRtn()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void MK_SetIntConnectRtn( 
+        STATUS (*intConnectRtn)
+          (VOIDFUNCPTR *vector, VOIDFUNCPTR routine, int parameter )
+    )
+</pre><h3>Description</h3>
+<pre>    Setup BSP specific routine to attach MDIS irq routines
+
+    If this function is not called, MK will call intConnect().
+    You can set it to sysIntConnect for example
+</pre><h3>Input</h3>
+<pre>    intConnectRtn      new intConnectRtn to use
+</pre><h3>Output</h3>
+<pre>    -
+</pre><h3>Globals</h3>
+<pre>    MK_intConnectRtn
+</pre>
+<a name="MK_SetIntEnableRtn"><h2>Function MK_SetIntEnableRtn()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void MK_SetIntEnableRtn( STATUS (*intEnableRtn)(int level))
+</pre><h3>Description</h3>
+<pre>    Setup BSP specific routine to enable interrupt level 
+    for PCI/ISA devices
+
+    If this function is not called, MK will not call any 
+    routine to enable interrupt levels.
+
+    Typically set to sysIntEnable
+</pre><h3>Input</h3>
+<pre>    intEnableRtn       the routine to be called
+</pre><h3>Output</h3>
+<pre>    -
+</pre><h3>Globals</h3>
+<pre>    MK_vmeIntEnableRtn
+</pre>
+<a name="MK_SetVmeIntEnableRtn"><h2>Function MK_SetVmeIntEnableRtn()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void MK_SetVmeIntEnableRtn( STATUS (*intEnableRtn)(int level))
+</pre><h3>Description</h3>
+<pre>    Setup BSP specific routine to enable VME interrupt level
+
+    If this function is not called, MK will not call any 
+    routine to enable VME interrupt levels.
+
+    Typically set to sysIntEnable
+</pre><h3>Input</h3>
+<pre>    intEnableRtn       the routine to be called
+</pre><h3>Output</h3>
+<pre>    -
+</pre><h3>Globals</h3>
+<pre>    MK_vmeIntEnableRtn
+</pre>
+<a name="MK_Show"><h2>Function MK_Show()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void MK_Show( int pathNbr )
+</pre><h3>Description</h3>
+<pre>    Display MDIS kernel device or path table information.
+
+</pre><h3>Input</h3>
+<pre>    pathNbr    path number 0..(MK_NUM_FILES-1)
+               or -1 for a short listing of the path table
+
+</pre><h3>Output</h3>
+<pre>    return     0 or error code
+
+</pre><h3>Globals</h3>
+<pre>    MK_PathDataTbl
+
+</pre>
+<a name="MK_ShowIrqTbl"><h2>Function MK_ShowIrqTbl()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void MK_ShowIrqTbl(void)
+</pre><h3>Description</h3>
+<pre>    Show MK interrupt table
+
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    -
+</pre>
+<a name="MK_Open"><h2>Function MK_Open()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 MK_Open
+    (
+        OS2M_MK_HANDLE   devHdl,
+        int32            *pathNbrP
+    )
+</pre><h3>Description</h3>
+<pre>    Open path on device and return path number.
+    If it is the first path to the device:
+    1. gets the base board handle from bbis kernel (BK) and
+    2. the low level driver init function is called.
+    Increments the device link counter.
+    The current channel is set to 0 for this path.
+
+    The following descriptor keys are mandatory:
+
+    Descriptor key        Default          Range/Description
+    --------------------  ---------------  -------------------------------
+    BOARD_NAME            -                e.g. "A201_1" 
+                               max length BK_MAX_BBIS_BRD_NAME
+    DEVICE_SLOT           -                0..0xFFFFFFFF 
+                               e.g. 0x1000 for on board dev 0
+
+    The following descriptor keys are optional:
+
+    Descriptor key        Default          Range/Description
+    --------------------  ---------------  -------------------------------
+    DEBUG_LEVEL_DESC      OSS_DBG_DEFAULT  0..0xFFFFFFFF see dbg.h
+    DEBUG_LEVEL_OSS       OSS_DBG_DEFAULT  current  value OxC0008000
+    DEBUG_LEVEL_MK        OSS_DBG_DEFAULT  means DBG on ERROR at IRQ 
+                               and TASK level
+    VXWORKS_CALLBACK_MODE 1                1..2 1-indirect 2-direct call
+                               are currently relevant 
+                               for CANopen only
+    IRQ_ENABLE            0                0..1 1-enables IRQ at MK_Open()
+
+</pre><h3>Input</h3>
+<pre>    devHdl     mdis device handle
+    pathNbrP   pointer to variable where path nbr stored
+
+</pre><h3>Output</h3>
+<pre>    *pathNbrP  path nbr | -1
+    return     0 | error code
+
+</pre><h3>Globals</h3>
+<pre>    MK_PathDataTbl
+
+</pre>
+<a name="MK_MapAddrSpaces"><h2>Function MK_MapAddrSpaces()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    static int32 MK_MapAddrSpaces( MK_DEVICE_DATA *dev, DESC_HANDLE *llDescHdl)
+</pre><h3>Description</h3>
+<pre>    Map all address spaces required from device
+
+</pre><h3>Input</h3>
+<pre>    dev        device data
+</pre><h3>Output</h3>
+<pre>    return         success (0) or error code
+</pre>
+<a name="MK_Close"><h2>Function MK_Close()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 MK_Close( int32 pathNbr )
+</pre><h3>Description</h3>
+<pre>    Closes path on a MDIS device.
+    It decrements the device link counter.
+    If the link counter is equal zero, the last path to the 
+    device will be closed. The low level driver exit function 
+    will called then and the base board handle will be removed.
+
+</pre><h3>Input</h3>
+<pre>    pathNbr   path number
+
+</pre><h3>Output</h3>
+<pre>    return    0 | error code
+
+</pre><h3>Globals</h3>
+<pre>    MK_PathDataTbl
+
+</pre>
+<a name="MK_SetStat"><h2>Function MK_SetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 MK_SetStat
+    (
+        int32 pathNbr,
+        int32 code,
+        int32 data
+    )
+</pre><h3>Description</h3>
+<pre>    Sets status of specified code.
+
+</pre><h3>Input</h3>
+<pre>    pathNbr   path number
+    code      status code
+    data      new status value
+
+</pre><h3>Output</h3>
+<pre>    return 0 | error code
+
+</pre><h3>Globals</h3>
+<pre>    MK_PathDataTbl
+
+</pre>
+<a name="MK_GetStat"><h2>Function MK_GetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 MK_GetStat
+    (
+        int32 pathNbr,
+        int32 code,
+        int32 *dataP
+    )
+</pre><h3>Description</h3>
+<pre>    Gets status of specified code.
+
+</pre><h3>Input</h3>
+<pre>    pathNbr   path number
+    code      status code
+    dataP     pointer to variable where status data stored
+
+</pre><h3>Output</h3>
+<pre>    *dataP    gotten status data
+    return    0 | error code
+
+</pre><h3>Globals</h3>
+<pre>    MK_PathDataTbl
+</pre>
+<a name="MK_Read"><h2>Function MK_Read()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 MK_Read
+    (
+        int32 pathNbr,
+        int32 *valueP
+    )
+</pre><h3>Description</h3>
+<pre>    Read value from current channel
+    - call LL-read()
+    - if auto increment: currentCh++
+
+</pre><h3>Input</h3>
+<pre>    pathNbr   path number
+    valueP    pointer to variable where read value stored
+
+</pre><h3>Output</h3>
+<pre>    *valueP   read value
+    return    0 | error code
+
+</pre><h3>Globals</h3>
+<pre>    MK_PathDataTbl
+</pre>
+<a name="MK_Write"><h2>Function MK_Write()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 MK_Write
+    (
+        int32 pathNbr,
+        int32 value
+    )
+</pre><h3>Description</h3>
+<pre>    Write value to the current channel
+    - call LL-write()
+    - if auto increment: currentCh++
+
+</pre><h3>Input</h3>
+<pre>    pathNbr   path number
+    value     value to write
+
+</pre><h3>Output</h3>
+<pre>    return    0 | error code
+
+</pre><h3>Globals</h3>
+<pre>    MK_PathDataTbl
+
+</pre>
+<a name="MK_GetBlock"><h2>Function MK_GetBlock()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 MK_GetBlock
+    (
+        int32  pathNbr,
+        u_int8 *buffer,
+        int32  size,
+        int32  *nbrRdBytesP
+    )
+</pre><h3>Description</h3>
+<pre>    Reads data block.
+
+</pre><h3>Input</h3>
+<pre>    pathNbr      path number
+    buffer       pointer to buffer
+    size         requested size
+    nbrRdBytesP  pointer to variable where number of read bytes
+                 stored
+
+</pre><h3>Output</h3>
+<pre>    *nbrRdBytesP number of read bytes
+    return       0 | error code
+
+</pre><h3>Globals</h3>
+<pre>    MK_PathDataTbl
+
+</pre>
+<a name="MK_SetBlock"><h2>Function MK_SetBlock()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    int32 MK_SetBlock
+    (
+       int32   pathNbr,
+       u_int8* buffer,
+       int32   size,
+       int32   *nbrWrBytesP
+    )
+</pre><h3>Description</h3>
+<pre>    Writes data block.
+
+</pre><h3>Input</h3>
+<pre>    pathNbr      path number
+    buffer       pointer to buffer
+    size         requested size
+    nbrWrBytesP  pointer to variable where number of 
+                 written bytes will be stored
+
+</pre><h3>Output</h3>
+<pre>    *nbrWrBytesP number of written bytes
+    return       0 | error code
+
+</pre><h3>Globals</h3>
+<pre>    MK_PathDataTbl
+
+</pre>
+<a name="MK_Irq"><h2>Function MK_Irq()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void MK_Irq( int irq )
+</pre><h3>Description</h3>
+<pre>    Main MK interrupt service routine. called for all MDIS devs
+
+    Loops through the linked list of installed ISRs for the
+    given vector and calls MK_IrqService for each device
+</pre><h3>Input</h3>
+<pre>    irq            interrupt number (index in MK_irqTbl)
+</pre><h3>Output</h3>
+<pre>    -
+</pre>
+<a name="MK_IrqService"><h2>Function MK_IrqService()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    static void MK_IrqService( MK_DEVICE_DATA *dev )
+</pre><h3>Description</h3>
+<pre>    Global interrupt service entry.
+    Increments the device data irq counter.
+
+    Global MDIS interrupt handler/dispatcher:
+    - calling board handler service init (irqSrvcInit)
+    - dispatch to low-level-handler      (MXX_Irq)
+    - calling board handler service exit (irqSrvcExit)
+
+</pre><h3>Input</h3>
+<pre>    dev    pointer to the device data
+</pre><h3>Output</h3>
+<pre>    -
+</pre>
+<a name="MK_BlkGetStat"><h2>Function MK_BlkGetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    static int32 MK_BlkGetStat
+    (
+        MK_DEVICE_DATA *dev,
+        int32 code,
+        M_SETGETSTAT_BLOCK *blkStruct
+        )
+</pre><h3>Description</h3>
+<pre>    MDIS kernel blockgetstats.
+
+    supported  code:          structure of data block
+      M_MK_BLK_PHYSADDR       gets physical address and size
+       blockStruct-&#62;size          size of the data buffer &#62; 
+                                                      sizeof(M_ADDRSPACE)
+       blockStruct-&#62;data          pointer to user buffer where
+                                  structure M_ADDRSPACE will stored
+
+      M_MK_BLK_VIRTADDR       gets virtual address and size
+       blockStruct-&#62;size          size of the data buffer &#62; 
+                                                      sizeof(M_ADDRSPACE)
+       blockStruct-&#62;data          pointer to user buffer where
+                                  structure M_ADDRSPACE will stored
+
+      M_MK_BLK_BB_HANDLER     gets board handler name e.g. A201
+       blockStruct-&#62;size          size of the data buffer
+       blockStruct-&#62;data          pointer to user buffer where
+
+      M_MK_BLK_BRD_NAME       gets board name e.g. A201_1
+       blockStruct-&#62;size          size of the data buffer
+       blockStruct-&#62;data          pointer to user buffer where
+
+      M_MK_BLK_LL_HANDLER     gets low level driver name e.g. M055
+       blockStruct-&#62;size          size of the data buffer
+       blockStruct-&#62;data          pointer to user buffer where
+
+      M_MK_BLK_REV_ID         gets ident strings 0 terminated
+       blockStruct-&#62;size          size of the data buffer
+       blockStruct-&#62;data          pointer to user buffer where ID data stored
+
+</pre><h3>Input</h3>
+<pre>    dev    pointer to the device data
+    code       status code
+    blkStruct  pointer to M_SETGETSTAT_BLOCK structure
+
+</pre><h3>Output</h3>
+<pre>    return     0 | error code
+
+</pre>
+<a name="MK_LockDevice"><h2>Function MK_LockDevice()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    static int32 MK_LockDevice( 
+        MK_DEVICE_DATA *dev,
+        SEM_ID callSem,
+        int32 currCh)
+</pre><h3>Description</h3>
+<pre>    Lock semaphores depending on lockmode
+
+</pre><h3>Input</h3>
+<pre>    dev            device
+    callSem        ptr to semaphore for specified call 
+                   (e.g semRead)
+    currCh         current channel
+</pre><h3>Output</h3>
+<pre>    error code
+</pre>
+<a name="MK_UnlockDevice"><h2>Function MK_UnlockDevice()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    static int32 MK_UnlockDevice( 
+        MK_DEVICE_DATA *dev,
+        SEM_ID callSem,
+        int32 currCh)
+</pre><h3>Description</h3>
+<pre>    UnLock semaphores depending on lockmode
+
+</pre><h3>Input</h3>
+<pre>    dev            device
+    callSem        ptr to semaphore for specified call 
+                   (e.g semRead)
+    currCh         current channel
+</pre><h3>Output</h3>
+<pre>    error code
+</pre></body>
+</html>

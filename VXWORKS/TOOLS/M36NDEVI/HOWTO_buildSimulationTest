@@ -1,0 +1,4 @@
+To test the function under standard Unix make
+
+cc m36ndevi.c -lm -Wall -o devi -DSIMULATION_MODE
+

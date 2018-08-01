@@ -1,0 +1,34 @@
+# example for initializing MDIS on an A21b
+# This example is based on the following Hardware setup:
+# ___________________________________________________ 
+#|_VME Rack__________________________________________|
+#|=========== slot 3 == slot 2 == slot 1 == slot 0 ==|
+#| A201S  ====== N/A === M36 ===== M66 ===== M66 ====|
+#| A21b   ============== M99 ===== M72 ===== M65 ====|
+#|___________________________________________________|
+
+# if MDIS object is loaded after boot, adapt line below
+# to your folder and mdis binary name and uncomment line
+# ld < c:/mywork/mdis_MEN_A21.o
+
+OSS_SetIrqNum0(0)
+MK_SetIntConnectRtn( sysMdisIntConnect )
+MK_SetIntEnableRtn( sysMdisIntEnable )
+MK_SetVmeIntEnableRtn(sysMdisVmeIntEnable)
+
+OS2M_DrvInstall
+
+# create Lowlevel devices – names here must match those
+# used in system.dsc!
+OS2M_DevCreate("/m65_1a", &m65_1a, &ob_mmods));
+OS2M_DevCreate("/m65_1b", &m65_1b, &ob_mmods));
+OS2M_DevCreate("/m72_1",  &m72_1,  &ob_mmods));
+OS2M_DevCreate("/m99_1",  &m99_1,  &ob_mmods));
+OS2M_DevCreate("/m66_1",  &m66_1,  &a201_1));
+OS2M_DevCreate("/m66_2",  &m66_2,  &a201_1));
+OS2M_DevCreate("/m36_1",  &m36_1,  &a201_1));
+
+# show all instantiated MDIS devices
+OS2M_Show
+# show the debug buffer
+DBG_Show
