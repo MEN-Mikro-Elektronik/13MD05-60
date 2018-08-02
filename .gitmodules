@@ -218,3 +218,11 @@
 	path = VXWORKS/TOOLS/WDOG
 	url = ../mdis_tools_wdog.git
 	branch = master
+[submodule "13Z025-60"]
+	path = 13Z025-60
+	url = ../13Z025-60.git
+	branch = master
+[submodule "13M077-60"]
+	path = 13M077-60
+	url = ../13M077-60.git
+	branch = master
