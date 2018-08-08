@@ -178,8 +178,8 @@
 	path = VXWORKS/DRIVERS/BBIS/SMBPCI
 	url = ../mdis_drivers_bbis_smbpci_com.git
 	branch = master
-[submodule "VXWORKS/INCLUDE/COM"]
-	path = VXWORKS/INCLUDE/COM
+[submodule "VXWORKS/INCLUDE/COM/MEN"]
+	path = VXWORKS/INCLUDE/COM/MEN
 	url = ../mdis_include_com_men.git
 	branch = master
 [submodule "VXWORKS/LIBSRC/CHAMELEON/COM"]
