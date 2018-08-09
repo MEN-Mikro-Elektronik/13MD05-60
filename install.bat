@@ -16,6 +16,7 @@ echo ^|                                                                         
 echo ^| Welcome to the MDIS for VxWorks System Package installer from MEN Mikro Elektronik GmbH.^|
 echo ^| This installer will guide you through the installation process and perform required     ^|
 echo ^| steps.                                                                                  ^|
+echo ^| Usage: install.bat [^<installation path^>]                                                ^|
 echo ^|_________________________________________________________________________________________^|
 echo.
 echo.
@@ -25,7 +26,8 @@ set G_vxPath=%G_defaultDir%
 set G_vxPath=%1
 )
 
-@echo using install path %G_vxPath%
+echo.
+echo using install path %G_vxPath%
 
 set answer=""
 set /p answer=Continue installation ([y/n], ENTER=n)?
@@ -47,7 +49,7 @@ if "%answer%"=="y" (
   mkdir %G_vxPath%
 )
 
-REM TODO check folder is empty (when just created thats the case anyway)
+REM TODO check if folder is empty (seems to be an impossible nightmare under plain DOS)...
 
 
 REM -------------------------------------------------------
@@ -61,23 +63,25 @@ xcopy /S /E /I LINUX %G_vxPath%\LINUX > NUL
 echo Copying folder NT to %G_vxPath% ...
 xcopy /S /E /I NT %G_vxPath%\NT > NUL
 
+
 REM --
-REM --  Copy LL Drivers content, therefor ('dir /B 13*-06') ---
+REM --  Copy LL Drivers content, therefore ('dir /B 13*-06') ---
 REM --
 for /F %%i in ('dir /B 13*-06') do (
    cd %%i
    echo Copying Low Level Driver %%i to %G_vxPath%\DRIVERS\MDIS_LL
-   xcopy /S /E /I DRIVERS\MDIS_LL\* %G_vxPath%\VXWORKS\DRIVERS\MDIS_LL\
-   xcopy /S /E  INCLUDE\COM\MEN\* %G_vxPath%\VXWORKS\INCLUDE\COM\MEN\
+   xcopy /S /E /I DRIVERS\MDIS_LL\* %G_vxPath%\VXWORKS\DRIVERS\MDIS_LL\ > NUL
+   xcopy /S /E  INCLUDE\COM\MEN\* %G_vxPath%\VXWORKS\INCLUDE\COM\MEN\ > NUL
    cd ..
 )
 
+
 REM --
-REM --  Copy native Drivers content, therefor ('dir /B 13*-60') ---
+REM --  Copy native Drivers content, therefore ('dir /B 13*-60') ---
 REM --
 for /F %%i in ('dir /B 13*-60') do (
    cd %%i
-   echo Copying native Driver %%i to %G_vxPath%\VXWORKS\DRIVERS\MDIS_LL
+   echo Copying native Driver %%i to %G_vxPath%\VXWORKS\DRIVERS\NATIVE
    xcopy /S /E /I DRIVERS\NATIVE\* %G_vxPath%\VXWORKS\DRIVERS\NATIVE\ > NUL
    cd ..
 )
@@ -87,7 +91,7 @@ REM --  Copy XML files from LL and also native drivers, therefore ('dir /B 13*')
 REM --
 
 echo Copying XML Files %G_vxPath%\PACKAGE_DESC ...
-REM mkdir %G_vxPath%\VXWORKS\PACKAGE_DESC
+mkdir %G_vxPath%\VXWORKS\PACKAGE_DESC
 
 for /F %%i in ('dir /B 13*') do (
    cd %%i
@@ -95,12 +99,16 @@ for /F %%i in ('dir /B 13*') do (
    cd ..
 )
 
-
+echo.
+echo Success! Installation is finished. Your MDIS for VxWorks System package plus drivers has been installed to %G_vxPath%.
+echo Your next possibilities: create a MDIS project using MDIS wizard
+echo (%G_vxPath%/NT/OBJ/EXE/MEN/I386/FREE/mdiswizvx.exe) or open an existing MDIS project with it.
+echo See also MDIS for VxWorks User Guide!
+echo.
+echo If you want you can now delete this folder.
+echo.
 
 
 :END
 exit /B
 
-:USAGE
-@echo usage: install.bat <folder name>
-@echo e.g.  install.bat c:\work\MDIS
