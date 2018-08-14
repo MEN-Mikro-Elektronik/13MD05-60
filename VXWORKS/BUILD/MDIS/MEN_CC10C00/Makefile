@@ -20,7 +20,7 @@ include $(WIND_BASE)/target/h/make/defs.$(WIND_HOST_TYPE)
 # package for VxWorks, e.g. /MEN/VXWORKS
 # note: FORWARD SLASHES '/' needed
 
-MEN_VX_DIR = C:/work/work_HAM/VXWORKS/
+MEN_VX_DIR = C:/work/work_VXdeploy/VXWORKS/
 
 # Defines compiler toolchain to build the MDIS modules. This
 # should match the TOOL setting used in your VxWorks BSP.
@@ -69,11 +69,13 @@ ALL_CPUS = ARMARCH7
 
 include $(MEN_VX_DIR)/BUILD/MDIS/TPL/corecomp.mak
 
-ALL_LL_DRIVERS = Z017/DRIVER/COM/driver_sw.mak
+ALL_LL_DRIVERS = \
+	Z017/DRIVER/COM/driver_sw.mak \
+	MSCAN/DRIVER/COM/driver_z15.mak
 
 ALL_BB_DRIVERS = CHAMELEON/DRIVER/COM/driver_pcitbl.mak
 
-ALL_USR_LIBS = 
+ALL_USR_LIBS = MSCAN_API/COM/library.mak
 
 ALL_CORE_LIBS = \
 	DBG/library.mak \
@@ -86,7 +88,12 @@ ALL_LL_TOOLS = \
 	Z017/TOOLS/Z17_IO/COM/program.mak \
 	Z017/TOOLS/Z127_IO/COM/program.mak \
 	Z017/TOOLS/Z127_IN/COM/program.mak \
-	Z017/TOOLS/Z127_OUT/COM/program.mak
+	Z017/TOOLS/Z127_OUT/COM/program.mak \
+	MSCAN/TOOLS/MSCAN_ALYZER/COM/program.mak \
+	MSCAN/TOOLS/MSCAN_LOOPB/COM/program.mak \
+	MSCAN/TOOLS/MSCAN_MENU/COM/program.mak \
+	MSCAN/TOOLS/MSCAN_PINGPONG/COM/program.mak \
+	MSCAN/TOOLS/MSCAN_CLIENT_SRV/COM/program.mak
 
 ALL_COM_TOOLS = \
 	MDIS_API/M_ERRSTR/COM/program.mak \
