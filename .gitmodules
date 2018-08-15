@@ -226,3 +226,11 @@
 	path = VXWORKS/INCLUDE/COM/MEN
 	url = ../mdis_include_com_men.git
 	branch = master
+[submodule "VXWORKS/LIBSRC/SMB2_API/COM"]
+	path = VXWORKS/LIBSRC/SMB2_API/COM
+	url = ../mdis_libsrc_smb2_api_com.git
+	branch = master
+[submodule "VXWORKS/LIBSRC/SMB2_SHC/COM"]
+	path = VXWORKS/LIBSRC/SMB2_SHC/COM
+	url = ../mdis_libsrc_smb2_shc_com.git
+	branch = master

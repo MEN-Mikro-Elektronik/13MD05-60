@@ -5,7 +5,7 @@
 # Check VxWorks Develpoment Environment Version
 
 ifeq ($(WIND_TOOLS),)
-export MEN_VXWORKS_ENV_VER := 
+export MEN_VXWORKS_ENV_VER :=
 
 else
 export TGT_DIR := $(WIND_BASE)/target
@@ -31,7 +31,7 @@ TOOL = gnu
 # -D_SMP_COMPATIBLE_ONLY
 # or -D_UP_COMPATIBLE_ONLY for singlecore processors.
 
-ADDED_CFLAGS = 
+ADDED_CFLAGS =
 
 # Defines the system type:
 # uniprocessor (UP) or a symmetrical multi-processor (SMP)
@@ -70,12 +70,17 @@ ALL_CPUS = ARMARCH7
 include $(MEN_VX_DIR)/BUILD/MDIS/TPL/corecomp.mak
 
 ALL_LL_DRIVERS = \
-	Z017/DRIVER/COM/driver_sw.mak \
-	MSCAN/DRIVER/COM/driver_z15.mak
+	MSCAN/DRIVER/COM/driver_z15.mak \
+	Z017/DRIVER/COM/driver_z127_sw.mak \
+	SMB2/DRIVER/COM/driver.mak
 
-ALL_BB_DRIVERS = CHAMELEON/DRIVER/COM/driver_pcitbl.mak
+ALL_BB_DRIVERS = \
+	CHAMELEON/DRIVER/COM/driver.mak \
+	SMBPCI/DRIVER/COM/driver_nat.mak
 
-ALL_USR_LIBS = MSCAN_API/COM/library.mak
+ALL_USR_LIBS = \
+	MSCAN_API/COM/library.mak \
+	SMB2_API/COM/library.mak
 
 ALL_CORE_LIBS = \
 	DBG/library.mak \
@@ -84,16 +89,17 @@ ALL_CORE_LIBS = \
 	CHAMELEON/COM/library.mak
 
 ALL_LL_TOOLS = \
-	Z017/EXAMPLE/Z17_SIMP/COM/program.mak \
-	Z017/TOOLS/Z17_IO/COM/program.mak \
-	Z017/TOOLS/Z127_IO/COM/program.mak \
-	Z017/TOOLS/Z127_IN/COM/program.mak \
-	Z017/TOOLS/Z127_OUT/COM/program.mak \
 	MSCAN/TOOLS/MSCAN_ALYZER/COM/program.mak \
 	MSCAN/TOOLS/MSCAN_LOOPB/COM/program.mak \
 	MSCAN/TOOLS/MSCAN_MENU/COM/program.mak \
 	MSCAN/TOOLS/MSCAN_PINGPONG/COM/program.mak \
-	MSCAN/TOOLS/MSCAN_CLIENT_SRV/COM/program.mak
+	MSCAN/TOOLS/MSCAN_CLIENT_SRV/COM/program.mak \
+	Z017/EXAMPLE/Z17_SIMP/COM/program.mak \
+	Z017/TOOLS/Z17_IO/COM/program.mak \
+	Z017/TOOLS/Z127_IO/COM/program.mak \
+	Z017/TOOLS/Z127_IN/COM/program.mak \
+	SMB2/EXAMPLE/SMB2_SIMP/COM/program.mak \
+	SMB2/TOOLS/SMB2_TEST/COM/program.mak
 
 ALL_COM_TOOLS = \
 	MDIS_API/M_ERRSTR/COM/program.mak \
@@ -110,11 +116,11 @@ ALL_COM_TOOLS = \
 	MDIS_API/M_WRITE/COM/program.mak \
 	FPGA_LOAD/COM/program.mak
 
-ALL_NATIVE_DRIVERS = 
+ALL_NATIVE_DRIVERS =
 
-ALL_NATIVE_LIBS = 
+ALL_NATIVE_LIBS =
 
-ALL_NATIVE_TOOLS = 
+ALL_NATIVE_TOOLS =
 
 ALL_DESC = system
 
