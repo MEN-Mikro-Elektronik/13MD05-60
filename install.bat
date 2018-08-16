@@ -13,6 +13,7 @@ REM ##########################################################################
 cls
 set G_defaultDir=c:\13MD05-60
 set G_logfile=setup.log
+set G_silentMode=""
 
 echo.
 echo  _________________________________________________________________________________________
@@ -20,7 +21,8 @@ echo ^|                                                                         
 echo ^| Welcome to the MDIS for VxWorks System Package installer from MEN Mikro Elektronik GmbH.^|
 echo ^| This installer will guide you through the installation process and perform required     ^|
 echo ^| steps.                                                                                  ^|
-echo ^| Usage: install.bat [^<installation path^>]                                                ^|
+echo ^| Usage: install.bat ^<installation path^> [silent]                                         ^|
+echo ^|        if 2nd argument is passed batch runs without asking, assuming yes to questions   ^|
 echo ^|_________________________________________________________________________________________^|
 echo.
 echo.
@@ -30,8 +32,18 @@ set G_MdisInstallPath=%G_defaultDir%
 set G_MdisInstallPath=%1
 )
 
+if "%2"=="" (
+echo running in interactive mode
+) else (
+echo running in auto yes mode
+set G_silentMode=1
+)
+
+
 echo.
 echo using install path %G_MdisInstallPath%
+
+if "%G_silentMode%"=="1" goto :NEXT1
 
 set answer=""
 set /p answer=Continue installation ([y/n], ENTER=n)?
@@ -40,6 +52,13 @@ if "%answer%"=="y" (
   echo ok, installing to %G_MdisInstallPath%
 ) else (
   goto :END
+)
+:NEXT1
+
+
+if "%G_silentMode%"=="1" (
+	mkdir %G_MdisInstallPath%
+	goto :NEXT2
 )
 
 REM ------------------------------------------------------------
@@ -53,6 +72,7 @@ if "%answer%"=="y" (
   mkdir %G_MdisInstallPath%
 )
 
+:NEXT2
 
 REM TODO check if folder is empty (seems to be an impossible nightmare under plain DOS)...
 REM however in 99% of cases the folder was created fresh.
