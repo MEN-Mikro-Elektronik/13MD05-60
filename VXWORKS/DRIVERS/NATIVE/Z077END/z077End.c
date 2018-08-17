@@ -1214,8 +1214,6 @@ LOCAL STATUS z077MemInit(
     if ((pDrvCtrl->endObj.pNetPool = memalign(4, sizeof(NET_POOL))) == NULL) {
         return ERROR;
     }
-#else
-#warning pNetPool not allocated!!!!
 #endif
 
 	if ( !CACHE_DMA_IS_WRITE_COHERENT ()) {
@@ -2913,7 +2911,6 @@ LOCAL STATUS z077PollStart (
 	)
 {
 	int         oldLevel;
-	UINT32      txbEmpty = 0, idxTx = 0;
 
 	oldLevel = intCpuLock ();          /* disable ints during update */
 
