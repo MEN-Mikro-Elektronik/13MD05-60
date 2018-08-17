@@ -10,22 +10,11 @@ REM       uses only basic DOS batch commands.
 REM
 REM ##########################################################################
 
-cls
 set G_defaultDir=c:\13MD05-60
 set G_logfile=setup.log
 set G_silentMode=""
 
-echo.
-echo  _________________________________________________________________________________________
-echo ^|                                                                                         ^|
-echo ^| Welcome to the MDIS for VxWorks System Package installer from MEN Mikro Elektronik GmbH.^|
-echo ^| This installer will guide you through the installation process and perform required     ^|
-echo ^| steps.                                                                                  ^|
-echo ^| Usage: install.bat ^<installation path^> [silent]                                         ^|
-echo ^|        if 2nd argument is passed batch runs without asking, assuming yes to questions   ^|
-echo ^|_________________________________________________________________________________________^|
-echo.
-echo.
+
 if "%1"=="" (
 set G_MdisInstallPath=%G_defaultDir%
 ) else (
@@ -39,6 +28,21 @@ echo running in auto yes mode
 set G_silentMode=1
 )
 
+if "%G_silentMode%"=="1" goto :NEXT0
+
+cls
+echo.
+echo  _________________________________________________________________________________________
+echo ^|                                                                                         ^|
+echo ^| Welcome to the MDIS for VxWorks System Package installer from MEN Mikro Elektronik GmbH.^|
+echo ^| This installer will guide you through the installation process and perform required     ^|
+echo ^| steps.                                                                                  ^|
+echo ^| Usage: install.bat ^<installation path^> [silent]                                         ^|
+echo ^|        if 2nd argument is passed batch runs without asking, assuming yes to questions   ^|
+echo ^|_________________________________________________________________________________________^|
+echo.
+echo.
+:NEXT0
 
 echo.
 echo using install path %G_MdisInstallPath%
@@ -55,7 +59,6 @@ if "%answer%"=="y" (
 )
 :NEXT1
 
-
 if "%G_silentMode%"=="1" (
 	mkdir %G_MdisInstallPath%
 	goto :NEXT2
@@ -71,7 +74,6 @@ if "%answer%"=="y" (
   echo Creating %G_MdisInstallPath% ...
   mkdir %G_MdisInstallPath%
 )
-
 :NEXT2
 
 REM TODO check if folder is empty (seems to be an impossible nightmare under plain DOS)...
@@ -140,7 +142,7 @@ for /F %%i in ('dir /B 13*') do (
    cd ..
 )
 
-
+if "%G_silentMode%"=="1" goto :NEXT3
 echo.
 echo Success! Installation is finished. Your MDIS for VxWorks System package plus drivers has been installed to %G_MdisInstallPath%.
 echo Your next possibilities: create a MDIS project using MDIS wizard
@@ -149,7 +151,7 @@ echo See also MDIS for VxWorks User Guide!
 echo.
 echo If you want you can now delete this folder.
 echo.
-
+:NEXT3
 
 :END
 exit /B
