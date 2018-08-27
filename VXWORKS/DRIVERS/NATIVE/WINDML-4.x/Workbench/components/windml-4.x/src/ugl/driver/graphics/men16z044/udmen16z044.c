@@ -329,7 +329,7 @@ WINDML_DEVICE * menUglGraphicsDevOpen
 	int deviceId,     /* descriptor of device to open */
 	int instance      /* instance of a device to open */
 	)
-{	
+{
     char name[256];
     WINDML_DEVICE * pDevice;
 
@@ -342,7 +342,7 @@ WINDML_DEVICE * menUglGraphicsDevOpen
 #ifdef Z044_DEBUG
 	uglLog( UGL_ERR_TYPE_INFO, "-> menUglGraphicsDevOpen: name = '%s'  pDevice = %p\n",name,pDevice,0,0,0 );
 #endif /* Z044_DEBUG */
-    
+
 	return (pDevice);
 
 }
@@ -376,7 +376,7 @@ UGL_UGI_DRIVER * uglmen16z044DevCreate
 	}
 
 	/* Allocate device data structure from shared memory */
-	pGenDriver = (UGL_GENERIC_DRIVER *)uglSharedMemAlloc(sizeof(UGL_GENERIC_DRIVER), 
+	pGenDriver = (UGL_GENERIC_DRIVER *)uglSharedMemAlloc(sizeof(UGL_GENERIC_DRIVER),
 														 UGL_MEM_CLEAR);
 
 	if( UGL_NULL == pGenDriver ) {
@@ -989,7 +989,7 @@ UGL_STATUS men16z044Deinitialize
 #else /* _WRS_KERNEL */
 
 	/* Initialize when execution in RTP */
-	ioctl (pGenDriver->pWmlDevice->fd, WINDML_MEN16Z044_INIT, (int)pGenDriver);
+	ioctl (pGenDriver->pWmlDevice->fd, WINDML_MEN16Z044_DEINIT, (int)pGenDriver);
 
 #endif /* _WRS_KERNEL */
 
