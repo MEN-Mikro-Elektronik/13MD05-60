@@ -494,9 +494,9 @@ LOCAL int sysTouchIoctl
 
 		case TOUCH_TRESHOLD_SET:
 			if( arg > TOUCH_TRESHOLD_MIN && arg < TOUCH_TRESHOLD_MAX ){
-				intState = intLock();
+				intState = intCpuLock();
 				G_ti.ds_thresh = arg;
-				intUnlock(intState);
+				intCpuUnlock(intState);
 			}
 			else
 				return ERROR;
