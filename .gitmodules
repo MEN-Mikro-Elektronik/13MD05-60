@@ -234,3 +234,7 @@
 	path = VXWORKS/LIBSRC/SMB2_SHC/COM
 	url = ../mdis_libsrc_smb2_shc_com.git
 	branch = master
+[submodule "13Z044-60"]
+	path = 13Z044-60
+	url = ../13Z044-60.git
+	branch = master
