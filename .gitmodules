@@ -242,3 +242,11 @@
 	path = 13Z072-06
 	url = ../13Z072-06.git
 	branch = master
+[submodule "13Z061-06"]
+	path = 13Z061-06
+	url = ../13Z061-06.git
+	branch = master
+[submodule "13Z075-06"]
+	path = 13Z075-06
+	url = ../13Z075-06.git
+	branch = master
