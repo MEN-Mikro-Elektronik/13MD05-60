@@ -25,3 +25,8 @@ Modifying the sources:
 The rules for the MDIS-Linux variant should be followed also for VxWorks, in order to establish and/or maintain good quality and structure:
 
 https://github.com/MEN-Mikro-Elektronik/13MD05-90/wiki/Configuration-Management-Plan-for-MDIS
+
+
+Notes:
+----------------------
+MDIS5 for VxWorks doesn't support vxWorks 64bits
