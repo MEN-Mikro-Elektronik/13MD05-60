@@ -113,6 +113,9 @@ for /F %%i in ('dir /B 13*-06') do (
    git describe --dirty --long --tags --always >> %G_MdisInstallPath%\%G_logfile%
    xcopy /S /E /I DRIVERS\MDIS_LL\* %G_MdisInstallPath%\VXWORKS\DRIVERS\MDIS_LL\ > NUL
    xcopy /S /E  INCLUDE\COM\MEN\* %G_MdisInstallPath%\VXWORKS\INCLUDE\COM\MEN\ > NUL
+   if exist LIBSRC (
+      xcopy /S /E  LIBSRC\* %G_MdisInstallPath%\VXWORKS\LIBSRC\ > NUL
+   )
    cd ..
 )
 
