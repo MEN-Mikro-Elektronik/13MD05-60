@@ -137,11 +137,11 @@ for /F %%i in ('dir /B 13*-60') do (
 REM ------------------------------------------------------------
 REM -- copy XML files of all drivers, therefore ('dir /B 13*')
 REM ------------------------------------------------------------
-echo Copying XML Files %G_MdisInstallPath%\PACKAGE_DESC ...
-mkdir %G_MdisInstallPath%\PACKAGE_DESC
+echo Copying XML Files to %G_MdisInstallPath%\VXWORKS\PACKAGE_DESC\ ...
+mkdir %G_MdisInstallPath%\VXWORKS\PACKAGE_DESC
 for /F %%i in ('dir /B 13*') do (
    cd %%i
-   copy PACKAGE_DESC\*.xml %G_MdisInstallPath%\PACKAGE_DESC\ > NUL
+   copy PACKAGE_DESC\*.xml %G_MdisInstallPath%\VXWORKS\PACKAGE_DESC\ > NUL
    cd ..
 )
 
