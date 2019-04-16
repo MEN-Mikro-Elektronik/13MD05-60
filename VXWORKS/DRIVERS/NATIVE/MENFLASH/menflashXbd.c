@@ -1131,7 +1131,7 @@ static STATUS MENFLASH_Ioctl
 				 {
 					 (*devP->memHdl->Ident)(devP->memHdl, buf, IDENT_BUF_SIZE);
 					 buf[IDENT_BUF_SIZE-1]='\0'; /* KlocWork finding: terminate last element of buf always with 0 */
-					 printf( stdout, buf );
+					 printf( (const char *)stdout, buf );
 					 free( buf );
 				 }/*if*/
 			   break;
@@ -1140,7 +1140,6 @@ static STATUS MENFLASH_Ioctl
 
 				break;
 			default:
-				DBGWRT_1((DBH,"MEN IOCTL:: UNKNOWN1 !!!!\n"));
 			   errnoSet (S_ioLib_UNKNOWN_REQUEST);
 			   status = ERROR;
 		}/*switch*/
@@ -1170,7 +1169,7 @@ static STATUS MENFLASH_Ioctl
 				code = MTD_IOCTL_INFO;
 			   break;
 			default:
-			DBGWRT_1((DBH,"MEN IOCTL:: UNKNOWN IOCTL !!!!!!!!!!1\n"));
+			DBGWRT_1((DBH,"MEN IOCTL:: UNKNOWN IOCTL!\n"));
 			   errnoSet (S_ioLib_UNKNOWN_REQUEST);
 			   status = ERROR;
 			   goto CLEANUP;
