@@ -490,7 +490,7 @@ speedblower {
     # ------------------------------------------------------------------------
 
     # FPGA system core clock
-    Z075_SYSCLK = U_INT32 32768000
+    Z075_SYSCLK = U_INT32 32000000
 
     # Resolution of frequency measurement
     # 0 := Level 0
