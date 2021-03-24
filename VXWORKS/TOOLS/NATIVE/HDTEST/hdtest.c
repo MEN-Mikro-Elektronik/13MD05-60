@@ -100,6 +100,7 @@ typedef struct HDTEST_HANDLE_T{
 	int return_teststatus;
 	int dont_delete_file;
 	int scrmode;				/* use tu_ functions */
+	int binmode;
 	u_int32 outAddr;
 	u_int32 rdXfer;
 	u_int32 wrtXfer;
@@ -179,6 +180,7 @@ static int usage(int no)
 	"   -s=<num>     max. number of seeks          (200)\n"
 	"   -r=<bufptr>  raw terminal (non screen) mode\n"
 	"                bufptr: char pointer to output buffer\n"
+	"   -b           put results as binary in output buffer\n"
 	"   -t           tape mode\n"
 	"   -w=<delay>   wait/taskDelay(delay)\n"
   "   -x           flash eprom mode\n"
@@ -255,6 +257,7 @@ int main( int argc, char *argv[] )
 	hdtH.return_teststatus = 0;
 	hdtH.dont_delete_file = 0;
 	hdtH.scrmode = 1;
+	hdtH.binmode = 0;
 	hdtH.outAddr = 0x0;
 	hdtH.rdXfer = 0;
 	hdtH.wrtXfer = 0;
@@ -272,7 +275,7 @@ int main( int argc, char *argv[] )
 
 	init_tests( tests );
 
-	if ((errstr = UTL_ILLIOPT("?ac=def=g=n=m=l=p=s=r=txz=w=", errbuf))) {
+	if ((errstr = UTL_ILLIOPT("?ac=def=g=n=m=l=p=s=r=btxz=w=", errbuf))) {
 		printf("*** %s\n",errstr);
 		return(1);
 	}
@@ -315,8 +318,19 @@ int main( int argc, char *argv[] )
 	if((optp = UTL_TSTOPT("r="))) {
 		hdtH.scrmode = 0;
 		sscanf( optp, "%x", (int*)&hdtH.outAddr);
-		printf("option -r = 0x%x\n",(unsigned int)hdtH.outAddr);
+
+		if((UTL_TSTOPT("b"))) {
+			hdtH.binmode = 1;
+			printf("option -r = 0x%x (binary)\n",(unsigned int)hdtH.outAddr);
+			int* outP = (int*)h->outAddr;
+			*outP++ = h->globerror;
+			*outP++ = h->wrtXfer;
+			*outP++ = h->rdXfer;
+		} else {
+			printf("option -r = 0x%x (string)\n",(unsigned int)hdtH.outAddr);
+		}
 	}
+
 
 	if((optp = UTL_TSTOPT("z="))){
 		sscanf( optp, "%x", (int*)&hdtH.external_buffer);
@@ -370,7 +384,7 @@ int main( int argc, char *argv[] )
 		if( (hdtH.filedesc = creat( hdtH.testfile, O_RDWR )) < 0 )
 #endif
  		{
-			printf("can't create file");
+			printf("can't create file\n");
 			return 1;
 		}
 
@@ -381,7 +395,7 @@ int main( int argc, char *argv[] )
 		strcat( nbuf, "@" );
 
 		if(( hdtH.filedesc = open(nbuf, O_RDWR, 0)) < 0  ){
-			printf("can't open %s", nbuf);
+			printf("can't open %s\n", nbuf);
 			return 1;
 		}
 	}
@@ -390,7 +404,7 @@ int main( int argc, char *argv[] )
 	 */
 	if(logfile)
 		if((hdtH.logptr = fopen(logfile, "w")) == NULL){
-			printf("can't open logfile %s", logfile);
+			printf("can't open logfile %s\n", logfile);
 			return 1;
 		}
 
@@ -466,10 +480,18 @@ static int cleanup(HDTEST_HANDLE_T *h, int no)
 	}
 	else{
 		if( h->outAddr ){
-			sprintf((char*)h->outAddr, "-e=%d -w=%d -r=%d ", h->globerror,
-				(int)h->wrtXfer, (int)h->rdXfer );
-		}
+			if( h->binmode ){
+				int* outP = (int*)h->outAddr;
 
+				*outP++ = h->globerror;
+				*outP++ = h->wrtXfer;
+				*outP++ = h->rdXfer;
+			}
+			else{
+				sprintf((char*)h->outAddr, "-e=%d -w=%d -r=%d ", h->globerror,
+					(int)h->wrtXfer, (int)h->rdXfer );
+			}
+		}
 		/* printf("%d total errors\n", h->globerror ); */
 	}
 
