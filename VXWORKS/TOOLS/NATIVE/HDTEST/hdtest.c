@@ -473,6 +473,9 @@ static int cleanup(HDTEST_HANDLE_T *h, int no)
 		/* printf("%d total errors\n", h->globerror ); */
 	}
 
+	if( h->return_teststatus ){
+		return h->globerror;
+	}
 	return no;
 }
 
