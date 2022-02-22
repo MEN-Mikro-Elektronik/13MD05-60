@@ -1405,7 +1405,7 @@ LOCAL void execBio
 	}
 
 	/* calculate the real size and residual */
-	size = nblocks * bd_bsize;
+	size = (unsigned)(nblocks * bd_bsize);
 	bio->bio_bcount = size;
 
 	/* If we have less than 1 block, set the resid and done it */

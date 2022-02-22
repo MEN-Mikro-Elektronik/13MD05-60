@@ -1813,7 +1813,8 @@ LOCAL STATUS z077Send
 	END_ERR_ADD (&pDrvCtrl->endObj, MIB2_OUT_UCAST, +1);
 
 	/* go to next Tx BD */
-	pDrvCtrl->nCurrTbd = (++pDrvCtrl->nCurrTbd % Z077_TBD_NUM);
+    pDrvCtrl->nCurrTbd++;
+	pDrvCtrl->nCurrTbd = (pDrvCtrl->nCurrTbd % Z077_TBD_NUM);
 
 	END_TX_SEM_GIVE (&pDrvCtrl->endObj);
 
@@ -2051,7 +2052,8 @@ LOCAL STATUS z077PollSend (
 	END_ERR_ADD (&pDrvCtrl->endObj, MIB2_OUT_UCAST, +1);
 
 	/* go to next Tx BD */
-	pDrvCtrl->nCurrTbd = (++pDrvCtrl->nCurrTbd % Z077_TBD_NUM);
+    pDrvCtrl->nCurrTbd++;
+	pDrvCtrl->nCurrTbd = (pDrvCtrl->nCurrTbd % Z077_TBD_NUM);
 
 	/* wait for completion. */
 	for (i = 0; i < Z077_TIMEOUT; i++)
