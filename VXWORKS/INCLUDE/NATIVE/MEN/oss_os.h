@@ -10,7 +10,7 @@
  *               headers
  *
  *     Switches: _OSS_COMPILE
- *               INCLUDE_MIPIOS_VX_TARGET for MIPIOS targets 
+ *               INCLUDE_MIPIOS_VX_TARGET for MIPIOS targets
  *
  *-------------------------------[ History ]---------------------------------
  *
@@ -137,10 +137,14 @@
 #include <errnoLib.h>
 #include <msgQLib.h>
 #include <stdio.h>
+#if _WRS_VXWORKS_MAJOR == 7
+#include <hwif/vxBus.h>
+#else
 #include <vxBusLib.h>
+#endif
 
 
-#if (_WRS_VXWORKS_MAJOR == 6) && (_WRS_VXWORKS_MINOR >= 6)
+#if ((_WRS_VXWORKS_MAJOR == 6) && (_WRS_VXWORKS_MINOR >= 6)) || (_WRS_VXWORKS_MAJOR >= 7)
     #include <spinLockLib.h>
 	#include <stdarg.h>
 #endif
@@ -190,7 +194,7 @@ typedef struct
     int32   ownMemSize;
 } OSS_ALARM_HANDLE;
 
-#if (_WRS_VXWORKS_MAJOR == 6) && (_WRS_VXWORKS_MINOR >= 6)
+#if ((_WRS_VXWORKS_MAJOR == 6) && (_WRS_VXWORKS_MINOR >= 6)) || (_WRS_VXWORKS_MAJOR >= 7)
 typedef spinlockIsr_t  OSS_SPINL_HANDLE;
 #else
 typedef void* OSS_SPINL_HANDLE;
@@ -270,8 +274,8 @@ typedef struct
 #define OSS_CALLBACK_MODE_DIRECT	2
 
 /* Macros to determine VxWorks version (from defines in target/h/version.h) */
-#define VXW_VERSION_CODE 			((_WRS_VXWORKS_MAJOR << 16 ) + (_WRS_VXWORKS_MINOR << 8 ) + (_WRS_VXWORKS_MAINT)) 
-#define VXW_VERSION(x,y,z) 			((x)<<16)+((y)<<8)+((z)) 
+#define VXW_VERSION_CODE 			((_WRS_VXWORKS_MAJOR << 16 ) + (_WRS_VXWORKS_MINOR << 8 ) + (_WRS_VXWORKS_MAINT))
+#define VXW_VERSION(x,y,z) 			((x)<<16)+((y)<<8)+((z))
 
 /*------------+
 | SHMEM       |

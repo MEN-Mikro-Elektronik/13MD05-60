@@ -64,8 +64,10 @@
 # (c) Copyright 2000..2010 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
 #*****************************************************************************
 
+ifneq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
 include $(WIND_BASE)/target/h/make/defs.$(WIND_HOST_TYPE)
 include $(WIND_BASE)/target/h/make/defs.default
+endif
 
 CPU  := $(CPU_SAVE)
 TOOL := $(TOOL_SAVE)
@@ -73,12 +75,16 @@ TOOL := $(TOOL_SAVE)
 ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_6_0)
 	include $(WIND_BASE)/target/h/tool/$(TOOLPATH)/make.$(CPU)$(TOOL)
 	MEN_VXWORKS_VERSION=-DMEN_VXWORKS_VERSION=$(MEN_VXWORKS_ENV_VER)
+else ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+	MEN_VXWORKS_VERSION=-DMEN_VXWORKS_VERSION=$(MEN_VXWORKS_ENV_VER)
 else
 	include $(WIND_BASE)/target/h/make/make.$(CPU)$(TOOL)
 endif
 
 # use GNU AR for diab toolchain too
 ifeq ($(TOOL),gnu)
+	GNUAR := $(AR)
+else ifeq ($(TOOL),llvm)
 	GNUAR := $(AR)
 else
 	GNUAR := ar$(VX_CPU_FAMILY)
@@ -109,17 +115,30 @@ VX_INC_DIR      :=  $(MEN_VX_DIR)/INCLUDE/NATIVE
 INC_DIR         :=  $(MEN_VX_DIR)/INCLUDE/COM
 MEN_VX_INC_DIR  :=  $(VX_INC_DIR)/MEN
 
+ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+INC_DIRS:=-I$(VXWORKS_VSB_DIR)/krnl/h/common  \
+    -I$(VXWORKS_VSB_DIR)/krnl/h/public        \
+    -I$(VXWORKS_VSB_DIR)/krnl/h/system        \
+    -I$(VXWORKS_VSB_DIR)/share/h              \
+    -I$(INC_DIR)                              \
+    $(EXTRA_INCLUDE)                          \
+    -I$(VX_INC_DIR)
+else
 INC_DIRS:=-I$(WIND_BASE)/target     \
     -I$(WIND_BASE)/target/h         \
     -I$(INC_DIR)                    \
-	$(EXTRA_INCLUDE)				\
+    $(EXTRA_INCLUDE)                \
     -I$(VX_INC_DIR)
+endif
 
 #**************************************
 #   Compiler flags
 #
 FLAGS           :=$(CC_OPTIM_TARGET) -DCPU=$(CPU)
 DEF             :=-DVXWORKS
+ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+DEF             +=-D_VSB_CONFIG_FILE=\"$(VXWORKS_VSB_DIR)/h/config/vsbConfig.h\"
+endif
 
 ifndef WARN_LEVEL
     WARN_LEVEL := -Wall

@@ -79,9 +79,11 @@
 
 CPU  := $(CPU_SAVE)
 TOOL := $(TOOL_SAVE)
-
+	
 ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_6_0)
 	include $(WIND_BASE)/target/h/tool/$(TOOLPATH)/make.$(CPU)$(TOOL)
+	MEN_VXWORKS_VERSION=-DMEN_VXWORKS_VERSION=$(MEN_VXWORKS_ENV_VER)
+else ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
 	MEN_VXWORKS_VERSION=-DMEN_VXWORKS_VERSION=$(MEN_VXWORKS_ENV_VER)
 else
 	include $(WIND_BASE)/target/h/make/make.$(CPU)$(TOOL)
@@ -89,6 +91,9 @@ endif
 
 # use GNU AR and NM for diab toolchain too
 ifneq (,$(findstring gnu,$(TOOL)))
+	GNUAR  := $(AR)
+	GNU_NM := $(NM)
+else ifneq (,$(findstring llvm,$(TOOL)))
 	GNUAR  := $(AR)
 	GNU_NM := $(NM)
 else
@@ -134,19 +139,33 @@ INC_DIR         :=  $(MEN_VX_DIR)/INCLUDE/COM
 VX_INC_DIR      :=  $(MEN_VX_DIR)/INCLUDE/NATIVE
 MEN_VX_INC_DIR  :=  $(VX_INC_DIR)/MEN
 
+ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+INC_DIRS:=-I$(VXWORKS_VSB_DIR)/krnl/h/common \
+    -I$(VXWORKS_VSB_DIR)/krnl/h/public       \
+    -I$(VXWORKS_VSB_DIR)/krnl/h/system       \
+    -I$(VXWORKS_VSB_DIR)/share/h             \
+    -I$(INC_DIR)                             \
+    -I$(VX_INC_DIR)                          \
+    -I$(THIS_DIR)                            \
+    $(EXTRA_INCLUDE)
+else
 INC_DIRS:=-I$(WIND_BASE)/target     \
     -I$(WIND_BASE)/target/h         \
     -I$(WIND_BASE)/target/h/drv/pci \
     -I$(INC_DIR)                    \
-    -I$(VX_INC_DIR)					\
-	-I$(THIS_DIR)					\
-	$(EXTRA_INCLUDE)
+    -I$(VX_INC_DIR)                 \
+    -I$(THIS_DIR)                   \
+    $(EXTRA_INCLUDE)
+endif
 
 #**************************************
 #   Compiler flags
 #
 FLAGS           :=$(CC_OPTIM_TARGET) -DCPU=$(CPU)
 DEF             :=-DVXWORKS -DMAC_MEM_MAPPED -D_LL_DRV_ -DOSS_HAS_IRQMASKR
+ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+DEF             +=-D_VSB_CONFIG_FILE=\"$(VXWORKS_VSB_DIR)/h/config/vsbConfig.h\"
+endif
 
 ifndef WARN_LEVEL
     WARN_LEVEL := -w

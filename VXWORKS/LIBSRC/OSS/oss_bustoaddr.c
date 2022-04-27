@@ -64,11 +64,18 @@ const char *OSS_BusToIdentString="$Id: oss_bustoaddr.c,v 1.11 2012/09/10 16:21:2
 #include <MEN/dbg.h>        /* debug module */
 #include "oss_intern.h"
 
+#if _WRS_VXWORKS_MAJOR != 7
 #include <vme.h>
+#endif
 #ifdef PCI
 #include <dllLib.h>       /* double link list lib */
+#if _WRS_VXWORKS_MAJOR == 7
+#include <hwif/buslib/pciDefines.h>  /* pci cfg register access */
+#include <hwif/buslib/vxbPciLib.h>
+#else
 #include <drv/pci/pciConfigLib.h>  /* pci cfg register access */
 #include <hwif/vxbus/vxbPciLib.h>
+#endif /* vxworks7 */
 #endif
 
 #include <sysLib.h>
@@ -158,7 +165,11 @@ int32 OSS_BusToPhysAddr
     u_int32  addrMod;
     u_int32  size;
 #ifdef OSS_VXBUS_SUPPORT
+#if _WRS_VXWORKS_MAJOR == 7
+    VXB_DEV_ID busCtrlID;
+#else
     VXB_DEVICE_ID busCtrlID;
+#endif
     u_int16  domain=0;
 #endif
 #ifdef PCI
@@ -182,7 +193,7 @@ int32 OSS_BusToPhysAddr
 	    inAddr = va_arg( argptr, void* );
 	    *physicalAddrP = inAddr;
 	    break;
-
+#if _WRS_VXWORKS_MAJOR != 7
 	case OSS_BUSTYPE_VME:
 	    inAddr  = va_arg( argptr, void* );
 	    addrMod = va_arg( argptr, u_int32 );
@@ -221,7 +232,7 @@ int32 OSS_BusToPhysAddr
 #endif
 		}/*if*/
 	    break;
-
+#endif
 	case OSS_BUSTYPE_PCI:
 #ifdef PCI
 
@@ -297,8 +308,11 @@ int32 OSS_BusToPhysAddr
 		  retCode = ERR_OSS_PCI;
 
 		}
-
+#if _WRS_VXWORKS_MAJOR == 7
+		retCode = men_vxbPciConfigInLong(busCtrlID,
+#else
 		retCode = vxbPciConfigInLong(busCtrlID,
+#endif
 					     OSS_BUS_NBR(busNbr),
 					     pciDevNbr,
 					     pciFunction,
@@ -410,7 +424,11 @@ int32 OSS_PciGetConfig
     UINT8	value8;
     int16 idx, access;
 #ifdef OSS_VXBUS_SUPPORT
+#if _WRS_VXWORKS_MAJOR == 7
+    VXB_DEV_ID busCtrlID;
+#else
     VXB_DEVICE_ID busCtrlID;
+#endif
     int16 domain=0;
 #endif
 
@@ -443,31 +461,40 @@ int32 OSS_PciGetConfig
 	{
 	case 4:
 #ifdef OSS_VXBUS_SUPPORT
+#if _WRS_VXWORKS_MAJOR == 7
+	    retCode = men_vxbPciConfigInLong( busCtrlID, busNbr, pciDevNbr, pciFunction, idx, &value32);
+#else
 	    retCode = vxbPciConfigInLong( busCtrlID, busNbr, pciDevNbr, pciFunction, idx, &value32);
+#endif
 #else
 	    retCode = pciConfigInLong( busNbr, pciDevNbr, pciFunction, idx, &value32);
 #endif
-
 	    *valueP = (u_int32)value32;
 	    break;
 
 	case 2:
 #ifdef OSS_VXBUS_SUPPORT
+#if _WRS_VXWORKS_MAJOR == 7
+	    retCode = men_vxbPciConfigInWord( busCtrlID, busNbr, pciDevNbr, pciFunction, idx, &value16 );
+#else
 	    retCode = vxbPciConfigInWord( busCtrlID, busNbr, pciDevNbr, pciFunction, idx, &value16 );
+#endif
 #else
 	    retCode = pciConfigInWord( busNbr, pciDevNbr, pciFunction, idx, &value16 );
 #endif
-
 	    *valueP = (u_int32)value16 & 0xffff;
 	    break;
 
 	case 1:
 #ifdef OSS_VXBUS_SUPPORT
+#if _WRS_VXWORKS_MAJOR == 7
+	    retCode = men_vxbPciConfigInByte( busCtrlID, busNbr, pciDevNbr, pciFunction, idx, &value8);
+#else
 	    retCode = vxbPciConfigInByte( busCtrlID, busNbr, pciDevNbr, pciFunction, idx, &value8);
+#endif
 #else
 	    retCode = pciConfigInByte( busNbr, pciDevNbr, pciFunction, idx, &value8 );
 #endif
-
 	    *valueP = (u_int32)value8 & 0xff;
 	    break;
 	}/*switch*/
@@ -524,7 +551,11 @@ OSS_HANDLE *osHdl,
       int32   retCode = 0;
       int16 idx, access;
 #ifdef OSS_VXBUS_SUPPORT
+#if _WRS_VXWORKS_MAJOR == 7
+      VXB_DEV_ID busCtrlID;
+#else
       VXB_DEVICE_ID busCtrlID;
+#endif
       int16 domain=0;
 #endif
 
@@ -551,7 +582,11 @@ switch( access )
     {
     case 4:
 #ifdef OSS_VXBUS_SUPPORT
+#if _WRS_VXWORKS_MAJOR == 7
+	retCode = men_vxbPciConfigOutLong( busCtrlID, busNbr, pciDevNbr, pciFunction, idx, (int)value);
+#else
 	retCode = vxbPciConfigOutLong( busCtrlID, busNbr, pciDevNbr, pciFunction, idx, (int)value);
+#endif
 #else
         retCode = pciConfigOutLong( busNbr, pciDevNbr, pciFunction, idx, (int)value);
 #endif
@@ -559,7 +594,11 @@ switch( access )
 
     case 2:
 #ifdef OSS_VXBUS_SUPPORT
+#if _WRS_VXWORKS_MAJOR == 7
+	retCode = men_vxbPciConfigOutWord( busCtrlID, busNbr, pciDevNbr, pciFunction, idx, (short)value );
+#else
 	retCode = vxbPciConfigOutWord( busCtrlID, busNbr, pciDevNbr, pciFunction, idx, (short)value );
+#endif
 #else
 	retCode = pciConfigOutWord( busNbr, pciDevNbr, pciFunction, idx, (short)value );
 #endif
@@ -567,7 +606,11 @@ switch( access )
 
     case 1:
 #ifdef OSS_VXBUS_SUPPORT
+#if _WRS_VXWORKS_MAJOR == 7
+	retCode = men_vxbPciConfigOutByte( busCtrlID, busNbr, pciDevNbr, pciFunction, idx, (char)value);
+#else
 	retCode = vxbPciConfigOutByte( busCtrlID, busNbr, pciDevNbr, pciFunction, idx, (char)value);
+#endif
 #else
 	retCode = pciConfigOutByte( busNbr, pciDevNbr, pciFunction, idx, (char)value);
 #endif

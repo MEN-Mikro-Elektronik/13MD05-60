@@ -151,7 +151,7 @@ int32 BK_ConsistencyCheck
     bbListElBefore = NULL;
     while( bbListElement && bbListElement->bbData )
     {
-        if( bbListElement->bbData->descP
+        if( bbListElement->bbData->descP 
         	 == bbDescSpec
         	&& bbDescSpec != NULL
           )
@@ -179,7 +179,7 @@ CLEANUP:
 /************************** BK_GetBBHandle **********************************
  *
  *  Description: Looks for <boardNameInstanz> in the baseboard list.
- *               Creates a new element and initialises the base board
+ *               Creates a new element and initialises the base board 
  *               if not in list.
  *				 Increments the link count.
  *				 Initializes the BK module if BK_SemId == NULL.
@@ -223,7 +223,7 @@ int32 BK_GetBBHandle
     *bbDataHdlP = 0;
 
 	/*----------------------+
-	| BK semaphore exists ? |
+	| BK semaphore exists ? |  
 	+----------------------*/
     if( BK_SemHdl == NULL )
 	{
@@ -335,9 +335,10 @@ int32 BK_GetBBHandle
         {
             OSS_MemFree( OSS_VXWORKS_OS_HDL, bbListElement->bbData, gotsize2 );
             bbListElement->bbData = NULL;
-            if( bbListElement->memSize )
+            if( bbListElement->memSize ) {
                 OSS_MemFree( OSS_VXWORKS_OS_HDL, bbListElement, bbListElement->memSize );
             	bbListElement = NULL;
+            }
             DBGWRT_ERR( ( DBH, "%s%s: DESC_GetString() BRD_HANLDER %s%d%s",
                           errorStartStr, functionName, errorLineStr, __LINE__, errorEndStr ));
             goto END;
@@ -356,9 +357,10 @@ int32 BK_GetBBHandle
         {
             OSS_MemFree( OSS_VXWORKS_OS_HDL, bbListElement->bbData, gotsize2 );
             bbListElement->bbData = NULL;
-            if( bbListElement->memSize )
+            if( bbListElement->memSize ) {
                 OSS_MemFree( OSS_VXWORKS_OS_HDL, bbListElement, bbListElement->memSize );
             	bbListElement = NULL;
+            }
             DBGWRT_ERR( ( DBH, "%s%s: DESC_GetUInt32() DEBUG_LEVEL_BK %s%d%s",
                           errorStartStr, functionName, errorLineStr, __LINE__, errorEndStr ));
             goto END;
@@ -371,9 +373,10 @@ int32 BK_GetBBHandle
         {
             OSS_MemFree( OSS_VXWORKS_OS_HDL, bbListElement->bbData, gotsize2 );
             bbListElement->bbData = NULL;
-            if( bbListElement->memSize )
+            if( bbListElement->memSize ) {
                 OSS_MemFree( OSS_VXWORKS_OS_HDL, bbListElement, bbListElement->memSize );
             	bbListElement = NULL;
+            }
             goto END;
         }/*if*/
 
@@ -447,9 +450,10 @@ int32 BK_GetBBHandle
             OSS_MemFree( OSS_VXWORKS_OS_HDL, bbListElement->bbData, gotsize2 );
             bbListElement->bbData = NULL;
 
-            if( bbListElement->memSize )
+            if( bbListElement->memSize ) {
                 OSS_MemFree( OSS_VXWORKS_OS_HDL, bbListElement, bbListElement->memSize );
             	bbListElement = NULL;
+            }
             DBGWRT_ERR( ( DBH, "%s%s: OSS_MemGet() %s%d%s",
                           errorStartStr, functionName, errorLineStr, __LINE__, errorEndStr ));
             retCode = ERR_OSS_MEM_ALLOC;
@@ -535,8 +539,8 @@ int32 BK_UnGetBBHandle
     BK_BASE_BOARD_LIST_ELEMENT *bbListElBefore;
     BK_BASE_BOARD_LIST_ELEMENT *bbListElAfter;
 
-    DBGWRT_1((DBH,"%s( 0x%08x ) %s links %d\n", functionName,
-              bbDataHdlP, bbListElement->bbData->bbName,
+    DBGWRT_1((DBH,"%s( 0x%08x ) %s links %d\n", functionName, 
+              bbDataHdlP, bbListElement->bbData->bbName, 
               bbListElement->bbData->linkCount ));
 
     /* BK semaphore take */
@@ -666,8 +670,8 @@ int BK_Show( void )
     {
         if( bbListElement->bbData )
         {
-            printf("%s\t%s\t    %d\n",
-            		bbListElement->bbData->bbName ?
+            printf("%s\t%s\t    %d\n", 
+            		bbListElement->bbData->bbName ? 
                         bbListElement->bbData->bbName : "----",
                     bbListElement->bbData->brdDrvName,
                     (int) bbListElement->bbData->linkCount );
@@ -706,7 +710,7 @@ int BK_Show2( int verbose )
     printf("\n\n=== BK Baseboard List ===\n");
 
 	printf("ANCHOR  %08x\n", (int)bbListElement );
-
+	
 
     /* show all baseboards */
     while( bbListElement )

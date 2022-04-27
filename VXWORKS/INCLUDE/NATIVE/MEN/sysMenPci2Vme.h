@@ -68,7 +68,7 @@ extern "C" {
 
 #define SYS_VME_A24_D16				0x01
 #define SYS_VME_A24_D32				0x02
-#define SYS_VME_A24_D64             0x03
+#define SYS_VME_A24_D64				0x03
 #define SYS_VME_A32_D16				0x04
 #define SYS_VME_A32_D32				0x05
 #define SYS_VME_A32_D64				0x06
@@ -76,7 +76,7 @@ extern "C" {
 #define SYS_VME_AXX_DXX_SWAPPED		0x10  /* swapped flag */
 #define SYS_VME_A24_D16_SWAPPED		0x11
 #define SYS_VME_A24_D32_SWAPPED		0x12
-#define SYS_VME_A24_D64_SWAPPED     0x13
+#define SYS_VME_A24_D64_SWAPPED		0x13
 #define SYS_VME_A32_D16_SWAPPED		0x14
 #define SYS_VME_A32_D32_SWAPPED		0x15
 #define SYS_VME_A32_D64_SWAPPED		0x16
@@ -194,7 +194,7 @@ IMPORT SYS_VME_REQ_MODE sysVmeBusRequesterMode
     	u_int32 modifier,  /* SYS_VME_A24_D16 .. SYS_VME_A32_D32_SWAPPED */
     	int     timeOutTicks /* timeout in system ticks min 1 tick */
     );
-	
+
 	void sysMenPci2VmeSpaceName( int spcNumber, char* spcName );
 
 #endif /*MEN_PLD_Z002*/

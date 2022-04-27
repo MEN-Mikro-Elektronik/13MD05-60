@@ -23,8 +23,12 @@ endif
 ifeq ($(WIND_HOST_TYPE),x86-win32)
 	cwd := $(shell cmd /c cd)
 	cwd := $(subst \,/,$(cwd))
-    export ECHO		:=echo
-    export WTXTCL	:=wtxtcl
+	export ECHO		:=echo
+  ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+	export WTXTCL	:=tclsh
+  else
+	export WTXTCL	:=wtxtcl
+  endif
 else
 	cwd := $(shell pwd)
 endif
@@ -110,10 +114,17 @@ MK_CORE			:=  MK/library.mak \
 # RTP support starts with VxWorks 6.0
 #
 ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_6_0)
-    ifeq ($(RTP_FLAGS), -DINCLUDE_RTP)
+	ifeq ($(RTP_FLAGS), -DINCLUDE_RTP)
 		RTP_CORE 		:= MDIS_API_RTP/library.mak	\
 						   USR_OSS_RTP/library.mak
 	else #RTP_FLAGS != -DINCLUDE_RTP
 		RTP_CORE		:=
-    endif #RTP_FLAGS != -DINCLUDE_RTP
+	endif #RTP_FLAGS != -DINCLUDE_RTP
+else ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+	ifeq ($(RTP_FLAGS), -DINCLUDE_RTP)
+		RTP_CORE 		:= MDIS_API_RTP/library.mak	\
+						   USR_OSS_RTP/library.mak
+	else #RTP_FLAGS != -DINCLUDE_RTP
+		RTP_CORE		:=
+	endif #RTP_FLAGS != -DINCLUDE_RTP
 endif

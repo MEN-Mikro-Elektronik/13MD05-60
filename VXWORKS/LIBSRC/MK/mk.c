@@ -433,7 +433,7 @@ typedef struct
 
 #ifdef OSS_VXBUS_SUPPORT
 /*return vxbus device ID of the PCI bus controller connecting MDIS FPGA*/
-IMPORT VXB_DEVICE_ID sysGetMdisBusCtrlID(void);
+IMPORT VXB_DEVICE_ID sysGetMdisBusCtrlID(void); 
 #endif
 
 /*-----------------------------------------+
@@ -1283,7 +1283,7 @@ int32 MK_Open
 			|  PCI device, get IRQ from config space  |
 			+----------------------------------------*/
 			if( (retCode = OSS_PciGetConfig(
-					OSS_VXWORKS_OS_HDL,
+					OSS_VXWORKS_OS_HDL, 
 					dev->pciBusNbr, dev->pciDevNbr,
 				dev->pciFuncNbr, OSS_PCI_INTERRUPT_LINE,
 				&intLine ))){
@@ -1304,7 +1304,7 @@ int32 MK_Open
 		}
 #endif /* PCI */
 		MKWVDELAY(1);
-
+      
       if( (llUseIrq || (bbListElement->bbData->irqMode & BBIS_IRQ_EXP))) /* irq's supported ? */
         {
 	  DBGWRT_2((DBH," calling OSS_IrqHdlCreate for irqVect=%d irqLevel=%d\n", irqVect, irqLevel ));
@@ -1391,7 +1391,7 @@ int32 MK_Open
         /*-----------------+
         | call LL-init()   |
         +-----------------*/
-
+		
 		MKWVEV(MK_WV_EV_OPEN_LL_INIT);
         retCode = dev->llDrvEntrys.init( dev->llDescSpec,
                         OSS_VXWORKS_OS_HDL,
@@ -1459,7 +1459,7 @@ int32 MK_Open
         /*----------------------------------+
         | IRQ ENABLE if set in descriptor   |
         +----------------------------------*/
-
+		
 		MKWVEV(MK_WV_EV_OPEN_IRQ_ENABLE);
         if( dev->irqHandle )   /* irq's supported ? */
         {
@@ -3015,7 +3015,7 @@ static int32 MK_IrqInstall  /*nodoc*/
 					goto LEAVE_IT;
 			}
 
-			pciIrqNum = irq; /* irq=intNbr-ossIrqNum0 see above:practicaly ossIrqNum0 has
+			pciIrqNum = irq; /* irq=intNbr-ossIrqNum0 see above:practicaly ossIrqNum0 has 
 								no influence in this case */
 
 			error = MK_smpPciIrqNumToVirtualIrqNumRtn( pciIrqNum, &virtualIrqNum );
@@ -3037,9 +3037,9 @@ static int32 MK_IrqInstall  /*nodoc*/
 
 		/* ts@men: here regular A21 obmmod IRQ is installed
 		logMsg("%s: connecting MK_Irq(). &MK_Irq = %x\n", __FUNCTION__,(int)MK_Irq,3,4,5,6); */
-
+		
         vxRetCode = (*MK_intConnectRtn)( (VOIDFUNCPTR*) INUM_TO_IVEC(intNbr), (VOIDFUNCPTR) MK_Irq, irq );
-
+        
 	    if( vxRetCode != OK )
     	{
         	DBGWRT_LEVERR(dbgLev,(DBH, "%s%s: MK_intConnectRtn %s%d%s", errorStartStr, functionName, errorLineStr, __LINE__, errorEndStr ));
@@ -3158,8 +3158,11 @@ static int32 MK_IrqRemove  /*nodoc*/
 	MK_DataUnlock();
 
 	*isrNodeP = NULL;
-    OSS_MemFree( OSS_VXWORKS_OS_HDL, (int8*) isrNode, isrNode->gotsize );
-   	isrNode = NULL;
+    if( (error = OSS_MemFree( OSS_VXWORKS_OS_HDL, (int8*) isrNode, isrNode->gotsize )) )
+    {
+        error = ERR_MK_IRQ_REMOVE;
+    }
+    isrNode = NULL;
 
     return( error );
 }/*MK_IrqRemove*/
@@ -3613,27 +3616,27 @@ static int32 CheckPciDev( MK_DEVICE_DATA *dev )	/* nodoc */
 	int32 error;
 
 	DBGWRT_1((DBH, "MK - CheckPciDev\n"));
-	if( (error = OSS_PciGetConfig( OSS_VXWORKS_OS_HDL,
+	if( (error = OSS_PciGetConfig( OSS_VXWORKS_OS_HDL, 
 								   dev->pciBusNbr,
 								   dev->pciDevNbr,
 								   dev->pciFuncNbr, OSS_PCI_VENDOR_ID,
 								   (int32 *)&vendorId )) ||
-		(error = OSS_PciGetConfig( OSS_VXWORKS_OS_HDL,
+		(error = OSS_PciGetConfig( OSS_VXWORKS_OS_HDL, 
 								   dev->pciBusNbr,
 								   dev->pciDevNbr,
 								   dev->pciFuncNbr, OSS_PCI_DEVICE_ID,
 								   (int32 *)&deviceId )) ||
-		(error = OSS_PciGetConfig( OSS_VXWORKS_OS_HDL,
+		(error = OSS_PciGetConfig( OSS_VXWORKS_OS_HDL, 
 				                   dev->pciBusNbr,
 								   dev->pciDevNbr,
 								   dev->pciFuncNbr, OSS_PCI_SUBSYS_VENDOR_ID,
 								   (int32 *)&subSysVendorId )) ||
-		(error = OSS_PciGetConfig( OSS_VXWORKS_OS_HDL,
+		(error = OSS_PciGetConfig( OSS_VXWORKS_OS_HDL, 
 								   dev->pciBusNbr,
 								   dev->pciDevNbr,
 								   dev->pciFuncNbr, OSS_PCI_SUBSYS_ID,
 				   (int32 *)&subSysId )))
-      {
+      {		
 		DBGWRT_ERR((DBH," *** CheckPciDev: Error 0x%x reading cfg space\n",
 					error ));
 		return error;

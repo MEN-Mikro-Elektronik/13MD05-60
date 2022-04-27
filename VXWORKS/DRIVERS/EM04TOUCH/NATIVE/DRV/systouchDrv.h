@@ -58,7 +58,7 @@
 /*--------------------------------------------------------------------------+
  |	INCLUDES											              		|
  +--------------------------------------------------------------------------*/
-#include "vxWorks.h"
+#include <vxWorks.h>
 #include <MEN/men_typs.h>
 #include <MEN/oss.h>
 #include <MEN/dbg.h>
@@ -68,12 +68,11 @@
 #include <MEN/em04touch.h>
 #include <MEN/16z044_disp.h>
 #include <MEN/sysMenTouchDrv.h>
-#include "iv.h"
-#include "errnoLib.h"
-#include "ioLib.h"
-#include "intLib.h"
-#include "iosLib.h"
-#include "config.h"
+#include <iv.h>
+#include <errnoLib.h>
+#include <ioLib.h>
+#include <intLib.h>
+#include <iosLib.h>
 #include <stdio.h>
 #include <cacheLib.h>
 #include <string.h>
@@ -85,6 +84,9 @@
 #include "sysLib_men.h"
 
 #ifdef SYSTOUCH_IRQ_FROM_PCI
+#if _WRS_VXWORKS_MAJOR == 7
+#error SYSTOUCH_IRQ_FROM_PCI not supported for VxWorks 7
+#endif
 	/* Standard VxWorks driver libraries */
 #	include "drv/pci/pciConfigLib.h"   /* for PCI const */
 #	include "drv/pci/pciIntLib.h"      /* for PCI interrupt */
@@ -125,5 +127,4 @@ int sysTouchRemove(void);
 #endif
 
 #endif	/* _SYSTOUCHDRV_H */
-
 

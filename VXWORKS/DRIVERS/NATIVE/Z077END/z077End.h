@@ -139,8 +139,13 @@ typedef STATUS (* Z077_MACLOADFUNC)( UINT32 unitNum, Z077_MAC_ADDR addr );
  typedef STATUS (* Z077_INT_CONNECT_FNT)(VOIDFUNCPTR *, VOIDFUNCPTR , int );
  typedef STATUS (* Z077_INT_ENABLE_FNT)(int);
 #else
+#if _WRS_VXWORKS_MAJOR == 7
+ typedef STATUS (* Z077_INT_CONNECT_FNT)(VXB_DEV_ID, VXB_RESOURCE *, VOIDFUNCPTR , int );
+ typedef STATUS (* Z077_INT_ENABLE_FNT)(VXB_DEV_ID, VXB_RESOURCE *);
+#else
  typedef STATUS (* Z077_INT_CONNECT_FNT)(VXB_DEVICE_ID, VOIDFUNCPTR *, VOIDFUNCPTR , int );
  typedef STATUS (* Z077_INT_ENABLE_FNT)(VXB_DEVICE_ID, int, VOIDFUNCPTR , void *);
+#endif
 #endif
 
 /* this descriptor is used to configure each Z077 END unit */
@@ -480,35 +485,85 @@ STATUS (*z077InShortRtn)(UINT addr, USHORT *pData) = NULL;
 #endif
 #endif
 
+
 /* swap register definitions */
+
 #ifdef Z077_BIG_ENDIAN
-#define Z77WRITE_D32(ma, offs,val) \
-	*(volatile u_int32*)((u_int8*)(ma)+(offs)) = OSS_SWAP32(val)
-#define Z77WRITE_D16(ma,offs,val) \
-	*(volatile u_int16*)((u_int8*)(ma)+(offs)) = OSS_SWAP16(val)
-#define Z77READ_D32(ma,offs) \
-	OSS_Swap32(*(volatile u_int32*)((u_int8*)(ma)+(offs)))
-#define Z77READ_D16(ma,offs) \
-	OSS_Swap16(*(volatile u_int16*)((u_int8*)(ma)+(offs)))
-#define Z87_MSETMASK_D32(ma,offs,mask) \
-	*(volatile u_int32*)((u_int8*)(ma)+(offs)) |= OSS_SWAP32(mask)
-#define Z87_MCLRMASK_D32(ma,offs,mask) \
-	*(volatile u_int32*)((u_int8*)(ma)+(offs)) &= ~OSS_SWAP32(mask)
+#define Z077_MEM_HANDLE     VXB_HANDLE_SWAP(VXB_HANDLE_ORDERED)
 #else
-/* without swapping */
-#define Z77WRITE_D32(ma, offs,val) \
-	(*(volatile u_int32*)((u_int8*)(ma)+(offs)) = (val))
-#define Z77WRITE_D16(ma,offs,val) \
-	(*(volatile u_int16*)((u_int8*)(ma)+(offs)) = (val))
-#define Z77READ_D32(ma,offs) \
-	(*(volatile u_int32*)((u_int8*)(ma)+(offs)))
-#define Z77READ_D16(ma,offs) \
-	(*(volatile u_int16*)((u_int8*)(ma)+(offs)))
-#define Z77SETMASK_D32(ma,offs,mask) \
-	*(volatile u_int32*)((u_int8*)(ma)+(offs)) |= mask
-#define Z77CLRMASK_D32(ma,offs,mask) \
-	*(volatile u_int32*)((u_int8*)(ma)+(offs)) &= ~(mask)
+#define Z077_MEM_HANDLE     VXB_HANDLE_ORDERED
 #endif
+
+#define Z77WRITE_D32(ma, offs,val)  \
+    z077WriteD32 ((_WRS_IOLONG)(ma), (size_t)(offs), (UINT32)(val))
+
+_WRS_INLINE void z077WriteD32 (_WRS_IOLONG addr, size_t offset, UINT32 val)
+    {
+    void * handle = (void *)Z077_MEM_HANDLE;
+
+    vxbWrite32 (handle, (UINT32 *)(addr + offset), val);
+    }
+
+#define Z77WRITE_D16(ma,offs,val)   \
+        z077WriteD16 ((_WRS_IOLONG)(ma), (size_t)(offs), (UINT16)(val))
+
+_WRS_INLINE void z077WriteD16 (_WRS_IOLONG addr, size_t offset, UINT16 val)
+    {
+    void * handle = (void *)Z077_MEM_HANDLE;
+
+    vxbWrite16 (handle, (UINT16 *)(addr + offset), val);
+    }
+
+
+#define Z77READ_D32(ma,offs)        \
+    z077ReadD32 ((_WRS_IOLONG)(ma), (size_t)(offs))
+
+_WRS_INLINE u_int32 z077ReadD32 (_WRS_IOLONG addr, size_t offset)
+    {
+    void * handle = (void *)Z077_MEM_HANDLE;
+
+    return vxbRead32 (handle, (UINT32 *)(addr + offset));
+    }
+
+#define Z77READ_D16(ma,offs)        \
+    z077ReadD16 ((_WRS_IOLONG)(ma), (size_t)(offs))
+
+_WRS_INLINE u_int16 z077ReadD16 (_WRS_IOLONG addr, size_t offset)
+    {
+    void * handle = (void *)Z077_MEM_HANDLE;
+
+    return vxbRead16 (handle, (UINT16 *)(addr + offset));
+    }
+
+#define Z87_MSETMASK_D32(ma,offs,mask)  \
+    z087MsetMaskD32((_WRS_IOLONG)(ma), (size_t)(offs), (UINT32)(mask))
+
+_WRS_INLINE void z087MsetMaskD32 (_WRS_IOLONG addr, size_t offset, UINT32 mask)
+    {
+    void * handle = (void *)Z077_MEM_HANDLE;
+    UINT32 val;
+
+    val = vxbRead32 (handle, (UINT32 *)(addr + offset));
+
+    val |= mask;
+
+    vxbWrite32 (handle, (UINT32 *)(addr + offset), val);
+    }
+
+#define Z87_MCLRMASK_D32(ma,offs,mask)  \
+    z087MclrMaskD32((_WRS_IOLONG)(ma), (size_t)(offs), (UINT32)(mask))
+
+_WRS_INLINE void z087MclrMaskD32 (_WRS_IOLONG addr, size_t offset, UINT32 mask)
+    {
+    void * handle = (void *)Z077_MEM_HANDLE;
+    u_int32 val;
+
+    val = vxbRead32 (handle, (UINT32 *)(addr + offset));
+
+    val &= ~mask;
+
+    vxbWrite32 (handle, (UINT32 *)(addr + offset), val);
+    }
 
 /*
  *  Shortcut for polling BUSY until its deasserted after MII accesses. Time-

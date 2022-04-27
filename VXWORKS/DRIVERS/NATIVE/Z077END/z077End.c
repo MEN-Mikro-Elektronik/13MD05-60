@@ -100,10 +100,17 @@ Z77_CONF_SET G_z077ConfSetTbl [] = {
 #include <memLib.h>
 #include <iosLib.h>
 #include <miiLib.h>         /* PHY regs */
+#if _WRS_VXWORKS_MAJOR == 7
+#include <hwif/vxBus.h>
+#include <subsys/int/vxbIntLib.h>
+#include <hwif/buslib/pciDefines.h>
+#include <hwif/buslib/vxbPciLib.h>
+#else
 #include <hwif/vxbus/vxBus.h>
 #include <vxbus/vxbPciBus.h>
 #include <drv/pci/pciIntLib.h>
 #include <drv/pci/pciConfigLib.h>
+#endif
 #include <etherMultiLib.h>      /* multicast stuff. */
 #include <MEN/dbg.h>
 #include <MEN/men_typs.h>
@@ -341,7 +348,12 @@ LOCAL STATUS z077MiiWrite ( Z077_END_DEVICE *pDrvCtrl, UINT8 phyAddr,
 LOCAL STATUS z077PhyReset( Z077_END_DEVICE *pDrvCtrl, UINT8 phyAddr );
 LOCAL STATUS z077MiiModeForce( Z077_END_DEVICE *pDrvCtrl, UINT8 phyAddr );
 
+#if _WRS_VXWORKS_MAJOR == 7
+IMPORT VXB_DEV_ID sysGetPciCtrlID(int Inst);
+IMPORT VXB_DEV_ID sysGetFpgaPciCtrlID(void);
+#else
 IMPORT VXB_DEVICE_ID sysGetPciCtrlID(int Inst);
+#endif
 
 #define Z077_PHY_MEN_EMU_ID1			0x000D
 #define Z077_PHY_MEN_EMU_ID2			0x7000
@@ -853,7 +865,7 @@ STATUS z077FindZxCore(
 
     /* find core in Chameleon table */
     chamFind.variant  = -1; 
-	chamFind.instance = *pInstance;
+    chamFind.instance = *pInstance;
     chamFind.busId    = -1; 
 	chamFind.group    = -1;
     chamFind.bootAddr = -1;
@@ -897,9 +909,9 @@ STATUS z077SetIntFunctions(FUNCPTR intConnectAddr, FUNCPTR intEnableAddr){
 
     if( intEnableAddr == NULL ) {/* take VxWorks intEnable */
 #ifndef Z77_USE_VXBPCI_FUNCS
-        z077Mgnt.fIntConnectP = (FUNCPTR)intEnable;
+        z077Mgnt.fIntEnableP = (FUNCPTR)intEnable;
 #else
-        z077Mgnt.fIntConnectP = (FUNCPTR)vxbIntEnable;
+        z077Mgnt.fIntEnableP = (FUNCPTR)vxbIntEnable;
 #endif
     }
     else{/* take user interrupt enable function */
@@ -937,11 +949,11 @@ LOCAL int MyNetMblkToBufCopy
     pChar = pBuf;
 
     while (pMblk != NULL){
-#ifdef MEN_IMX6
+#if defined(MEN_IMX6)
     	cacheClear(DATA_CACHE, pMblk->mBlkHdr.mData, pMblk->mBlkHdr.mLen);
 #endif /* #ifdef MEN_IMX6 */
         (*pCopyRtn) ((char *)pMblk->mBlkHdr.mData, pBuf, pMblk->mBlkHdr.mLen);
-#ifdef MEN_IMX6
+#if defined(MEN_IMX6) || defined(MEN_MPC5121)
         cacheFlush(DATA_CACHE, pBuf, pMblk->mBlkHdr.mLen);
 #endif /* #ifdef MEN_IMX6 */
         pBuf    += pMblk->mBlkHdr.mLen;
@@ -1127,7 +1139,11 @@ LOCAL STATUS z077BdSetup(
         pDrvCtrl->tBufList[i]->mBlkHdr.mNext = NULL;
         value = (UINT32)(pDrvCtrl->tBufList[i]->mBlkHdr.mData);
 
+#if _WRS_VXWORKS_MAJOR == 7
+        Z077_SET_TBD_ADDR( i, END_CACHE_VIRT_TO_PHYS(value));
+#else
         Z077_SET_TBD_ADDR( i, value);
+#endif
 
     }
 
@@ -1161,7 +1177,11 @@ LOCAL STATUS z077BdSetup(
         pMblk->mBlkHdr.mNext = NULL;
 
         /* associate the Tuple with this BD */
+#if _WRS_VXWORKS_MAJOR == 7
+        Z077_SET_RBD_ADDR( i,END_CACHE_VIRT_TO_PHYS((UINT32)(pMblk->mBlkHdr.mData)) );
+#else
         Z077_SET_RBD_ADDR( i,(UINT32)(pMblk->mBlkHdr.mData) );
+#endif
 
         /* and store the buffers address for passing to upper layers */
         pDrvCtrl->rxBd[i].BdAddr=(UINT32)(pMblk->mBlkHdr.mData);
@@ -1382,7 +1402,14 @@ LOCAL void z077dumpTbd( Z077_END_DEVICE *pDrvCtrl )
     for (i = 0; i < Z077_TBD_NUM; i++ ) {
         adr = Z077_BD_OFFS + (i * Z077_BDSIZE);
 
-        printf("%02x STAT: 0x%04x LEN: 0x%04x  ADR 0x%08x\n", i, Z077_GET_TBD_FLAG(i, 0xffff), Z077_GET_TBD_LEN(i), Z077_GET_TBD_ADDR(i) );
+        printf("%02x STAT: 0x%04x LEN: 0x%04x  ADR 0x%08x\n", i, 
+               Z077_GET_TBD_FLAG(i, 0xffff),
+               Z077_GET_TBD_LEN(i),
+#if _WRS_VXWORKS_MAJOR == 7
+               mtod(pDrvCtrl->tBufList[i], UINT32));
+#else
+               Z077_GET_TBD_ADDR(i) );
+#endif
     }
 }
 
@@ -1402,7 +1429,11 @@ LOCAL void z077dumpRbd( Z077_END_DEVICE *pDrvCtrl )
         printf("%02x STAT: 0x%04x LEN: 0x%04x  ADR 0x%08x\n", i,
                Z077_GET_RBD_FLAG(i, 0xffff),
                Z077_GET_RBD_LEN(i),
+#if _WRS_VXWORKS_MAJOR == 7
+               mtod(pDrvCtrl->pMblkList[i], UINT32));
+#else
                Z077_GET_RBD_ADDR(i) );
+#endif
     }
 }
 #endif
@@ -1478,11 +1509,14 @@ END_OBJ* z077Load ( char* initString, void* datP )
         goto LBL_ERROR_EXIT;
 
     /* allocate Space for BDs which reside in RAM there */   
-#ifdef MEN_IMX6
-	pDrvCtrl->bdBase = (UINT32)cacheDmaMalloc(Z077_BD_SPACE);
+#if defined(MEN_IMX6) || defined(MEN_MPC5121)
+       pDrvCtrl->bdBase = (UINT32)cacheDmaMalloc(Z077_BD_SPACE);
+#if _WRS_VXWORKS_MAJOR == 7
+       pDrvCtrl->pCacheFuncs = &cacheDmaFuncs;
+#endif
 #else
 	pDrvCtrl->bdBase = (UINT32)memalign( Z077_BDALIGN, Z077_BD_SPACE );
-#endif /* #ifdef MEN_IMX6 */
+#endif /* #ifdef MEN_IMX6 || MEN_MPC5121 */
 
 	if (!pDrvCtrl->bdBase) {
 		DBGWRT_ERR( (DBH, "*** z077Load: memalign() bdBase failed!\n") );
@@ -1514,8 +1548,11 @@ END_OBJ* z077Load ( char* initString, void* datP )
 
     DBGWRT_1( (DBH, "z077Load: MAC addr. %02x:%02x:%02x:%02x:%02x:%02x\n", pMac[0], pMac[1], pMac[2], pMac[3], pMac[4], pMac[5]) );
 			  /* -------------- Z077_BASE is valid NOW ---------------- */
-
+#if _WRS_VXWORKS_MAJOR == 7
+        Z77WRITE_D32( Z077_BASE, Z077_REG_BDSTART, END_CACHE_VIRT_TO_PHYS((UINT32)pDrvCtrl->bdBase));
+#else
 	Z77WRITE_D32( Z077_BASE, Z077_REG_BDSTART, (UINT32)pDrvCtrl->bdBase);
+#endif
 
 	/* reset Register values */
 	z077Reset(pDrvCtrl);
@@ -1640,7 +1677,12 @@ LOCAL STATUS z077Start
 {
 	UINT32 moder = 0;
 #ifdef Z77_USE_VXBPCI_FUNCS
-	VXB_DEVICE_ID pciId = sysGetPciCtrlID(pDrvCtrl->pciDesc.domainNo);
+#if _WRS_VXWORKS_MAJOR == 7
+    VXB_RESOURCE * pIntRes = NULL; 
+    VXB_DEV_ID pciId = sysGetFpgaPciCtrlID();
+#else
+    VXB_DEVICE_ID pciId = sysGetPciCtrlID(pDrvCtrl->pciDesc.domainNo);
+#endif
 #endif
 
 	DBGWRT_1( (DBH, "--> z077Start\n") );
@@ -1671,6 +1713,18 @@ LOCAL STATUS z077Start
 						  (int) pDrvCtrl);
 	z077Mgnt.fIntEnableP(pDrvCtrl->ivec);
 #else
+#if _WRS_VXWORKS_MAJOR == 7
+    pIntRes = vxbResourceAlloc (pciId, VXB_RES_IRQ, 0);
+    if (pIntRes == NULL)
+    {
+    	kprintf("pIntRes is NULL!!!!\n");
+    	return ERROR;
+    }
+    z077Mgnt.fIntConnectP(pciId, pIntRes, (VOIDFUNCPTR)z077Int, (Z077_END_DEVICE *)pDrvCtrl);
+    z077Mgnt.fIntEnableP(pciId, pIntRes);
+    
+#else
+
 	z077Mgnt.fIntConnectP(pciId,
 						  (VOIDFUNCPTR*)pDrvCtrl->ivec,
 						  (VOIDFUNCPTR)z077Int,
@@ -1679,6 +1733,7 @@ LOCAL STATUS z077Start
 						  INUM_TO_IVEC(pDrvCtrl->ivec),
 						  (VOIDFUNCPTR)z077Int,
 						  (void*)pDrvCtrl);
+#endif
 #endif
 
 	/*
@@ -1781,7 +1836,11 @@ LOCAL STATUS z077Send
 	}
 
 	/* get the .mData address that was stored in Tx BD at BdSetup */
+#if _WRS_VXWORKS_MAJOR == 7
+    adr = mtod(pDrvCtrl->tBufList[idxTx],UINT32);
+#else
 	adr = Z077_GET_TBD_ADDR(idxTx);
+#endif
 
 #ifdef DEBUG_MBLK
 	/* dump whats in the chain... */
@@ -1813,8 +1872,7 @@ LOCAL STATUS z077Send
 	END_ERR_ADD (&pDrvCtrl->endObj, MIB2_OUT_UCAST, +1);
 
 	/* go to next Tx BD */
-    pDrvCtrl->nCurrTbd++;
-	pDrvCtrl->nCurrTbd = (pDrvCtrl->nCurrTbd % Z077_TBD_NUM);
+	pDrvCtrl->nCurrTbd = (++pDrvCtrl->nCurrTbd % Z077_TBD_NUM);
 
 	END_TX_SEM_GIVE (&pDrvCtrl->endObj);
 
@@ -1831,77 +1889,102 @@ LOCAL STATUS z077Send
  */
 
 LOCAL int z077Ioctl (
-	Z077_END_DEVICE * pDrvCtrl, /* device receiving command */
-	int cmd,            /* ioctl command code */
-	caddr_t data        /* command argument */
-	)
+    Z077_END_DEVICE * pDrvCtrl, /* device receiving command */
+    int cmd,            /* ioctl command code */
+    caddr_t data        /* command argument */
+    )
 {
-	int error = 0;
-	long value;
+    int error = 0;
+    long value;
 
-	switch ((unsigned)cmd) {
-	case EIOCSADDR:     /* set MAC address      */
-		if (data == NULL)
-			return (EINVAL);
-		bcopy ((char *)data, (char *)END_HADDR(&pDrvCtrl->endObj),
-			   END_HADDR_LEN(&pDrvCtrl->endObj));
-		break;
+    switch ((unsigned)cmd) {
+    case EIOCSADDR:     /* set MAC address      */
+        if (data == NULL)
+            {
+            error = EINVAL;
+            }
+        else
+            {
+            bcopy ((char *)data, (char *)END_HADDR(&pDrvCtrl->endObj),
+                   END_HADDR_LEN(&pDrvCtrl->endObj));
+            }
+        break;
 
-	case EIOCGADDR:     /* get MAC address      */
-		if (data == NULL)
-			return (EINVAL);
-		bcopy ((char *)END_HADDR(&pDrvCtrl->endObj), (char *)data,
-			   END_HADDR_LEN(&pDrvCtrl->endObj));
-		break;
+    case EIOCGADDR:     /* get MAC address      */
+        if (data == NULL)
+            {
+            error = EINVAL;
+            }
+        else
+            {
+            bcopy ((char *)END_HADDR(&pDrvCtrl->endObj), (char *)data,
+                   END_HADDR_LEN(&pDrvCtrl->endObj));
+            }
+        break;
 
-	case EIOCSFLAGS:    /* set (or clear) flags */
-		value = (long)data;
-		if (value < 0){
-			value = -value;
-			value--;
-			END_FLAGS_CLR (&pDrvCtrl->endObj, value);
-		} else {
-			END_FLAGS_SET (&pDrvCtrl->endObj, value);
-		}
-		z077Config (pDrvCtrl);
-		break;
+    case EIOCSFLAGS:    /* set (or clear) flags */
+        value = (long)data;
+        if (value < 0){
+            value = -value;
+            value--;
+            END_FLAGS_CLR (&pDrvCtrl->endObj, value);
+        } else {
+            END_FLAGS_SET (&pDrvCtrl->endObj, value);
+        }
+        z077Config (pDrvCtrl);
+        break;
 
-	case EIOCGFLAGS:    /* get flags */
-		*(int *)data = END_FLAGS_GET(&pDrvCtrl->endObj);
-		break;
+    case EIOCGFLAGS:    /* get flags */
+        *(int *)data = END_FLAGS_GET(&pDrvCtrl->endObj);
+        break;
 
-	case EIOCPOLLSTART: /* Begin polled operation */
-		z077PollStart(pDrvCtrl);
-		break;
+    case EIOCPOLLSTART: /* Begin polled operation */
+        z077PollStart(pDrvCtrl);
+        break;
 
-	case EIOCPOLLSTOP:  /* End polled operation */
-		z077PollStop(pDrvCtrl);
-		break;
+    case EIOCPOLLSTOP:  /* End polled operation */
+        z077PollStop(pDrvCtrl);
+        break;
 
-	case EIOCGMIB2233:
-	case EIOCGMIB2:     /* return MIB information */
-		if (data == NULL)
-			return (EINVAL);
-		bcopy((char *)&pDrvCtrl->endObj.mib2Tbl, (char *)data,
-			  sizeof(pDrvCtrl->endObj.mib2Tbl));
-		break;
+    case EIOCGMIB2233:
+    case EIOCGMIB2:     /* return MIB information */
+        if (data == NULL)
+            {
+            error = EINVAL;
+            }
+        else
+            {
+            error = endM2Ioctl(&pDrvCtrl->endObj, cmd, data);
+            }
+        break;
 
-	case EIOCGFBUF:     /* return minimum First Buffer for chaining */
-		if (data == NULL)
-			return (EINVAL);
-		*(int *)data = Z077END_BUFSIZ;
-		break;
+    case EIOCGFBUF:     /* return minimum First Buffer for chaining */
+        if (data == NULL)
+            {
+            error = EINVAL;
+            }
+        else
+            {
+            *(int *)data = Z077END_BUFSIZ;
+            }
+        break;
 
-	case EIOCGHDRLEN:
-		if (data == NULL)
-			return (EINVAL);
-		*(int *)data = EH_SIZE;
-		break;
+    case EIOCGHDRLEN:
+        if (data == NULL)
+            {
+            error = EINVAL;
+            }
+        else
+            {
+            *(int *)data = EH_SIZE;
+            }
+        break;
 
-	default:        /* unknown request */
-		error = EINVAL;
-	}
-	return (error);
+    default:        /* unknown request */
+        error = EINVAL;
+    }
+
+    return (error);
 }
 
 /******************************************************************************
@@ -2034,7 +2117,11 @@ LOCAL STATUS z077PollSend (
 	}
 
 	/* get the .mData address that was stored in Tx BD at BdSetup */
+#if _WRS_VXWORKS_MAJOR == 7
+    adr = mtod(pDrvCtrl->tBufList[idxTx], UINT32);
+#else
 	adr = Z077_GET_TBD_ADDR(idxTx);
+#endif
 
 	/* copy scattered data to the continous single buffer of this Tx BD  */
 	len = MyNetMblkToBufCopy(pMblk, (char*)adr, NULL);
@@ -2052,8 +2139,7 @@ LOCAL STATUS z077PollSend (
 	END_ERR_ADD (&pDrvCtrl->endObj, MIB2_OUT_UCAST, +1);
 
 	/* go to next Tx BD */
-    pDrvCtrl->nCurrTbd++;
-	pDrvCtrl->nCurrTbd = (pDrvCtrl->nCurrTbd % Z077_TBD_NUM);
+	pDrvCtrl->nCurrTbd = (++pDrvCtrl->nCurrTbd % Z077_TBD_NUM);
 
 	/* wait for completion. */
 	for (i = 0; i < Z077_TIMEOUT; i++)
@@ -2381,7 +2467,11 @@ LOCAL STATUS z077Recv
 
 	if (isPollMode) {
 		if(pMblkRbd->m_len < len) {
+#if _WRS_VXWORKS_MAJOR == 7
+            bcopy (mtod(pDrvCtrl->pMblkList[pktIndex], UINT32), pMblkRbd->mBlkHdr.mData, len);
+#else
 			bcopy ((char *)Z077_GET_RBD_ADDR(pktIndex), pMblkRbd->mBlkHdr.mData, len);
+#endif
 		} else {
 			error = ERROR;
 		}
@@ -2392,11 +2482,20 @@ LOCAL STATUS z077Recv
 
 	if (!isPollMode) {
 		/* associate the new Tuple with this BD */
+#if _WRS_VXWORKS_MAJOR == 7
+        cacheInvalidate (DATA_CACHE, pMblkNew->m_data, (size_t)pMblkNew->m_len);
+
+        Z077_SET_RBD_ADDR( pktIndex,END_CACHE_VIRT_TO_PHYS((UINT32)(pMblkNew->mBlkHdr.mData)) );
+#else
 		Z077_SET_RBD_ADDR( pktIndex,(UINT32)(pMblkNew->mBlkHdr.mData) );
+#endif
 
 		/* and get it finally to the Stack..., the tuple is returned to the pool here! */
 #ifdef MEN_IMX6
 		cacheClear (DATA_CACHE, pMblkRbd->mBlkHdr.mData, len);
+#endif
+#if defined(MEN_MPC5121)
+        cacheInvalidate (DATA_CACHE, pMblkRbd->mBlkHdr.mData, len);
 #endif
 		END_RCV_RTN_CALL( &pDrvCtrl->endObj, pMblkRbd );
 	}
@@ -2482,10 +2581,14 @@ LOCAL void z077HandleRxErr
 			{
 				UINT32 len;
 				UINT32 adr;
-				intCpuUnlock( key );
 
 				len = Z077_GET_RBD_LEN(  i );
+#if _WRS_VXWORKS_MAJOR == 7
+                adr = mtod(pDrvCtrl->pMblkList[i], UINT32);
+#else
+
 				adr = Z077_GET_RBD_ADDR( i );
+#endif
 				DBGWRT_ERR(( DBH, "*** RX err: CRC err[%d] @%08x size %d\n", i, adr, len ));
 				pDrvCtrl->errCrcerr++;
 			}

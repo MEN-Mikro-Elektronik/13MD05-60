@@ -40,7 +40,11 @@
       extern "C" {
 #  endif
 
+#if _WRS_VXWORKS_MAJOR == 7
+#include <hwif/vxBus.h>
+#else
 #include <vxBusLib.h>
+#endif
 /*-----------------------------------------+
 |  TYPEDEFS                                |
 +------------------------------------------*/
@@ -69,7 +73,17 @@ DBGCMD( extern char *OSS_ErrorEndStr;   )
 extern void _OSS_DataLock(   void );
 extern void _OSS_DataUnlock( void );
 #ifdef OSS_VXBUS_SUPPORT
+#if _WRS_VXWORKS_MAJOR == 7
+extern VXB_DEV_ID sysGetPciCtrlID(int instance);
+extern STATUS men_vxbPciConfigInByte(VXB_DEV_ID, UINT8, UINT8, UINT8, int, UINT8*);
+extern STATUS men_vxbPciConfigInWord(VXB_DEV_ID, UINT8, UINT8, UINT8, int, UINT16*);
+extern STATUS men_vxbPciConfigInLong(VXB_DEV_ID, UINT8, UINT8, UINT8, int, UINT32*);
+extern STATUS men_vxbPciConfigOutByte(VXB_DEV_ID, UINT8, UINT8, UINT8, int, UINT8);
+extern STATUS men_vxbPciConfigOutWord(VXB_DEV_ID, UINT8, UINT8, UINT8, int, UINT16);
+extern STATUS men_vxbPciConfigOutLong(VXB_DEV_ID, UINT8, UINT8, UINT8, int, UINT32);
+#else
 extern VXB_DEVICE_ID sysGetPciCtrlID(int instance);
+#endif
 #endif
 
 

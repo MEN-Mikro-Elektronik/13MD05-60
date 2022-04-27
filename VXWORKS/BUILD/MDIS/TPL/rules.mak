@@ -138,6 +138,8 @@ endif
 # new search criteria: TOOL contains either 'gnu' (=TOOLPATH gnu) or not (=TOOLPATH diab)
 ifneq (,$(findstring gnu,$(TOOL)))
 	export TOOLPATH	:= gnu
+else ifneq (,$(findstring llvm,$(TOOL)))
+	export TOOLPATH := llvm
 else
     export TOOLPATH	:= diab
 endif
@@ -171,7 +173,9 @@ export USR_LIB_MAK    := $(TPL_DIR)/usr_lib.mak
 
 ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_6_0)
 	export MEN_VXVERSUB_DIR=$(WIND_PLATFORM)
-else
+else ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+	export MEN_VXVERSUB_DIR=$(WIND_PLATFORM)
+else	
 	export MEN_VXVERSUB_DIR=vxworks5x
 endif
 export MEN_OBJ_DIR_PREFIX    := $(MEN_VX_DIR)/LIB/MEN/$(MEN_VXVERSUB_DIR)_$(CONFIG_NAME)
@@ -202,6 +206,13 @@ CONFIG_OBJ_DIR	  := $(OBJ_DIR)/$(CONFIG_NAME)
 
 ifeq ($(WIND_HOST_TYPE),x86-win32)
   ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_6_0)
+	MEN_OBJ_DIR_PREFIX_NAT := $(subst \,/,$(MEN_OBJ_DIR_PREFIX))
+	LIB_DIR_NAT 	:= $(subst \,/,$(LIB_DIR))
+	OBJ_DIR_NAT 	:= $(subst \,/,$(OBJ_DIR))
+	CONFIG_OBJ_DIR_NAT := $(subst \,/,$(CONFIG_OBJ_DIR))
+	DIRUP := ../
+	PS := /
+  else ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
 	MEN_OBJ_DIR_PREFIX_NAT := $(subst \,/,$(MEN_OBJ_DIR_PREFIX))
 	LIB_DIR_NAT 	:= $(subst \,/,$(LIB_DIR))
 	OBJ_DIR_NAT 	:= $(subst \,/,$(OBJ_DIR))
@@ -298,6 +309,27 @@ custom.mak:
 	@$(ECHO) "# ADDED_RTP_CFLAGS ="                                        				  		>> custom.mak
 	@$(ECHO) "# ALL_LL_DRIVERS +="                                      						  >> custom.mak
 	@$(ECHO) "# ALL_BB_DRIVERS += SMBPCI/DRIVER/COM/driver_16z001.mak"  						  >> custom.mak
+else ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+custom.mak:
+	@$(ECHO) "==> custom.mak not exist: creating template custom.mak"
+	@$(ECHO) "# custom.mak:"													        		  > custom.mak
+	@$(ECHO) "CUSTOM_MAK_MSG = custom.mak has been read successfully"                             >> custom.mak
+	@$(ECHO) "#  - please edit this files to add something not covered but removed by mdiswizvx"  >> custom.mak
+	@$(ECHO) "#"  																			  	  >> custom.mak
+	@$(ECHO) "#i.e."  																		  	  >> custom.mak
+	@$(ECHO) "# EXCLUDE_RTP = yes"                                       						  >> custom.mak
+	@$(ECHO) "# ALL_COM_TOOLS +="                                       						  >> custom.mak
+	@$(ECHO) "# ALL_LL_TOOLS +="                                        						  >> custom.mak
+	@$(ECHO) "# ALL_NATIVE_TOOLS +="                                        					  >> custom.mak
+	@$(ECHO) "# ALL_USR_LIBS +="                                        						  >> custom.mak
+	@$(ECHO) "# LIB_EXCLUDE_OSS = yes"                                        			  		  >> custom.mak
+	@$(ECHO) "# LIB_EXCLUDE_DBG = yes"                                        			  		  >> custom.mak
+	@$(ECHO) "# ALL_CORE += SMB2/COM/library.mak"                       						  >> custom.mak
+	@$(ECHO) "# ADDED_CFLAGS +="                                        						  >> custom.mak
+	@$(ECHO) "# ADDED_KERNEL_CFLAGS ="                                        			  		>> custom.mak
+	@$(ECHO) "# ADDED_RTP_CFLAGS ="                                        				  		>> custom.mak
+	@$(ECHO) "# ALL_LL_DRIVERS +="                                      						  >> custom.mak
+	@$(ECHO) "# ALL_BB_DRIVERS += SMBPCI/DRIVER/COM/driver_16z001.mak"  						  >> custom.mak	
 else #MEN_VXWORKS_ENV_VER == VXWORKS_6_0
 custom.mak:
 	@$(ECHO) # custom.mak:													        		  	> custom.mak
@@ -332,6 +364,12 @@ ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_6_0)
 	else #EXCLUDE_RTP==yes
 		RTP_FLAGS := -DINCLUDE_RTP
 	endif #EXCLUDE_RTP==yes
+else ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+	ifeq ($(EXCLUDE_RTP),yes)
+		RTP_FLAGS := -DEXCLUDE_RTP
+	else #EXCLUDE_RTP==yes
+		RTP_FLAGS := -DINCLUDE_RTP
+	endif #EXCLUDE_RTP==yes	
 else #MEN_VXWORKS_ENV_VER == VXWORKS_6_0
 	RTP_FLAGS := -DEXCLUDE_RTP
 endif #MEN_VXWORKS_ENV_VER == VXWORKS_6_0
@@ -371,6 +409,15 @@ ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_6_0)
 	$(MDBG)$(RM) -f prog_ref.c
 	$(MDBG)$(RM) -f desc_ref.c
 	$(MDBG)$(RM) -f -r $(MEN_OBJ_DIR_PREFIX_NAT)
+else ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+	$(MDBG)$(RM) -f ll_entryi.h
+	$(MDBG)$(RM) -f bb_entryi.h
+	$(MDBG)$(RM) -f desc_refi.h
+	$(MDBG)$(RM) -f ll_entry.c
+	$(MDBG)$(RM) -f bb_entry.c
+	$(MDBG)$(RM) -f prog_ref.c
+	$(MDBG)$(RM) -f desc_ref.c
+	$(MDBG)$(RM) -f -r $(MEN_OBJ_DIR_PREFIX_NAT)	
 else
 	$(MDBG)rm -f ll_entryi.h
 	$(MDBG)rm -f bb_entryi.h
@@ -509,6 +556,14 @@ $(ALL_USR_LIBS):
 			OUTPUT_LIB1=libmdis_rtp.a \
 			SINGLE_FILES_TO_LIB=yes
     endif #EXCLUDE_RTP != yes
+  else ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+    ifneq ($(EXCLUDE_RTP), yes)
+		$(MAKEIT) -f $(RTP_COMP_MAK) $(RULE) \
+			COMMAKE=$(LS_PATH)/$@ CPU=$(CPU)\
+			TEST=$(TEST) COMP_PREFIX= \
+			OUTPUT_LIB1=libmdis_rtp.a \
+			SINGLE_FILES_TO_LIB=yes
+    endif #EXCLUDE_RTP != yes	
   endif #MEN_VXWORKS_ENV_VER == 6_0
 
 $(ALL_LL_TOOLS):
@@ -550,28 +605,28 @@ $(ALL_LL_DRIVERS) $(ALL_LL_OBJS) $(ALL_BB_DRIVERS) $(ALL_CORE) $(MK_CORE) $(OSS_
 mkobjprefdir: $(MEN_OBJ_DIR_PREFIX)/anchor
 
 $(MEN_OBJ_DIR_PREFIX)/anchor:
-	- @ mkdir $(MEN_OBJ_DIR_PREFIX_NAT)
+	- @ mkdir -p $(MEN_OBJ_DIR_PREFIX_NAT)
 	@$(ECHO) > $(MEN_OBJ_DIR_PREFIX_NAT)$(PS)anchor
 	@$(ECHO) Directory $(MEN_OBJ_DIR_PREFIX) created
 
 mkobjdir: $(OBJ_DIR)/anchor
 
 $(OBJ_DIR)/anchor:
-	- @ mkdir $(OBJ_DIR_NAT)
+	- @ mkdir -p $(OBJ_DIR_NAT)
 	@$(ECHO) > $(OBJ_DIR_NAT)$(PS)anchor
 	@$(ECHO) Directory $(OBJ_DIR) created
 
 mktmpobjdir: $(CONFIG_OBJ_DIR)/anchor
 
 $(CONFIG_OBJ_DIR)/anchor:
-	- @ mkdir $(CONFIG_OBJ_DIR_NAT)
+	- @ mkdir -p $(CONFIG_OBJ_DIR_NAT)
 	@$(ECHO) > $(CONFIG_OBJ_DIR_NAT)$(PS)anchor
 	@$(ECHO) Directory $(CONFIG_OBJ_DIR) created
 
 mklibdir: $(LIB_DIR)/anchor
 
 $(LIB_DIR)/anchor:
-	- @ mkdir $(LIB_DIR_NAT)
+	- @ mkdir -p $(LIB_DIR_NAT)
 	@$(ECHO) > $(LIB_DIR_NAT)$(PS)anchor
 	@$(ECHO) Directory $(LIB_DIR) created
 

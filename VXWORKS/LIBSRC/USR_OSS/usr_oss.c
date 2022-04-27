@@ -89,7 +89,7 @@ DBGCMD( char *UOS_ErrorEndStr   = ")"; )
 
 /**********************************************************************/
 /** This functions displays the revisions of the UOS lib.
- *
+ *  
  * \param  -
  *
  * \return -
@@ -106,7 +106,7 @@ void UOS_VxShowRevision( void )
  *  Description: Get global error code (errno)
  *			     The function returns the last occured system error code
  *               of the calling process.
- *
+ *			   
  *---------------------------------------------------------------------------
  *  Input......: -
  *  Output.....: return		error code
@@ -119,7 +119,7 @@ u_int32 UOS_ErrnoGet( void )
 
 /**********************************************************************/
 /** Set global error code (task/process specific errno)
- *
+ * 
  * \copydoc usr_oss_specification.c::UOS_ErrnoSet()
  *
  * \sa UOS_ErrnoGet
@@ -186,10 +186,10 @@ int32 UOS_Delay( u_int32 msec )
 /********************************* UOS_MsecTimerGet ***********************
  *
  *  Description: Read the current timer value (based on system ticks).
- *
- *				 Time will rounded to the minimum timer resolution.
+ *	             		   
+ *				 Time will rounded to the minimum timer resolution. 
  *				 This (rounded) time is returned.
- *
+ *			   
  *---------------------------------------------------------------------------
  *  Input......: -
  *  Output.....: return	  elapsed time [msec]
@@ -203,7 +203,7 @@ u_int32 UOS_MsecTimerGet(void)
 /*************************** UOS_MsecTimerResolution ************************
  *
  *  Description: Get the minimum timer resolution.
- *
+ *                         
  *---------------------------------------------------------------------------
  *  Input......: -
  *  Output.....: return   timer resolution [msec]

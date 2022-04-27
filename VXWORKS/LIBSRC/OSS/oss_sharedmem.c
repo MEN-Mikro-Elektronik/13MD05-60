@@ -10,7 +10,7 @@
  *  Description: shared memory interface
  *
  *     Required:
- *     Switches:
+ *     Switches: 
  *
  *-------------------------------[ History ]---------------------------------
  *
@@ -21,7 +21,7 @@
  * Revision 1.1  1999/08/30 11:03:38  Franke
  * Initial Revision
  *
- *
+ * 
  * cloned from OS9 shmem.c Revision 1.3  1999/02/15 13:57:51  see
  *---------------------------------------------------------------------------
  * (c) Copyright 1999..2009 by MEN mikro elektronik GmbH, Nuernberg, Germany
@@ -102,7 +102,7 @@ u_int32 			gotsize;
 
     DBGWRT_1((DBH,"%s()\n", functionName));
 	*smHdlP = NULL;
-
+	
 	/*------------------------------+
 	|  alloc/init handle            |
 	+------------------------------*/
@@ -126,8 +126,8 @@ u_int32 			gotsize;
 /*************************** OSS_SharedMemRemove *****************************
  *
  *  Description:  Remove shared memory handle
- *
- *                The function removes implicitly all installed shared
+ *                
+ *                The function removes implicitly all installed shared 
  *                memory areas and cleanup and deallocates the handle.
  *
  *---------------------------------------------------------------------------
@@ -147,7 +147,7 @@ DBGCMD( static const char	functionName[] = "OSS_SharedMemRemove"; )
     OSS_SHMEM_HANDLE	*smHdl;
     OSS_SHMEM_TBL 		*st;		/* point to root */
     OSS_SHMEM_TBL		*last;
-
+	int32 error;
 
     DBGWRT_1((DBH,"%s()\n", functionName));
 
@@ -179,12 +179,13 @@ DBGCMD( static const char	functionName[] = "OSS_SharedMemRemove"; )
 		OSS_MemFree(oss, (void*)last->drvAddr, last->size);	/* free shared mem */
 		last->drvAddr = NULL;
 		OSS_MemFree(oss, (void*)last, last->memAlloc);		/* free entry */
-
 		last = st;
 	}
-
+	  
 	/* free handle */
-	OSS_MemFree(oss, (int8*)smHdl, smHdl->memAlloc);
+	if ((error = OSS_MemFree(oss, (int8*)smHdl, smHdl->memAlloc)))
+		return(error);
+
 	smHdl = NULL;
 
     return(ERR_SUCCESS);
@@ -200,19 +201,19 @@ DBGCMD( static const char	functionName[] = "OSS_SharedMemRemove"; )
  *
  *                Following data structure is passed via 'smSet':
  *
- *                typedef struct {
+ *                typedef struct {				
  *                    u_int32    smNr;       IN:  index (0..n)
  *                	  u_int32    size;       (ignored)
  *                	  void       *drvAddr;   (ignored)
  *                } OSS_SHMEM_SET;
- *
+ *                
  *                The actual index (as defined in 'smSet') is returned.
- *
+ *                
  *                This function should be used for error checking and error
  *                handling in application triggered shared memory calls.
  *
- *                If the index is not in range, the function returns with
- *                ERR_OSS_ILL_PARAM.
+ *                If the index is not in range, the function returns with 
+ *                ERR_OSS_ILL_PARAM. 
  *
  *---------------------------------------------------------------------------
  *  Input......:  oss      oss handle
@@ -257,19 +258,19 @@ DBGCMD( static const char	functionName[] = "OSS_SharedMemCheckNr"; )
  *
  *                Following data structure is passed via 'smSet':
  *
- *                typedef struct {
+ *                typedef struct {				
  *                    u_int32    smNr;       (ignored)
  *                	  u_int32    size;       IN:  shared memory size [bytes]
  *                	  void       *drvAddr;   (ignored)
  *                } OSS_SHMEM_SET;
- *
+ *                
  *                The actual size (as defined in 'smSet') is returned.
- *
+ *                
  *                This function should be used for error checking and error
  *                handling in application triggered shared memory calls.
  *
- *                If the size is not in range, the function returns with
- *                ERR_OSS_ILL_PARAM.
+ *                If the size is not in range, the function returns with 
+ *                ERR_OSS_ILL_PARAM. 
  *
  *---------------------------------------------------------------------------
  *  Input......:  oss      oss handle
@@ -314,24 +315,24 @@ DBGCMD( static const char	functionName[] = ""; )
  *
  *                Following data structure is passed via 'smSet':
  *
- *                typedef struct {
+ *                typedef struct {				
  *                    u_int32    smNr;       IN:  index (0..n)
  *                	  u_int32    size;       IN:  shared memory size [bytes]
  *                	  void       *drvAddr;   OUT: shared memory addr (driver)
  *                } OSS_SHMEM_SET;
- *
+ *                
  *                The function creates the shared memory area "smNr" with
  *                specified size "size" and links to it. The area is initially
  *                cleared with zero.
- *
+ *                
  *                After successful creation of the area, the drivers memory
  *                access address is returned via "drvAddr" parameter of the
  *                structure.
  *
- *                The
+ *                The 
  *
  *                If the shared memory area already exists, the function
- *                returns with ERR_OSS_SHMEM_SET.
+ *                returns with ERR_OSS_SHMEM_SET. 
  *
  *---------------------------------------------------------------------------
  *  Input......:  oss       oss handle
@@ -356,7 +357,7 @@ DBGCMD( static const char	functionName[] = "OSS_SharedMemSet()"; )
 	/* already existing ? */
 	if (FindSharedMem(oss, smHdl, smSet->smNr)) {
         DBGWRT_ERR( ( DBH, "%s%s: smNr=0x%x already exists %s%d%s\n",
-                      OSS_ErrorStartStr, functionName,
+                      OSS_ErrorStartStr, functionName, 
 					  smSet->smNr,
                       OSS_ErrorLineStr, __LINE__, OSS_ErrorEndStr ));
 		return(ERR_OSS_SHMEM_SET);
@@ -390,20 +391,20 @@ DBGCMD( static const char	functionName[] = "OSS_SharedMemSet()"; )
  *
  *                Following data structure is passed via 'smLink':
  *
- *                typedef struct {
+ *                typedef struct {				
  *                    u_int32    smNr;       IN:  index (0..n)
  *                	  u_int32    size;       OUT: shared memory size [bytes]
  *                	  void       *drvAddr;   OUT: shared memory addr (driver)
  *                } OSS_SHMEM_LINK;
- *
+ *                
  *                The function links to the shared memory area "smNr".
- *
+ *                
  *                After successful linking of the area, the drivers memory
  *                access address is returned via "drvAddr" parameter of the
  *                structure and the shared memory size via "size".
  *
  *                If the shared memory area does not exist, the function
- *                returns with ERR_OSS_SHMEM_LINK.
+ *                returns with ERR_OSS_SHMEM_LINK. 
  *
  *---------------------------------------------------------------------------
  *  Input......:  oss       oss handle
@@ -458,12 +459,12 @@ DBGCMD( static const char	functionName[] = "OSS_SharedMemLink()"; )
  *                    u_int32    smNr;     IN:	index (0..n)
  *                    u_int32    linkCnt;  OUT: link counter
  *                } OSS_SHMEM_CLEAR;
- *
+ *                
  *                The function unlinks from the shared memory area "smNr".
- *
- *                If the shared memory area has no more links, it is
- *                deinstalled and the used memory is deallocated.
- *
+ *                
+ *                If the shared memory area has no more links, it is 
+ *                deinstalled and the used memory is deallocated.  
+ *                
  *                After successful unlinking, the actual link counter is
  *                returned via "linkCnt" parameter of the structure.
  *
@@ -471,7 +472,7 @@ DBGCMD( static const char	functionName[] = "OSS_SharedMemLink()"; )
  *                no further access to the shared memory area is allowed !
  *
  *                If the shared memory area does not exist, the function
- *                returns with ERR_OSS_SHMEM_CLR.
+ *                returns with ERR_OSS_SHMEM_CLR. 
  *
  *---------------------------------------------------------------------------
  *  Input......:  oss       oss handle
@@ -513,9 +514,9 @@ DBGCMD( static const char functionName[] = "OSS_SharedMemClear()"; )
 		DBGWRT_2((DBH," remove shared mem: smNr=0x%x\n", smClear->smNr));
 
 		/* remove shared memory */
-		OSS_MemFree(oss, (int8*)st->drvAddr, st->size);
+		if ((error = OSS_MemFree(oss, (int8*)st->drvAddr, st->size)))
+			return(error);
 		st->drvAddr = NULL;
-
 
 		/* remove from shared memory chain */
 		if ((error = RemoveSharedMem(oss, smHdl, smClear->smNr)))
@@ -535,7 +536,7 @@ DBGCMD( static const char functionName[] = "OSS_SharedMemClear()"; )
 /********************************* AddSharedMem *****************************
  *
  *  Description: Add shared memory entry to linked list
- *
+ *			   
  *---------------------------------------------------------------------------
  *  Input......: oss        oss handle
  *               smHdl      shared memory handle
@@ -589,7 +590,7 @@ static int32 AddSharedMem(
 /********************************* FindSharedMem ****************************
  *
  *  Description: Find shared memory entry in linked list
- *
+ *			   
  *---------------------------------------------------------------------------
  *  Input......: oss        oss handle
  *               smHdl      shared memory handle
@@ -616,7 +617,7 @@ static OSS_SHMEM_TBL *FindSharedMem(
 /********************************* RemoveSharedMem **************************
  *
  *  Description: Remove shared memory entry from linked list
- *
+ *			   
  *---------------------------------------------------------------------------
  *  Input......: oss        oss handle
  *               smHdl      shared memory handle

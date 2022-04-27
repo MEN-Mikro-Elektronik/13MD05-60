@@ -81,10 +81,12 @@
 #   (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuernberg, Germany
 #*****************************************************************************
 
+ifneq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
 include $(WIND_USR)/make/defs.$(WIND_HOST_TYPE)
 include $(WIND_USR)/make/defs.default
 include $(WIND_USR)/tool/$(TOOL_FAMILY)/make.$(CPU)$(TOOL)
 include $(WIND_USR)/make/defs.default
+endif
 
 #--------------------------------------------------------
 # restore tool and CPU
@@ -114,7 +116,9 @@ ifeq ($(CPU),PPC85XX)
 	CPU_MAPPED = PPC32
 endif
 
+ifneq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
 include $(WIND_USR)/tool/$(TOOL_FAMILY)/make.$(CPU_MAPPED)$(TOOL)
+endif
 
 MEN_VXWORKS_VERSION=-DMEN_VXWORKS_VERSION=$(MEN_VXWORKS_ENV_VER)
 
@@ -175,6 +179,10 @@ ifeq ($(WIND_HOST_TYPE),x86-win32)
 	TMP_OBJ_DIR_NAT := $(subst \,/,$(TMP_OBJ_DIR))
 	DIRUP := ../
 	PS := /
+  else ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+	TMP_OBJ_DIR_NAT := $(subst \,/,$(TMP_OBJ_DIR))
+	DIRUP := ../
+	PS := /
   else
 	TMP_OBJ_DIR_NAT := $(subst /,\,$(TMP_OBJ_DIR))
 	DIRUP := ..$(subst /,\,/)
@@ -197,19 +205,32 @@ vpath %.c $(MEN_MOD_DIR)
 VX_INC_DIR      :=  $(MEN_VX_DIR)/INCLUDE/NATIVE
 MEN_VX_INC_DIR  :=  $(VX_INC_DIR)/MEN
 
-INC_DIRS:= \
-    -I$(INC_DIR)                    		\
-    -I$(VX_INC_DIR)                 		\
-	$(EXTRA_INCLUDE)						\
+ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+INC_DIRS:=-I$(VXWORKS_VSB_DIR)/krnl/h/common    \
+    -I$(VXWORKS_VSB_DIR)/usr/h/public           \
+    -I$(VXWORKS_VSB_DIR)/share/h                \
+    -I$(INC_DIR)                                \
+    -I$(VX_INC_DIR)                             \
+    $(EXTRA_INCLUDE)                            \
     -I$(MEN_MOD_DIR)
+else
+INC_DIRS:= \
+    -I$(INC_DIR)                                \
+    -I$(VX_INC_DIR)                             \
+    $(EXTRA_INCLUDE)                            \
+    -I$(MEN_MOD_DIR)
+endif
 
 #**************************************
 #   Compiler flags
 #
 FLAGS           :=$(CC_OPTIM_TARGET) -DCPU=$(CPU) -DINCLUDE_RTP
 DEF             :=-DVXWORKS
+ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+DEF             +=-D_VSB_CONFIG_FILE=\"$(VXWORKS_VSB_DIR)/h/config/vsbConfig.h\"
+endif
 ifdef VX_MAIN_REPLACING
-	DEF             +=-DPROG_FILE_NAME=$(MAK_NAME)
+DEF             +=-DPROG_FILE_NAME=$(MAK_NAME)
 endif
 
 ifndef MAK_SWITCH

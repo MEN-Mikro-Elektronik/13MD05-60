@@ -96,12 +96,16 @@ ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_6_0)
 	include $(WIND_BASE)/target/h/tool/$(TOOLPATH)/defs.$(TOOLPATH)
 	include $(WIND_BASE)/target/h/tool/$(TOOLPATH)/make.$(CPU)$(TOOL)
 	MEN_VXWORKS_VERSION=-DMEN_VXWORKS_VERSION=$(MEN_VXWORKS_ENV_VER)
+else ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+	MEN_VXWORKS_VERSION=-DMEN_VXWORKS_VERSION=$(MEN_VXWORKS_ENV_VER)
 else
 	include $(WIND_BASE)/target/h/make/make.$(CPU)$(TOOL)
 endif
 
 # use GNU AR for diab toolchain too
 ifneq (,$(findstring gnu,$(TOOL)))
+	GNUAR := $(AR)
+else ifneq (,$(findstring llvm,$(TOOL)))
 	GNUAR := $(AR)
 else
 	GNUAR := ar$(VX_CPU_FAMILY)
@@ -156,6 +160,10 @@ ifeq ($(WIND_HOST_TYPE),x86-win32)
 	TMP_OBJ_DIR_NAT := $(subst \,/,$(TMP_OBJ_DIR))
 	DIRUP := ../
 	PS := /
+  else ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+	TMP_OBJ_DIR_NAT := $(subst \,/,$(TMP_OBJ_DIR))
+	DIRUP := ../
+	PS := /
   else
 	TMP_OBJ_DIR_NAT := $(subst /,\,$(TMP_OBJ_DIR))
 	DIRUP := ..$(subst /,\,/)
@@ -178,22 +186,36 @@ vpath %.c $(MEN_MOD_DIR)
 VX_INC_DIR      :=  $(MEN_VX_DIR)/INCLUDE/NATIVE
 MEN_VX_INC_DIR  :=  $(VX_INC_DIR)/MEN
 
+ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+INC_DIRS:=-I$(VXWORKS_VSB_DIR)/krnl/h/common \
+   -I$(VXWORKS_VSB_DIR)/krnl/h/public        \
+   -I$(VXWORKS_VSB_DIR)/krnl/h/system        \
+   -I$(VXWORKS_VSB_DIR)/share/h              \
+   -I$(INC_DIR)                              \
+   -I$(VX_INC_DIR)                           \
+   $(EXTRA_INCLUDE)                          \
+   -I$(MEN_MOD_DIR)
+else
 INC_DIRS:=-I$(WIND_BASE)/target     \
     -I$(WIND_BASE)/target/h         \
     -I$(WIND_BASE)/target/h/drv/pci \
     -I$(WIND_BASE)/target/h/wrn/coreip \
     -I$(INC_DIR)                    \
     -I$(VX_INC_DIR)                 \
-	$(EXTRA_INCLUDE)				\
+    $(EXTRA_INCLUDE)                \
     -I$(MEN_MOD_DIR)
+endif
 
 #**************************************
 #   Compiler flags
 #
 FLAGS           :=$(CC_OPTIM_TARGET) -DCPU=$(CPU)
 DEF             :=-DVXWORKS
+ifeq ($(MEN_VXWORKS_ENV_VER),VXWORKS_7_0)
+DEF             +=-D_VSB_CONFIG_FILE=\"$(VXWORKS_VSB_DIR)/h/config/vsbConfig.h\"
+endif
 ifdef VX_MAIN_REPLACING
-	DEF             +=-DPROG_FILE_NAME=$(MAK_NAME)
+DEF             +=-DPROG_FILE_NAME=$(MAK_NAME)
 endif
 
 

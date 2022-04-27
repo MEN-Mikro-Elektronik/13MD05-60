@@ -49,7 +49,7 @@ static const char RCSid[]="$Id: oss_spinlock.c,v 1.5 2013/11/14 17:56:27 ts Exp 
 
 #define DBG_MYLEVEL         OSS_DbgLev
 #include <MEN/dbg.h>        /* debug module */
-#if (_WRS_VXWORKS_MAJOR == 6) && (_WRS_VXWORKS_MINOR >= 6)
+#if ((_WRS_VXWORKS_MAJOR == 6) && (_WRS_VXWORKS_MINOR >= 6)) || (_WRS_VXWORKS_MAJOR >= 7)
 #include <spinLockLib.h>
 /* Please note that spinLockIsrTake/Give are defined in spinlockLib.h but spinLockIsrHeld() is defined in spinLockLibP.h */
 #include <private/spinLockLibP.h>

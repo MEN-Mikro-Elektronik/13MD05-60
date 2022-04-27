@@ -101,6 +101,13 @@ static const char IdentString[]="touch - device-driver: $Id: systouchDrv.c,v 1.1
 /*--------------------------------------------------------------------------+
  |	GLOBALS														   		    |
  +--------------------------------------------------------------------------*/
+
+#if _WRS_VXWORKS_MAJOR == 7
+IMPORT STATUS intConnectGirq (UINT32, VOIDFUNCPTR , void *);
+IMPORT STATUS intEnableGirq  (UINT32);
+IMPORT STATUS intDisableGirq (UINT32);
+#endif
+
 LOCAL TOUCH_DEV G_touchDev;
 LOCAL int G_touchDrvNum = 0;		/* driver number of this driver */
 LOCAL int G_irq;
@@ -199,8 +206,13 @@ int sysTouchRemove(void)
 	status = iosDrvRemove(G_touchDrvNum, TRUE);
 
 	/* uninstall interrupts */
+#if _WRS_VXWORKS_MAJOR == 7
+	(void) intConnectGirq(G_irq, (VOIDFUNCPTR) NULL, &G_touchDev);
+	intDisableGirq(G_irq);
+#else
 	(void) intConnect(INUM_TO_IVEC(G_irq), (VOIDFUNCPTR) NULL, (int)&G_touchDev);
 	intDisable(G_irq);
+#endif
 
 	/* mark the driver as not created */
 	G_touchDev.created = FALSE;
@@ -356,14 +368,25 @@ SYSTOUCH_DISP_FOUND:
 	DBGWRT_2((DBH,"sysTouchDevInit: connecting G_Irq = %d\n", G_irq));
 
 	/* connect function sysTouchInt with interrupt */
-#if ( defined( INCLUDE_PCI ) || defined( INCLUDE_PCI_BUS ))  && defined( SYSTOUCH_IRQ_FROM_PCI )
+#if _WRS_VXWORKS_MAJOR == 7
+#ifdef SYSTOUCH_IRQ_FROM_PCI
+#error SYSTOUCH_IRQ_FROM_PCI not supported for VxWorks 7
+#else
+	intConnectGirq(G_irq, (VOIDFUNCPTR) sysTouchInt, &G_touchDev);
+#endif /* SYSTOUCH_IRQ_FROM_PCI */
+
+#elif ( defined( INCLUDE_PCI ) || defined( INCLUDE_PCI_BUS ))  && defined( SYSTOUCH_IRQ_FROM_PCI )
 	pciIntConnect (INUM_TO_IVEC(G_irq), sysTouchInt, (int)&G_touchDev);
 #else
 	intConnect(INUM_TO_IVEC(G_irq), (VOIDFUNCPTR) sysTouchInt, (int)&G_touchDev);
 #endif /* INCLUDE_PCI */
 
 	/* enable interrupt */
+#if _WRS_VXWORKS_MAJOR == 7
+	intEnableGirq(G_irq);
+#else
 	intEnable(G_irq);
+#endif
 
 	return OK;
 }
