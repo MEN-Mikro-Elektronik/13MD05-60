@@ -18,7 +18,7 @@ set G_silentMode=""
 if "%1"=="" (
 set G_MdisInstallPath=%G_defaultDir%
 ) else (
-set G_MdisInstallPath=%1
+set G_MdisInstallPath=%~f1
 )
 
 if "%2"=="" (
@@ -97,11 +97,11 @@ REM -- copy together our regular MDIS package directory
 REM ------------------------------------------------------------
 
 echo Copying folder VXWORKS to %G_MdisInstallPath% ...
-xcopy /S /E /I VXWORKS %G_MdisInstallPath%\VXWORKS > NUL
+xcopy /S /E /I /Y VXWORKS %G_MdisInstallPath%\VXWORKS > NUL
 echo Copying folder LINUX to %G_MdisInstallPath% ...
-xcopy /S /E /I LINUX %G_MdisInstallPath%\LINUX > NUL
+xcopy /S /E /I /Y LINUX %G_MdisInstallPath%\LINUX > NUL
 echo Copying folder NT to %G_MdisInstallPath% ...
-xcopy /S /E /I NT %G_MdisInstallPath%\NT > NUL
+xcopy /S /E /I /Y NT %G_MdisInstallPath%\NT > NUL
 
 
 REM ------------------------------------------------------------
@@ -111,10 +111,10 @@ for /F %%i in ('dir /B 13*-06') do (
    cd %%i
    echo Copying Low Level Driver %%i to %G_MdisInstallPath%\DRIVERS\MDIS_LL
    git describe --dirty --long --tags --always >> %G_MdisInstallPath%\%G_logfile%
-   xcopy /S /E /I DRIVERS\MDIS_LL\* %G_MdisInstallPath%\VXWORKS\DRIVERS\MDIS_LL\ > NUL
-   xcopy /S /E  INCLUDE\COM\MEN\* %G_MdisInstallPath%\VXWORKS\INCLUDE\COM\MEN\ > NUL
+   xcopy /S /E /I /Y DRIVERS\MDIS_LL\* %G_MdisInstallPath%\VXWORKS\DRIVERS\MDIS_LL\ > NUL
+   xcopy /S /E /Y INCLUDE\COM\MEN\* %G_MdisInstallPath%\VXWORKS\INCLUDE\COM\MEN\ > NUL
    if exist LIBSRC (
-      xcopy /S /E  LIBSRC\* %G_MdisInstallPath%\VXWORKS\LIBSRC\ > NUL
+      xcopy /S /E /Y LIBSRC\* %G_MdisInstallPath%\VXWORKS\LIBSRC\ > NUL
    )
    cd ..
 )
@@ -127,9 +127,9 @@ for /F %%i in ('dir /B 13*-60') do (
    cd %%i
    echo Copying native Driver %%i to %G_MdisInstallPath%\VXWORKS\DRIVERS\NATIVE
    git describe --dirty --long --tags --always >> %G_MdisInstallPath%\%G_logfile%
-   xcopy /S /E /I DRIVERS\NATIVE\* %G_MdisInstallPath%\VXWORKS\DRIVERS\NATIVE\ > NUL
+   xcopy /S /E /I /Y DRIVERS\NATIVE\* %G_MdisInstallPath%\VXWORKS\DRIVERS\NATIVE\ > NUL
    REM -- INCLUDE/NATIVE/MEN folder exists not always e.g. 13M077-60. we just copy and ignore the error
-   xcopy /S /E INCLUDE\NATIVE\MEN\* %G_MdisInstallPath%\VXWORKS\INCLUDE\NATIVE\MEN\ > NUL 2>&1
+   xcopy /S /E /Y INCLUDE\NATIVE\MEN\* %G_MdisInstallPath%\VXWORKS\INCLUDE\NATIVE\MEN\ > NUL 2>&1
    cd ..
 )
 
@@ -141,7 +141,7 @@ echo Copying XML Files to %G_MdisInstallPath%\VXWORKS\PACKAGE_DESC\ ...
 mkdir %G_MdisInstallPath%\VXWORKS\PACKAGE_DESC
 for /F %%i in ('dir /B 13*') do (
    cd %%i
-   copy PACKAGE_DESC\*.xml %G_MdisInstallPath%\VXWORKS\PACKAGE_DESC\ > NUL
+   copy \Y PACKAGE_DESC\*.xml %G_MdisInstallPath%\VXWORKS\PACKAGE_DESC\ > NUL
    cd ..
 )
 
