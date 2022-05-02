@@ -232,6 +232,9 @@ __inline__ int32 sysRtcSet(
 CLEANUP:
 	return error;
 }
+#if _WRS_VXWORKS_MAJOR >= 7
+#define sysRtcSet_tm(u_int8_a,u_int8_b,u_int8_c,u_int8_d,u_int8_e,u_int8_f) sysRtcSet(u_int8_a,u_int8_b,u_int8_c,u_int8_d,u_int8_e,u_int8_f)
+#endif
 
 __inline__ int32 sysRtcGet( void )
 {
@@ -246,6 +249,10 @@ __inline__ int32 sysRtcGet( void )
 CLEANUP:
 	return error;
 }
+#if _WRS_VXWORKS_MAJOR >= 7
+#define sysRtcGet_tm(void) sysRtcGet(void)
+#endif
+
 
 __inline__ int32 sysUbootEnvGet(
 	char *envname,				/* IN: variable name */

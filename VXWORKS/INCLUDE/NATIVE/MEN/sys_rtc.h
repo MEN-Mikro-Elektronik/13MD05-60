@@ -45,10 +45,17 @@
 extern int32 sysRtcGetDate( u_int8 *yyP, u_int8 *mmP,u_int8 *ddP,u_int8 *hourP,
 							u_int8 *minP, u_int8 *secP);
 extern void sysRtcShow( void );
+#if _WRS_VXWORKS_MAJOR >= 7
+extern int32 sysRtcSet_tm( u_int8 yy,	u_int8 mm, u_int8 dd, u_int8 hour, 
+						u_int8 min,
+				 		u_int8 sec);
+extern int32 sysRtcGet_tm( void );
+#else
 extern int32 sysRtcSet( u_int8 yy,	u_int8 mm, u_int8 dd, u_int8 hour, 
 						u_int8 min,
 				 		u_int8 sec);
 extern int32 sysRtcGet( void );
+#endif
 extern void sysWeekdayCheck(u_int8 day, u_int8 month, u_int32 year);
 extern u_int8 sysWeekdayCalc(u_int8 day, u_int8 month, u_int32 year);
 
