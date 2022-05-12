@@ -10,8 +10,8 @@ export MEN_VXWORKS_ENV_VER := VXWORKS_7_0
 # package for VxWorks, e.g. /MEN/VXWORKS
 # note: FORWARD SLASHES '/' needed
 
-MEN_VX_DIR = C:/WindRiver/workspace/git/bsp-cc10-vxworks-7-21.07/vip_test_cc10/men_cc10_1_0_0_0/_VXWORKS
-VXWORKS_VSB_DIR = C:/WindRiver/workspace/git/bsp-cc10-vxworks-7-21.07/vsb_test_cc10
+MEN_VX_DIR = $(PRJ_FULL_PATH)/mdis/VXWORKS
+VXWORKS_VSB_DIR = $(VSB_DIR)
 
 export VXWORKS_VSB_DIR
 
