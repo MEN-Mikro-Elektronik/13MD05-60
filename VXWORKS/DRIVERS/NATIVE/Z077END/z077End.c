@@ -1487,7 +1487,11 @@ END_OBJ* z077Load ( char* initString, void* datP )
 
     if(ENDunitNo == 0)
     { /* introduce driver just once ... */
+#if _WRS_VXWORKS_MAJOR == 7
+        printf( UNIT_DRIVER_NAME "END Driver for VxWorks %s built %s %s.\n", RELEASE_VERSION, __DATE__, __TIME__ );
+#else
         printf( UNIT_DRIVER_NAME "END Driver for VxWorks %s built %s %s.\n", RUNTIME_VERSION, __DATE__, __TIME__ );
+#endif
     }
 
     /* KlocWork finding */
