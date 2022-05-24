@@ -192,7 +192,7 @@ int sysLm81Voltage(
 		return( volt );
 	}
 
-	if( Lm81ReadReg( input, (u_int8 *)&val ) == OK ){
+	if( Lm81ReadReg( (u_int8)input, (u_int8 *)&val ) == OK ){
 		desc = &sysLm81analogInputDesc[ input - LM81_2_5V ];
 
 		volt = Lm81BinToVoltage( val, desc->fullScale );

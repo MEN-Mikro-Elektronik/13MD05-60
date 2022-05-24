@@ -1876,7 +1876,8 @@ LOCAL STATUS z077Send
 	END_ERR_ADD (&pDrvCtrl->endObj, MIB2_OUT_UCAST, +1);
 
 	/* go to next Tx BD */
-	pDrvCtrl->nCurrTbd = (++pDrvCtrl->nCurrTbd % Z077_TBD_NUM);
+	pDrvCtrl->nCurrTbd++;
+	pDrvCtrl->nCurrTbd = (pDrvCtrl->nCurrTbd % Z077_TBD_NUM);
 
 	END_TX_SEM_GIVE (&pDrvCtrl->endObj);
 
@@ -2143,7 +2144,8 @@ LOCAL STATUS z077PollSend (
 	END_ERR_ADD (&pDrvCtrl->endObj, MIB2_OUT_UCAST, +1);
 
 	/* go to next Tx BD */
-	pDrvCtrl->nCurrTbd = (++pDrvCtrl->nCurrTbd % Z077_TBD_NUM);
+	pDrvCtrl->nCurrTbd++;
+	pDrvCtrl->nCurrTbd = (pDrvCtrl->nCurrTbd % Z077_TBD_NUM);
 
 	/* wait for completion. */
 	for (i = 0; i < Z077_TIMEOUT; i++)
@@ -2472,7 +2474,7 @@ LOCAL STATUS z077Recv
 	if (isPollMode) {
 		if(pMblkRbd->m_len < len) {
 #if _WRS_VXWORKS_MAJOR == 7
-            bcopy (mtod(pDrvCtrl->pMblkList[pktIndex], UINT32), pMblkRbd->mBlkHdr.mData, len);
+            bcopy ((char *)mtod(pDrvCtrl->pMblkList[pktIndex], UINT32), pMblkRbd->mBlkHdr.mData, len);
 #else
 			bcopy ((char *)Z077_GET_RBD_ADDR(pktIndex), pMblkRbd->mBlkHdr.mData, len);
 #endif
@@ -3168,7 +3170,7 @@ LOCAL STATUS z077PhyInit (
 	{
 		/* disable powerdown mode */
 		z077MiiRead(pDrvCtrl, phyAddr , MII_100_BASE_TX_PHY, &dat);
-		dat &=~(MII_100BASE_PWR);
+		dat &=(UINT16)(~MII_100BASE_PWR);
 		z077MiiWrite(pDrvCtrl, phyAddr, MII_100_BASE_TX_PHY, dat);
 	}
 
@@ -3447,7 +3449,7 @@ LOCAL STATUS z077MiiAnRun (
 	DBGWRT_1( (DBH, "--> z077MiiAnRun phyAds=0x%x\n", phyAds) );
 
 	/* disable the next page function */
-	phyAds &= (~MII_NP_NP);
+	phyAds &= (UINT16)(~MII_NP_NP);
 
 	if (z077MiiWrite (pDrvCtrl, phyAddr, regAddr, phyAds) != OK)
 		return (ERROR);
@@ -3482,7 +3484,7 @@ LOCAL STATUS z077MiiAnRun (
 				return (ERROR);
 
 			/* just negotiate one ability at a time */
-			phyAds &= ~MII_TECH_MASK;
+			phyAds &= (UINT16)(~MII_TECH_MASK);
 
 			/* translate user settings */
 			phyAds |= z77AnLookupTbl[(z077PhyAnOrderTbl[ix])];
@@ -3504,22 +3506,22 @@ LOCAL STATUS z077MiiAnRun (
 			/* supress Full duplex negotiation ? */
 			if ( !(pDrvCtrl->phyInfo->phyFlags & MII_PHY_FD) )  /* *** */
 				/* Z077_PHY_DONT_NEGOTIATE_FD */
-				phyAds &= ~(MII_TECH_10BASE_FD | MII_TECH_100BASE_TX_FD
-							| MII_TECH_100BASE_T4);
+				phyAds &= (UINT16)(~(MII_TECH_10BASE_FD | MII_TECH_100BASE_TX_FD
+							| MII_TECH_100BASE_T4));
 
 			/* supress half duplex negotiation ? */
 			if (!(pDrvCtrl->phyInfo->phyFlags & MII_PHY_HD))
 				/* Z077_PHY_DONT_NEGOTIATE_HD */
-				phyAds &= ~(MII_TECH_10BASE_T | MII_TECH_100BASE_TX);
+				phyAds &= (UINT16)(~(MII_TECH_10BASE_T | MII_TECH_100BASE_TX));
 
 			/* supress negotiation of 100 Mbit ? */
 			if ( !(pDrvCtrl->phyInfo->phyFlags & MII_PHY_100)) /* *** */
-				phyAds &= ~(MII_TECH_100BASE_TX | MII_TECH_100BASE_TX_FD
-							| MII_TECH_100BASE_T4);
+				phyAds &= (UINT16)(~(MII_TECH_100BASE_TX | MII_TECH_100BASE_TX_FD
+							| MII_TECH_100BASE_T4));
 
 			/* supress negotiation of 10 Mbit ? */
 			if (!(pDrvCtrl->phyInfo->phyFlags & MII_PHY_10 ))
-				phyAds &= ~(MII_TECH_10BASE_T | MII_TECH_10BASE_FD);
+				phyAds &= (UINT16)(~(MII_TECH_10BASE_T | MII_TECH_10BASE_FD));
 
 			/* Write ANAR */
 			regAddr = MII_AN_ADS_REG;
@@ -3634,7 +3636,7 @@ LOCAL STATUS z077MiiAnStart (
 			break;
 
 		/* wait more */
-		ix += 500;
+		ix += (UINT16)500;
 		taskDelay ( SECOND >> 1 );
 	} while (1);
 
