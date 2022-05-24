@@ -54,8 +54,6 @@
 |   DEFINES                             |
 +--------------------------------------*/
 
-#define SYS_SMB_RTC RTC8581_SMB_ADDR /* RTC SMB address */
-
 #define BCDTOBIN(v) ((((v)&0xf0)>>4)*10+((v)&0xf))
 #define BINTOBCD(v) (((v)/10)*16+(((v)%10)))
 
@@ -74,6 +72,7 @@
 +--------------------------------------*/
 const int sysRtc_IIC_RETRIES = 3;
 u_int32	sysRtcRetries = 0;
+u_int32 sysSmbAddr = RTC8581_SMB_ADDR; /* RTC SMB address */
 
 static SEM_ID RTC8581_Sem;
 
@@ -123,9 +122,9 @@ static int32 sysRtcReadReg(
 
 	do
 	{
-		error = sysSmbWriteByte( SYS_RTC_BUSNO, SYS_SMB_RTC, addr );
+		error = sysSmbWriteByte( SYS_RTC_BUSNO, sysSmbAddr, addr );
 		if( !error )
-			error = sysSmbReadByte( SYS_RTC_BUSNO, SYS_SMB_RTC, valP );
+			error = sysSmbReadByte( SYS_RTC_BUSNO, sysSmbAddr, valP );
 	}
 	while( error && ( retries++ < sysRtc_IIC_RETRIES ) );
 
@@ -152,7 +151,7 @@ static int32 sysRtcWriteReg(
 
 	do
 	{
-		error = sysSmbWriteTwoByte( SYS_RTC_BUSNO, SYS_SMB_RTC,
+		error = sysSmbWriteTwoByte( SYS_RTC_BUSNO, sysSmbAddr,
 									addr, val );
 	}
 	while( error && ( retries++ < sysRtc_IIC_RETRIES ) );
@@ -168,9 +167,12 @@ static int sysRtcHwInit( void )
 	int error;
 
 	/*--- clear the test bit ---*/
-	if( (error = sysRtcReadReg(  RTC8581_EXT, &val )))
+	if( (error = sysRtcReadReg(  RTC8581_EXT, &val ))) {
+		sysSmbAddr = RTC8803_SMB_ADDR;
+		/* retry with 8803 address */
+	} else if( (error = sysRtcReadReg(  RTC8581_EXT, &val )))
 		return error;
-
+	
 	if( val & (RTC8581_EXT_TEST) ){
 		val &= ~(RTC8581_EXT_TEST);
 		if( (error = sysRtcWriteReg( RTC8581_EXT, val )))
@@ -412,3 +414,4 @@ int32 sysRtcGet( void )
 
 	return error;
 }
+
