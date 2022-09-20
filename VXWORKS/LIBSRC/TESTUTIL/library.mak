@@ -1,0 +1,15 @@
+MAK_NAME=testutil
+
+MAK_LIBS=
+
+MAK_INCL=$(MEN_INC_DIR)/men_typs.h \
+		 $(MEN_INC_DIR)/testutil.h \
+
+
+MAK_SWITCH=$(SW_PREFIX)SYSP_CONFIG_MDIS_BUILD\
+           #$(SW_PREFIX)SYSP_CONFIG_UNITTEST
+
+MAK_INP1	=	screen$(INP_SUFFIX)
+MAK_INP2	=	time$(INP_SUFFIX)
+
+MAK_INP		=	$(MAK_INP1) $(MAK_INP2)

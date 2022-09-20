@@ -322,10 +322,10 @@ int main( int argc, char *argv[] )
 		if((UTL_TSTOPT("b"))) {
 			hdtH.binmode = 1;
 			printf("option -r = 0x%x (binary)\n",(unsigned int)hdtH.outAddr);
-			int* outP = (int*)h->outAddr;
-			*outP++ = h->globerror;
-			*outP++ = h->wrtXfer;
-			*outP++ = h->rdXfer;
+			int* outP = (int*)hdtH.outAddr;
+			*outP++ = hdtH.globerror;
+			*outP++ = hdtH.wrtXfer;
+			*outP++ = hdtH.rdXfer;
 		} else {
 			printf("option -r = 0x%x (string)\n",(unsigned int)hdtH.outAddr);
 		}
@@ -374,14 +374,14 @@ int main( int argc, char *argv[] )
 	 * create the file
 	 */
 	if( !hdtH.flashmode ){
-#if ( ( _WRS_VXWORKS_MAJOR == 6 ) && ( _WRS_VXWORKS_MINOR >= 3 ) )
+#if ( ( _WRS_VXWORKS_MAJOR == 6 ) && ( _WRS_VXWORKS_MINOR < 3 ) )
+		if( (hdtH.filedesc = creat( hdtH.testfile, O_RDWR )) < 0 )
+#else
 		/* for VxWorks >= 6.3 the NFS file systems creat() function takes POSIX
 		   conform permission parameters (unix like). Therefore use open() with
 		   permission to create file, internally it is handled correctly */
 		remove(hdtH.testfile);
 		if( (hdtH.filedesc = open( hdtH.testfile, (O_CREAT | O_RDWR), 0) ) < 0 )
-#else
-		if( (hdtH.filedesc = creat( hdtH.testfile, O_RDWR )) < 0 )
 #endif
  		{
 			printf("can't create file\n");
