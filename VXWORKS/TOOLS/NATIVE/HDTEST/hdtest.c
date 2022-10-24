@@ -130,8 +130,8 @@ typedef struct TEST{
 	char *name;
 	int errorcnt;
 	int lsterror;	/* write  scat  rand  read */
-	int counter1;	/* byte   seeks seeks byte */
-	int counter2;	/* bps    mst   mst   bps  */
+	u_int64 counter1;	/* byte   seeks seeks byte */
+	u_int64 counter2;	/* bps    mst   mst   bps  */
 	int counter3;
 	int counter4;
 	int (*func)(struct HDTEST_HANDLE_T *);
@@ -938,14 +938,14 @@ static void dispio(HDTEST_HANDLE_T *h, FILE *fp, int i)
 {
 	if( fp!=stdout ){
 		if( h->scrmode ){
-			fprintf(fp, "%4d.%02d MB / xfer rate: %s",
+			fprintf(fp, "%4llu.%02llu MB / xfer rate: %s",
 					h->tp->counter1/(KILO*4),
 					(h->tp->counter1 % (4*KILO)) * 100 / (KILO*4),
 					tu_bytes_per_sec(h->tp->counter1*SECTSIZE, h->tp->counter2));
 		}
 	}
 	else {
-		tu_print(WDW_RESULT,42,2+i,"%4d.%02d MB / xfer rate: %s",
+		tu_print(WDW_RESULT,42,2+i,"%4llu.%02llu MB / xfer rate: %s",
 				h->tp->counter1/(KILO*4),
 				(h->tp->counter1 % (4*KILO)) * 100 / (KILO*4),
 				tu_bytes_per_sec(h->tp->counter1*SECTSIZE, h->tp->counter2));
@@ -957,14 +957,14 @@ static void dispseek(HDTEST_HANDLE_T *h, FILE *fp, int i)
 	if(h->tp->counter1){
 		if(fp!=stdout ){
 			if( h->scrmode ){
-				fprintf(fp, "%8d seeks, %5d / %5d / %5d",
+				fprintf(fp, "%8llu seeks, %5d / %5d / %5d",
 						h->tp->counter1, h->tp->counter3*10,
 						h->tp->counter2*10/h->tp->counter1,
 						h->tp->counter4*10 );
 			}
 		}
 		else {
-			tu_print(WDW_RESULT,42,2+i,"%8d seeks, %5d / %5d / %5d",
+			tu_print(WDW_RESULT,42,2+i,"%8llu seeks, %5d / %5d / %5d",
 					h->tp->counter1, h->tp->counter3*10,
 					h->tp->counter2*10/h->tp->counter1,
 					h->tp->counter4*10 );

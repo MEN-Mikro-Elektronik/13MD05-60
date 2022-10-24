@@ -117,11 +117,11 @@ char *tu_tick2string( int fmt, u_int32 tick_diff )
  *  Output.....:  (static) formatted string
  *  Globals....:  ---
  ****************************************************************************/
-char *tu_bytes_per_sec( u_int32 bytes, u_int32 tick_diff )
+char *tu_bytes_per_sec( u_int64 bytes, u_int64 tick_diff )
 {
 	static char str[30];
-	u_int32 bytes_per_tick;
-	u_int32 bps, bps_rem;
+	u_int64 bytes_per_tick;
+	u_int64 bps, bps_rem;
 	char *unit=" ";
 
 	if( tick_diff==0 ) return "****.** MB/s"; 
@@ -142,7 +142,7 @@ char *tu_bytes_per_sec( u_int32 bytes, u_int32 tick_diff )
 	bps 	= bytes_per_tick/100;
 	bps_rem = bytes_per_tick%100;
 
-	sprintf( str, "%4d.%02d %sB/s", bps, bps_rem, unit );
+	sprintf( str, "%4llu.%02llu %sB/s", bps, bps_rem, unit );
 	return str;
 }
 
